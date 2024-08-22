@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookApiController;
 use App\Http\Controllers\Api\UserBookApiController;
+use App\Http\Controllers\Api\BookProcessApiController;
+use App\Http\Controllers\Api\UserBookProcessApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,4 +33,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/users/{user}/books', [UserBookApiController::class, 'store'])->name('api.user.book.store');
     Route::put('/users/{user}/books', [UserBookApiController::class, 'updateOrder'])->name('api.user.book.updateOrder');
     Route::delete('/users/{user}/books/{book}', [UserBookApiController::class, 'destroy'])->name('api.user.book.destroy');
+
+    Route::get('books/{book}/processes', [BookProcessApiController::Class, 'index'])->name('api.book.process.index');
+    Route::get('books/{book}/processes/{process}', [BookProcessApiController::Class, 'show'])->name('api.book.process.show');
+
+    Route::get('users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'index'])->name('api.book.process.index');
+    Route::get('users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'show'])->name('api.book.process.show');
+    Route::post('users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'store'])->name('api.book.process.store');
+    Route::put('users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'update'])->name('api.book.process.update');
+    Route::delete('users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'destroy'])->name('api.book.process.destroy');
 });
