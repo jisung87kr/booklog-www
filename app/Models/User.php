@@ -63,6 +63,11 @@ class User extends Authenticatable
 
     public function books()
     {
-        return $this->belongsToMany(Book::class)->withPivot('idx');
+        return $this->belongsToMany(Book::class)->withPivot(['created_at', 'updated_at', 'idx'])->withTimestamps();
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class)->withPivot(['created_at', 'updated_at'])->withTimestamps();
     }
 }

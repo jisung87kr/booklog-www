@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\BadgeApiController;
+use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookApiController;
@@ -42,4 +44,14 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'store'])->name('api.book.process.store');
     Route::put('users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'update'])->name('api.book.process.update');
     Route::delete('users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'destroy'])->name('api.book.process.destroy');
+
+    Route::get('/badges', [BadgeApiController::class, 'index'])->name('api.badge.index');
+    Route::get('/badges/{badge}', [BadgeApiController::class, 'show'])->name('api.badge.show');
+    Route::post('/badges', [BadgeApiController::class, 'store'])->name('api.badge.store');
+    Route::put('/badges/{badge}', [BadgeApiController::class, 'update'])->name('api.badge.update');
+    Route::delete('/badges/{badge}', [BadgeApiController::class, 'destroy'])->name('api.badge.destroy');
+
+    Route::get('/users/{user}/badges', [UserBadgeApiController::class, 'index'])->name('api.badge.index');
+    Route::post('/users/{user}/badges', [UserBadgeApiController::class, 'store'])->name('api.badge.store');
+    Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
 });
