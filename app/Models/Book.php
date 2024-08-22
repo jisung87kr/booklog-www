@@ -13,6 +13,6 @@ class Book extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'bookcases');
+        return $this->belongsToMany(User::class);
     }
 }
