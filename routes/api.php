@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BadgeApiController;
+use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -54,4 +55,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/users/{user}/badges', [UserBadgeApiController::class, 'index'])->name('api.badge.index');
     Route::post('/users/{user}/badges', [UserBadgeApiController::class, 'store'])->name('api.badge.store');
     Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
+
+    Route::resource('categories', CategoryApiController::class)->names('category');
 });
