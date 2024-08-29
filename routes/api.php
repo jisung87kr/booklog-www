@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\CategoryApiController;
+use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -57,4 +58,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
 
     Route::resource('categories', CategoryApiController::class)->names('category');
+    Route::resource('tags', TagApiController::class)->names('tag');
 });
