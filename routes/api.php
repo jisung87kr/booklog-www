@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\TagApiController;
@@ -59,4 +60,5 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('categories', CategoryApiController::class)->names('category');
     Route::resource('tags', TagApiController::class)->names('tag');
+    Route::resource('authors', AuthorApiController::class)->names('author');
 });
