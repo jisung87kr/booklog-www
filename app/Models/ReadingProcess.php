@@ -15,4 +15,9 @@ class ReadingProcess extends Model
     {
         return $this->belongsTo(BookCase::class, 'book_user_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable', 'commentable_type', 'commentable_id');
+    }
 }
