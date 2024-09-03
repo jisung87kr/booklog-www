@@ -20,4 +20,9 @@ class ReadingProcess extends Model
     {
         return $this->morphMany(Comment::class, 'commentable', 'commentable_type', 'commentable_id');
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable', 'imageable_type', 'imageable_id');
+    }
 }

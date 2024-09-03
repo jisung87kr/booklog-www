@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\BookApiController;
 use App\Http\Controllers\Api\UserBookApiController;
 use App\Http\Controllers\Api\BookProcessApiController;
 use App\Http\Controllers\Api\UserBookProcessApiController;
+use App\Models\Api\ImageApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -61,4 +62,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::resource('categories', CategoryApiController::class)->names('category');
     Route::resource('tags', TagApiController::class)->names('tag');
     Route::resource('authors', AuthorApiController::class)->names('author');
+
+    Route::get('{processes}/{process}/images', [ImageApiController::class, 'index'])->name('process.image.index');
+    Route::post('{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
+    Route::delete('{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
 });

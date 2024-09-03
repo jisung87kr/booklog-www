@@ -41,6 +41,9 @@ class UserBookProcessApiController extends Controller
             ]);
 
             $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+            if(!$bookcase){
+                abort(404, 'record not found.');
+            }
 
             $validated['user_id'] = $user->id;
             $validated['book_id'] = $book->id;
