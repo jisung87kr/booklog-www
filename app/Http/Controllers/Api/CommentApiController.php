@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Models\ReadingProcess;
 use Illuminate\Http\Request;
 
@@ -92,6 +93,8 @@ class CommentApiController extends Controller
         switch ($type){
             case 'processes':
                 return ReadingProcess::findOrFail($id);
+            case 'posts':
+                return Post::findOrFail($id);
             default:
                 abort(404);
         }

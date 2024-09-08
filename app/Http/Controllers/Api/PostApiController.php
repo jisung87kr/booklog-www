@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Enums\PostStatusEnum;
+use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
+use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+class PostApiController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        try {
+            $posts = Post::published()->paginate(10);
+            return ApiResponse::success("", $posts);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'title' => 'required',
+                'content' => 'required',
+            ]);
+            $post = $request->user()->posts()->create($validated);
+            return ApiResponse::success("", $post);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Post $post)
+    {
+        try {
+            return ApiResponse::success("", $post);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Post $post)
+    {
+        try {
+            $validated = $request->validate([
+                'title' => 'nullable',
+                'content' => 'nullable',
+                'status' => ['nullable', Rule::enum(PostStatusEnum::class)]
+            ]);
+            $post->update($validated);
+            return ApiResponse::success("", $post);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Post $post)
+    {
+        try {
+            $post->delete();
+            return ApiResponse::success("", '');
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+}

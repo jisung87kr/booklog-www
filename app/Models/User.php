@@ -70,4 +70,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Badge::class)->withPivot(['created_at', 'updated_at'])->withTimestamps();
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }
