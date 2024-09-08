@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\PostApiController;
 use App\Http\Controllers\Api\TagApiController;
+use App\Http\Controllers\api\TaggableApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('categories', CategoryApiController::class)->names('category');
     Route::resource('tags', TagApiController::class)->names('tag');
+    Route::post('{type}/{id}/tags', [TaggableApiController::class, 'sync'])->name('taggable.sync');
     Route::resource('authors', AuthorApiController::class)->names('author');
 
     Route::get('{processes}/{process}/images', [ImageApiController::class, 'index'])->name('process.image.index');

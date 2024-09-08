@@ -25,4 +25,9 @@ class ReadingProcess extends Model
     {
         return $this->morphMany(Image::class, 'imageable', 'imageable_type', 'imageable_id');
     }
+
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
 }
