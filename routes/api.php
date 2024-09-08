@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\CategoryApiController;
+use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
@@ -66,4 +67,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('{processes}/{process}/images', [ImageApiController::class, 'index'])->name('process.image.index');
     Route::post('{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
     Route::delete('{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
+
+    Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comments');
 });
