@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AttachmentApiController;
 use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\CategoryApiController;
@@ -71,4 +72,5 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comments');
     Route::resource('posts', PostApiController::class)->names('post');
+    Route::resource('{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 });

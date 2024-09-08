@@ -13,6 +13,7 @@ class Post extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+    protected $with = ['attachments'];
 
     public function user()
     {
@@ -22,6 +23,11 @@ class Post extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachmentable');
     }
 
     public function scopePublished(){
