@@ -1,4 +1,4 @@
-<nav class="bg-white border-gray-200">
+<nav class="bg-white border-gray-200" x-data="navigationData">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
             <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
@@ -32,7 +32,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0">
+                    <a href="" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                    @click.prevent="openCreateProcessForm()">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="30" height="30" viewBox="0 0 24 24" stroke-width="2.3" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -60,8 +61,16 @@
                 </li>
             </ul>
         </div>
-        <div>
-            <a href="{{ route('login') }}" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-sm">로그인</a>
+        <div class="hidden md:block">
+            @if(auth()->check())
+                <a href="{{ route('logout') }}" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-sm" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">로그아웃</a>
+                <form action="{{ route('logout') }}" method="POST" id="logout-form">
+                    @csrf
+                    @method('POST')
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-sm">로그인</a>
+            @endif
         </div>
     </div>
 </nav>

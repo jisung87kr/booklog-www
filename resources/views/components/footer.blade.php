@@ -1,3 +1,4 @@
+<x-bottom-navigation></x-bottom-navigation>
 <footer class="mt-10">
     <div class="flex gap-3 justify-center text-sm text-gray-500">
         <a href="">@ {{ date('Y') }} {{ config('app.name') }}</a>

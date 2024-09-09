@@ -14,7 +14,7 @@ class UserBookApiController extends Controller
     public function index(User $user)
     {
         try {
-            $books = $user->books()->orderBy('idx')->latest()->paginate(30);
+            $books = $user->books()->orderBy('idx')->latest()->paginate(5);
             return ApiResponse::success('', $books);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
