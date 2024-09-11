@@ -38,21 +38,7 @@ class ImageApiController extends Model
         try {
             $model = $this->getCommentableModel($type, $id);
             $images = $request->file('images');
-            $uploadedImages = [];
-
-            if($images && is_array($images)){
-                $request->validate([
-                    'images.*' => 'required|mimes:jpg,jpeg,png,gif',
-                ]);
-
-                foreach ($images as $image) {
-                    if($image->isValid()){
-                        $uploadedImage = $this->imageService->storeImage($model, $image, $request->all());
-                        $uploadedImages[] = $uploadedImage;
-                    }
-                }
-            }
-
+            $uploadedImages = $this->imageService->storeImages($model, $images, $request->all());
             return ApiResponse::success('', $uploadedImages);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());

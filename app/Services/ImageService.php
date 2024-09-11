@@ -22,4 +22,22 @@ class ImageService{
             'description' => $params['description'] ?? null,
         ]);
     }
+
+    public function storeImages($model, $images, $params=[], $storagePath=null){
+        if($images && is_array($images)){
+            request()->validate([
+                'images.*' => ['required', 'mimes:jpg,jpeg,png,gif', 'max:20480'],
+            ]);
+
+            foreach ($images as $image) {
+                if($image->isValid()){
+                    $uploadedImage = $this->storeImage($model, $image, $params, $storagePath);
+                    $uploadedImages[] = $uploadedImage;
+                }
+            }
+
+            return $uploadedImages;
+        }
+        return [];
+    }
 }

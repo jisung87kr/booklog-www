@@ -7,11 +7,23 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Book;
 use App\Models\Bookcase;
 use App\Models\ReadingProcess;
+use App\Models\Tag;
 use App\Models\User;
+use App\Services\ImageService;
+use App\Services\TagService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserBookProcessApiController extends Controller
 {
+    private ImageService $imageService;
+    private TagService $tagService;
+    public function __construct(ImageService $imageService, TagService $tagService)
+    {
+        $this->imageService = $imageService;
+        $this->tagService = $tagService;
+    }
     public function index(User $user, Book $book)
     {
         try {
@@ -40,17 +52,24 @@ class UserBookProcessApiController extends Controller
                 'note' => 'nullable',
             ]);
 
+            DB::beginTransaction();
             $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             if(!$bookcase){
-                abort(404, 'record not found.');
+                $request->user()->books()->attach($book->id);
+                $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             }
 
             $validated['user_id'] = $user->id;
             $validated['book_id'] = $book->id;
-
             $process = $bookcase->processes()->create($validated);
+            $this->tagService->handleTags($request, $process);
+            $this->imageService->storeImages($process, $request->file('images'), $request->all());
+            $process = ReadingProcess::findOrFail($process->id);
+
+            DB::commit();
             return ApiResponse::success('', $process);
         } catch (\Exception $e) {
+            DB::rollBack();
             return ApiResponse::error('', $e->getMessage());
         }
     }
@@ -63,17 +82,34 @@ class UserBookProcessApiController extends Controller
                 'note' => 'nullable',
             ]);
 
-            $process->update($validated);
+            DB::beginTransaction();
+            $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+            if (!$bookcase) {
+                return ApiResponse::error('Bookcase not found', 404);
+            }
 
+            $validated['user_id'] = $user->id;
+            $validated['book_id'] = $book->id;
+            $process->update($validated);
+            $this->tagService->handleTags($request, $process);
+            $this->imageService->storeImages($process, $request->file('images'), $request->all());
+            $process = ReadingProcess::findOrFail($process->id);
+
+            DB::commit();
             return ApiResponse::success('', $process);
         } catch (\Exception $e) {
+            DB::rollBack();
             return ApiResponse::error('', $e->getMessage());
         }
     }
 
+
     public function destroy(User $user, Book $book, ReadingProcess $process)
     {
         try {
+            foreach ($process->images as $index => $image) {
+                Storage::delete($image->file_path);
+            }
             $process->delete();
             return ApiResponse::success('');
         } catch (\Exception $e) {

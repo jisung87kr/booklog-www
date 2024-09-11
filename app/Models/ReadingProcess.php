@@ -10,6 +10,7 @@ class ReadingProcess extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $with = ['tags', 'images'];
 
     public function bookcase()
     {
