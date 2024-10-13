@@ -1,125 +1,160 @@
 <x-app-layout>
     <x-navigation></x-navigation>
-    <div class="container mx-auto max-w-lg w-full">
-        <div class="flex py-6">
-            <div class="profile shrink-0 mr-3">
-                <img class="w-8 h-8 rounded-full" src="https://avatar.iran.liara.run/public" alt="Neil image">
-            </div>
-            <div>
-                <div class="flex justify-between">
-                    <div class="flex">
-                        <div class="mr-3 font-bold">아이디</div>
-                        <div class="opacity-75">16시간전</div>
-                    </div>
-                    <button type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        </svg>
-                    </button>
+    <div class="container mx-auto max-w-lg w-full divide-y" x-data="feedData">
+        <template x-for="feed in feeds.data" :key="feed.id">
+            <div class="flex py-6" x-data="{open: false}">
+                <div class="profile shrink-0 mr-3">
+                    <img class="w-8 h-8 rounded-full" :src="feed.user.profile_photo_url" alt="Neil image">
                 </div>
-                <div class="mt-2">
-                    <div class="mb-1">Apple announces iPhone event: It’s Glowtime. A day earlier than expected: Monday, Sept. 9. At the Steve Jobs Theater and streamed online.</div>
-                    <img src="https://placehold.co/600x400"
-                         class="border rounded-lg"
-                         alt="">
-                </div>
-                <div class="pt-3 flex gap-5">
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-                            </svg>
-                        </button>
-                        <span>100</span>
+                <div class="w-full">
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <div class="mr-3 font-bold" x-text="feed.user.name">아이디</div>
+                            <div class="opacity-75" x-text="feed.created_at_human"></div>
+                        </div>
+                        <div class="relative">
+                            <button type="button" @click.prevent="open = !open">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                    <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                    <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                </svg>
+                            </button>
+                            <ul x-show="open"
+                                class="dropdown w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute right-0 top-5 z-10"
+                                @click.away="open = false">
+                                <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200 rounded-t-lg"><a href="">저장</a></li>
+                                <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">관심 없음</a></li>
+                                <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">차단하기</a></li>
+                                <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">신고하기</a></li>
+                                <li class="w-full px-4 py-2 hover:bg-indigo-50 rounded-b-lg"><a href=""><a href="">링크복사</a></a></li>
+                            </ul>
+                        </div>
                     </div>
-
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" />
-                            </svg>
-                        </button>
-                        <span>100</span>
-                    </div>
-
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" />
-                                <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" />
-                            </svg>
-                        </button>
-                        <span>100</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex border-t py-6">
-            <div class="profile shrink-0 mr-3">
-                <img class="w-8 h-8 rounded-full" src="https://avatar.iran.liara.run/public" alt="Neil image">
-            </div>
-            <div>
-                <div class="flex justify-between">
-                    <div class="flex">
-                        <div class="mr-3 font-bold">아이디</div>
-                        <div class="opacity-75">16시간전</div>
-                    </div>
-                    <button type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                            <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="mt-2">
-                    <div class="mb-1">Apple announces iPhone event: It’s Glowtime. A day earlier than expected: Monday, Sept. 9. At the Steve Jobs Theater and streamed online.</div>
-                    <img src="https://placehold.co/600x400"
-                         class="border rounded-lg"
-                         alt="">
-                </div>
-                <div class="pt-3 flex gap-5">
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-                            </svg>
-                        </button>
-                        <span>100</span>
-                    </div>
-
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" />
-                            </svg>
-                        </button>
-                        <span>100</span>
-                    </div>
-
-                    <div class="flex items-center">
-                        <button type="button" class="mr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" />
-                                <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" />
-                            </svg>
-                        </button>
-                        <span>100</span>
+                    <div class="mt-2">
+                        <div class="mb-1" x-text="feed.note"></div>
+                        <template x-if="feed.images.length > 0">
+                            <div class="swiper border rounded-lg !w-full">
+                                <div class="swiper-wrapper !w-full">
+                                    <template x-for="image in feed.images" :key="image.id">
+                                        <div class="swiper-slide !h-[300px] flex align-items-center justify-center bg-white !w-full">
+                                            <img :src="image.image_url"
+                                                 class="w-auto h-full block mx-auto"
+                                                 alt="">
+                                        </div>
+                                    </template>
+                                </div>
+                                <!-- If we need pagination -->
+                                <div class="swiper-pagination"></div>
+                                <!-- If we need navigation buttons -->
+    {{--                            <div class="swiper-button-prev"></div>--}}
+    {{--                            <div class="swiper-button-next"></div>--}}
+                            </div>
+                        </template>
+                        <div class="mt-3 flex gap-3">
+                            <button type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                                </svg>
+                            </button>
+                            <button type="button" @click="alert('준비중인 기능입니다.')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M3 20l1.3 -3.9a9 8 0 1 1 3.4 2.9l-4.7 1" />
+                                </svg>
+                            </button>
+                            <button type="button" @click="alert('준비중인 기능입니다.')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M10 14l11 -11" />
+                                    <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
-    
+    <script>
+        function feedData(){
+          return {
+            feeds: {
+              current_page: 1,
+              data: [],
+              last_page: null,
+              total: null,
+            },
+            loading: false,
+            modalOpen: false,
+            async init(){
+              let res = await this.getFeeds(this.feeds.current_page);
+              this.feeds.data = [...this.feeds.data, ...res.data.data];
+              this.feeds.current_page = res.data.current_page;
+              this.feeds.last_page = res.data.last_page;
+              window.addEventListener('scroll', this.onScroll.bind(this));
+              this.$nextTick(i => {
+                this.iniSwiper();
+              });
+            },
+            iniSwiper(){
+              document.querySelectorAll('.swiper').forEach(el => {
+                const swiper = new Swiper(el, {
+                  loop: true,
+                  modules: [Navigation, Pagination],
+                  autoHeight: true,
+                  pagination: {
+                    el: '.swiper-pagination',
+                  },
+                  // navigation: {
+                  //   nextEl: '.swiper-button-next',
+                  //   prevEl: '.swiper-button-prev',
+                  // },
+                });
+              });
+            },
+            onScroll() {
+              const scrollHeight = document.documentElement.scrollHeight;
+              const scrollTop = document.documentElement.scrollTop;
+              const clientHeight = document.documentElement.clientHeight;
+
+              if (scrollTop + clientHeight >= scrollHeight * 0.8) {
+                if (!this.loading && this.feeds.current_page < this.feeds.last_page) {
+                  this.getFeeds(this.feeds.current_page + 1);
+                }
+              }
+            },
+            async getFeeds(page) {
+              if (this.loading) return;
+              this.loading = true;
+              try{
+
+                let params = {
+                  page: page,
+                }
+
+                const res = await axios.get('/api/feeds', {
+                  params: params
+                })
+
+                if (!res.data.status) {
+                  throw new Error(res.data.data);
+                }
+
+                return res.data;
+
+              } catch(Error) {
+                  this.loading = false;
+                alert(error.message);
+              }
+            },
+            toggleModal(){
+              this.modalOpen = !this.modalOpen;
+            },
+          }
+        }
+    </script>
     <x-footer></x-footer>
 </x-app-layout>

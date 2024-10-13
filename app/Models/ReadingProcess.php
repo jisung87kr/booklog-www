@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,13 @@ class ReadingProcess extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['tags', 'images'];
+    protected $with = ['tags', 'images', 'user'];
+    protected $appends = ['created_at_human'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function bookcase()
     {
@@ -30,5 +37,10 @@ class ReadingProcess extends Model
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    public function getCreatedAtHumanAttribute()
+    {
+        return $this->created_at->diffforhumans();
     }
 }

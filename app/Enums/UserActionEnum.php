@@ -1,0 +1,23 @@
+<?php
+namespace App\Enums;
+
+// SNS 유저 액션 상수 정의
+enum UserActionEnum: string
+{
+    case BOOK_LIKE = 'book_like';
+    case BOOK_SHARE = 'book_share';
+    case READING_PROCESS_LIKE = 'reading_process_like';
+    case READING_PROCESS_SHARE = 'reading_process_share';
+    case READING_PROCESS_REPORT = 'reading_process_report';
+
+    public function label(): string
+    {
+        return match ($this) {
+            UserActionEnum::BOOK_LIKE => '좋아요',
+            UserActionEnum::BOOK_SHARE => '공유',
+            UserActionEnum::READING_PROCESS_LIKE => '피드 좋아요',
+            UserActionEnum::READING_PROCESS_SHARE => '피드 공유',
+            UserActionEnum::READING_PROCESS_REPORT => '피드 신고',
+        };
+    }
+}

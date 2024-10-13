@@ -5,10 +5,20 @@
  */
 
 import axios from 'axios';
-window.axios = axios;
 import 'flowbite';
+import Swiper from 'swiper';
+import { Navigation, Pagination } from 'swiper/modules';
+// import Swiper and modules styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
+window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+window.Swiper = Swiper;
+window.Navigation = Navigation;
+window.Pagination = Pagination;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

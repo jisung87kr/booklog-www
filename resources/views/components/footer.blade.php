@@ -9,11 +9,13 @@
     </div>
 </footer>
 <div x-data="">
-    <div
-            id="processFormModal"
+    <form
+            id="readingProcessFormModal"
             tabindex="-2"
             aria-hidden="true"
             class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0"
+            @submit.prevent="$store.navigationStore.createReadingProcess()"
+            enctype="multipart/form-data"
     >
         <div class="relative max-h-full w-full max-w-2xl">
             <!-- Modal content -->
@@ -66,20 +68,20 @@
                             </button>
                         </div>
                         <div class="my-2">
-                            <textarea name="" id="" cols="30" rows="10" class="w-full border rounded-lg border-gray-400"></textarea>
+                            <textarea name="" id="" cols="30" rows="10"
+                                      x-model="$store.navigationStore.readingProcess.note"
+                                      class="w-full border rounded-lg border-gray-400" x-text="$store.navigationStore.readingProcess.note"></textarea>
                             <div class="text-right">0/2000</div>
                         </div>
                         <div class="my-2 flex gap-3 items-center">
-                            <input type="text" placeholder="시작페이지" class="w-full border rounded-lg border-gray-400">
-                            <span>~</span>
-                            <input type="text" placeholder="종료페이지" class="w-full border rounded-lg border-gray-400">
+                            <input type="number" placeholder="몇페이지까지 읽으셨나요?" class="w-full border rounded-lg border-gray-400" x-model="$store.navigationStore.readingProcess.current_page">
                         </div>
                         <div class="my-2">
                             <input type="text" placeholder="태그추가" class="w-full border rounded-lg border-gray-400">
                         </div>
                         <div class="my-2 border rounded-lg px-2 py-3 border-gray-400">
                             <div>
-                                <input type="file" name="images[]" class="w-full border rounded-lg border-gray-400 hidden" multiple id="readingprocess-input-images">
+                                <input type="file" name="images[]" class="w-full border rounded-lg border-gray-400 hidden" multiple id="readingprocess-input-images" @change="$store.navigationStore.handleFileUpload(event)">
                                 <button type="button" class="flex justify-between w-full"  @click="$store.navigationStore.addImages()">
                                     <span>이미지 추가</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -99,7 +101,7 @@
                         class="flex items-center space-x-2 rtl:space-x-reverse rounded-b border-t border-gray-200 p-6"
                 >
                     <button
-                            type="button"
+                            type="submit"
                             class="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
                     >
                         공유하기
@@ -107,7 +109,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
     <div
             id="bookDrawer"
@@ -155,14 +157,14 @@
                                 <p class="text-sm font-medium text-gray-900 truncate" x-text="book.title"></p>
                                 <p class="text-sm text-gray-500 truncate dark:text-gray-400" x-text="book.author"></p>
                             </div>
-                            <div class="inline-flex items-center text-base font-semibold text-gray-900">
+                            <div class="inline-flex items-center text-base font-semibold text-gray-900 text-xs border rounded-lg px-2 py-1.5">
                                 <button type="button" @click="$store.navigationStore.selectBook(book)">선택</button>
                             </div>
                         </div>
                     </li>
                 </template>
             </ul>
-            <div class="flex">
+            <div class="flex w-full justify-center">
                 <button type="button"
                         class="flex items-center justify-center px-3 h-8 me-3 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
                         @click="$store.navigationStore.previousPage()"
@@ -182,7 +184,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="mt-3">
+            <div class="mt-3 border-t pt-3 text-right">
                 <a
                         href="#"
                         class="inline-flex items-center rounded-lg bg-blue-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -210,7 +212,7 @@
   function navigationData(){
     return {
       user: @json(auth()->user()),
-      processFormModal: null,
+      readingProcessFormModal: null,
       drawer: null,
       data:{
         current_page: 1,
@@ -220,28 +222,25 @@
         total: null,
         last_page: null,
       },
-      selectedBook: {
-        author: '',
-        title: '',
-        description: '',
-        isbn: '',
-        cover_image: '',
-        total_pages: '',
-        publisher: '',
-        published_date: '',
+      selectedBook: {},
+      readingProcess: {
+        id: null,
+        book_user_id: null,
+        user_id: null,
+        book_id: null,
+        parent_id: null,
+        current_page: null,
+        note: '',
+        //images: [],
+        //tags: [],
       },
-      content: '',
-      startPage: null,
-      endPage: null,
-      images: [],
-      tags: [],
       init(){
         this.initCreateProcessFormModal();
         this.initDrawers();
         this.getBooks();
       },
       initCreateProcessFormModal(){
-        const processFormModalEl = document.getElementById('processFormModal');
+        const readingProcessFormModalEl = document.getElementById('readingProcessFormModal');
         const options = {
           placement: 'center',
           backdrop: 'dynamic',
@@ -249,22 +248,19 @@
             'bg-gray-900/50 fixed inset-0 z-40',
           closable: true,
           onHide: () => {
-            console.log('modal is hidden');
           },
           onShow: () => {
-            console.log('modal is shown');
           },
           onToggle: () => {
-            console.log('modal has been toggled');
           },
         };
 
         const instanceOptions = {
-          id: 'processFormModal',
+          id: 'readingProcessFormModal',
           override: true
         };
 
-        this.processFormModal = new Modal(processFormModalEl, options, instanceOptions);
+        this.readingProcessFormModal = new Modal(readingProcessFormModalEl, options, instanceOptions);
       },
       initDrawers(){
         // set the drawer menu element
@@ -279,13 +275,10 @@
           backdropClasses:
             'bg-gray-900/50 fixed inset-0 z-50',
           onHide: () => {
-            console.log('drawer is hidden');
           },
           onShow: () => {
-            console.log('drawer is shown');
           },
           onToggle: () => {
-            console.log('drawer has been toggled');
           },
         };
 
@@ -302,10 +295,10 @@
           window.location.href = "/login";
           return false;
         }
-        this.processFormModal.show();
+        this.readingProcessFormModal.show();
       },
       closeProcessFormModal(){
-        this.processFormModal.hide();
+        this.readingProcessFormModal.hide();
       },
       addBook(){
         this.drawer.show();
@@ -315,6 +308,10 @@
         this.drawer.hide();
       },
       getBooks(){
+        if(!this.user){
+          return false;
+        }
+
         let params = {
           page: this.data.current_page,
         }
@@ -346,6 +343,61 @@
         }
         this.data.current_page = this.data.current_page + 1;
         this.getBooks();
+      },
+      createReadingProcess(){
+        let params = this.readingProcess;
+
+        if(!this.selectedBook.id){
+            alert('읽으신 책을 선택해 주세요');
+            return false;
+        }
+
+        let formData = new FormData();
+        for (let key in params) {
+          if (params.hasOwnProperty(key)) {
+            formData.append(key, params[key]);
+          }
+        }
+
+        if(this.readingProcess.images){
+            for (let i = 0; i < this.readingProcess.images.length; i++) {
+              formData.append('images[]', this.readingProcess.images[i]);
+            }
+        }
+
+        axios.post(`/api/users/${this.user.id}/books/${this.selectedBook.id}/processes`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(res => {
+          if(!res.data.status){
+            throw new Error(res.data.message);
+          }
+          alert('등록되었습니다.');
+          window.location.reload();
+          // this.readingProcessFormModal.hide();
+          // this.drawer.hide();
+          // this.selectedBook = this.makeSelectedBook();
+        }).catch(error => {
+          alert(error.message);
+        });
+      },
+      handleFileUpload(event){
+        console.log(event);
+        this.readingProcess.images = Array.from(event.target.files); // 선택한 파일들을 배열로 저장
+      },
+      makeSelectedBook(){
+        return {
+          id: '',
+          author: '',
+          title: '',
+          description: '',
+          isbn: '',
+          cover_image: '',
+          total_pages: '',
+          publisher: '',
+          published_date: '',
+        }
       }
     }
   }

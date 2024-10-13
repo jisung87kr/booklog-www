@@ -12,6 +12,10 @@ class TagService{
             'tag.*.name' => 'required',
         ]);
 
+        if(!isset($tagValidated['tag'])){
+            return false;
+        }
+
         foreach ($tagValidated['tag'] as $item) {
             Tag::updateOrCreate(['name' => $item['name']], ['name' => $item['name']]);
         }

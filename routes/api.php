@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\CommentApiController;
+use App\Http\Controllers\Api\FeedApiController;
 use App\Http\Controllers\Api\PostApiController;
 use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\api\TaggableApiController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\UserBookApiController;
 use App\Http\Controllers\Api\BookProcessApiController;
 use App\Http\Controllers\Api\UserBookProcessApiController;
 use App\Models\Api\ImageApiController;
+use App\Http\Controllers\Api\UserActionApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -63,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/users/{user}/badges', [UserBadgeApiController::class, 'store'])->name('api.badge.store');
     Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
 
+    Route::resource('/users/{user}/actions', UserActionApiController::class)->names('user.action');
+
     Route::resource('categories', CategoryApiController::class)->names('category');
     Route::resource('tags', TagApiController::class)->names('tag');
     Route::post('{type}/{id}/tags', [TaggableApiController::class, 'sync'])->name('taggable.sync');
@@ -76,3 +80,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::resource('posts', PostApiController::class)->names('post');
     Route::resource('{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 });
+
+Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
