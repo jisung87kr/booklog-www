@@ -1,6 +1,8 @@
+import '../bootstrap.js';
 import { createApp } from "vue";
-import axios from "axios";
+// import axios from "axios";
 import FeedComponent from "../components/FeedComponent.vue";
+import { sendRequest } from "../common.js";
 
 createApp({
     components: {
@@ -8,6 +10,7 @@ createApp({
     },
     data() {
         return {
+            user: null,
             feeds: {
                 current_page: 1,
                 data: [],
@@ -31,6 +34,7 @@ createApp({
     },
     async mounted() {
         window.addEventListener("scroll", this.handleScroll);
+        this.user = await this.fetchUser();
         const feedsResponse = await this.fetchFeeds();
         this.feeds = feedsResponse.data;
     },
@@ -38,6 +42,14 @@ createApp({
         window.removeEventListener("scroll", this.handleScroll);
     },
     methods: {
+        async fetchUser() {
+            try {
+                const response = await axios.get('/api/user');
+                return response.data;
+            } catch (error) {
+                return null;
+            }
+        },
         async fetchFeeds(page = 1) {
             try {
                 this.loading = true;

@@ -17,7 +17,7 @@ class FeedApiController extends Controller
     {
         try {
             if($request->user()){
-                $feeds = ReadingProcess::orderBy('id', 'desc')->paginate(10);
+                $feeds = ReadingProcess::withLikes()->orderBy('id', 'desc')->paginate(10);
             } else {
                 $feeds = ReadingProcess::orderBy('id', 'desc')->paginate(10);
             }

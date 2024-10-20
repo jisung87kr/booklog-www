@@ -92,7 +92,7 @@ class UserActionApiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserAction $action)
+    public function destroy(User $user, UserAction $action)
     {
         try {
             $action->delete();
