@@ -1,5 +1,5 @@
 <template>
-    <button type="button" @click="showComment(feed)">
+    <button type="button" @click="showComment(model)">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle-2"
              width="20"
              height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
@@ -14,14 +14,14 @@
 export default {
     name: 'CommentButton',
     props: {
-        feed: {
+        model: {
             type: Object,
             required: true
         },
     },
     methods:{
-        showComment(feed){
-            this.$emit('showComment', feed);
+        showComment(model){
+            this.$emit('showComment', model);
         }
     }
 }

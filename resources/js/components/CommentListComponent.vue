@@ -10,10 +10,11 @@
                            @report-comment="reportComment(comment)"
         ></comment-component>
     </template>
-    <div class="text-center mt-1 border-t pt-3">
+    <div class="text-center mt-1 border-t pt-3"
+         v-if="comments.total > 1 && comments.current_page < comments.last_page"
+    >
         <button type="button"
                 @click="moreComments"
-                v-if="comments.total > 1 && comments.current_page < comments.last_page"
                 class="text-sm"
         >더보기 + </button>
     </div>

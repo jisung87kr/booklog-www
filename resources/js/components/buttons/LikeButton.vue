@@ -1,11 +1,11 @@
 <template>
-    <button type="button" @click="toggleLike(feed)">
+    <button type="button" @click="toggleLike(model)">
         <svg xmlns="http://www.w3.org/2000/svg"
              class="icon icon-tabler icon-tabler-heart"
              width="20"
              height="20"
-             viewBox="0 0 24 24" stroke-width="1.5" :stroke="feed.like_id ? 'red' : '#000000'"
-             :fill="feed.like_id ? 'red' : 'none' " stroke-linecap="round"
+             viewBox="0 0 24 24" stroke-width="1.5" :stroke="model.like_id ? 'red' : '#000000'"
+             :fill="model.like_id ? 'red' : 'none' " stroke-linecap="round"
              stroke-linejoin="round"
         >
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -19,7 +19,7 @@ import {sendRequest} from "../../common.js";
 export default {
     name: 'LikeButton',
     props: {
-        feed: {
+        model: {
             type: Object,
             required: true,
         },
@@ -29,23 +29,23 @@ export default {
         }
     },
     methods: {
-        async toggleLike(feed){
+        async toggleLike(model){
             if(!this.auth){
                 alert('로그인 후 이용해주세요');
                 return false;
             }
 
-            if(feed.like_id){
-                await sendRequest('delete', `/api/users/${this.auth.id}/actions/${feed.like_id}`);
-                feed.like_id = null;
+            if(model.like_id){
+                await sendRequest('delete', `/api/users/${this.auth.id}/actions/${model.like_id}`);
+                model.like_id = null;
             } else {
                 let data = {
                     'action': 'reading_process_like',
-                    'user_actionable_id': feed.id,
+                    'user_actionable_id': model.id,
                     'user_actionable_type': 'processes',
                 }
                 let result = await sendRequest('post', `/api/users/${this.auth.id}/actions`, data);
-                feed.like_id = result.data.id;
+                model.like_id = result.data.id;
             }
         },
     }

@@ -20,9 +20,13 @@ export default {
         }
     },
     props: {
-        feed: {
+        model: {
             type: Object,
             required: true,
+        },
+        comments: {
+            type: Object,
+            required: false,
         },
         auth: {
             type: Object,
@@ -35,9 +39,8 @@ export default {
                 body: this.comment,
             };
 
-            const response = await sendRequest('post', `/api/processes/${this.feed.id}/comments`, params);
+            const response = await sendRequest('post', `/api/processes/${this.model.id}/comments`, params);
             const storedComment = response.data;
-            this.feed.comments.push(storedComment);
             this.comment = '';
             this.$emit('storedComment', storedComment);
         }

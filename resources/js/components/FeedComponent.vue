@@ -39,8 +39,8 @@
                     <swiper-component :images="feed.images"></swiper-component>
                 </template>
                 <div class="mt-3 flex gap-3">
-                    <like-button :feed="feed" :auth="auth"></like-button>
-                    <comment-button :feed="feed" @showComment="showComment(feed)"></comment-button>
+                    <like-button :model="feed" :auth="auth"></like-button>
+                    <comment-button :model="feed" @showComment="showComment"></comment-button>
                     <share-button :feed="feed" ></share-button>
                 </div>
             </div>
@@ -84,8 +84,8 @@ export default {
         toggleModal(){
             this.modalOpen = !this.modalOpen;
         },
-        showComment(feed){
-            this.$emit('openCommentModal', feed);
+        showComment(model){
+            this.$emit('openCommentModal', model);
         },
     }
 };

@@ -39,7 +39,6 @@ createApp({
                 },
                 note: null,
                 images: [],
-                comments: [],
             },
         };
     },
@@ -101,7 +100,6 @@ createApp({
         showContentModal(feed){
             this.contentModalOpen = true;
             this.selectedFeed = feed;
-            console.log(feed);
         },
         scrollBottom(){
             this.$nextTick(() => {
@@ -111,6 +109,6 @@ createApp({
                     behavior: "smooth",
                 })
             });
-        }
+        },
     },
 }).mount("#app");

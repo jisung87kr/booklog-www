@@ -25,14 +25,14 @@
             <template v-slot:modal-footer>
                 <div class="p-3 border-t">
                     <div class="flex gap-2">
-                        <like-button :auth="auth" :feed="selectedFeed"></like-button>
+                        <like-button :auth="auth" :model="selectedFeed"></like-button>
                         <share-button :feed="selectedFeed"></share-button>
                     </div>
                     <div class="mt-1">
                         <div class="text-sm">좋아요 400개</div>
                     </div>
                     <div class="mt-3">
-                        <comment-form :feed="selectedFeed" @stored-comment="scrollBottom"></comment-form>
+                        <comment-form :model="selectedFeed" @stored-comment="scrollBottom"></comment-form>
                     </div>
                 </div>
             </template>
