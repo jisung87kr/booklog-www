@@ -1,0 +1,46 @@
+<template>
+    <form action="" class="mt-2" @submit.prevent="storeComment">
+        <div class="flex gap-2">
+            <input type="text"
+                   placeholder="댓글 달기"
+                   class="w-full border rounded-lg border-gray-400"
+                   v-model="comment"
+            >
+            <button type="submit" class="shrink-0 text-xs">게시</button>
+        </div>
+    </form>
+</template>
+<script>
+import {sendRequest} from "../common";
+export default {
+    name: 'CommentForm',
+    data() {
+        return {
+            comment: '',
+        }
+    },
+    props: {
+        feed: {
+            type: Object,
+            required: true,
+        },
+        auth: {
+            type: Object,
+            required: false,
+        },
+    },
+    methods: {
+        async storeComment() {
+            let params = {
+                body: this.comment,
+            };
+
+            const response = await sendRequest('post', `/api/processes/${this.feed.id}/comments`, params);
+            const storedComment = response.data;
+            this.feed.comments.push(storedComment);
+            this.comment = '';
+            this.$emit('storedComment', storedComment);
+        }
+    }
+}
+</script>

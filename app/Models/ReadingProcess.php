@@ -13,7 +13,7 @@ class ReadingProcess extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['tags', 'images', 'user'];
+    protected $with = ['tags', 'images', 'user', 'comments'];
     protected $appends = ['created_at_human', 'like_id'];
 
     public function user()
@@ -28,7 +28,7 @@ class ReadingProcess extends Model
 
     public function comments()
     {
-        return $this->morphMany(Comment::class, 'commentable', 'commentable_type', 'commentable_id');
+        return $this->morphMany(Comment::class, 'commentable', 'commentable_type', 'commentable_id')->orderBy('id', 'asc');
     }
 
     public function images()

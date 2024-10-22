@@ -19,7 +19,6 @@ export default {
     },
     methods: {
         toggleDropdown() {
-            console.log('111');
             this.show = !this.show;
         },
         handleClickOutside(event) {

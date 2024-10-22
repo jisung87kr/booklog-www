@@ -39,37 +39,9 @@
                     <swiper-component :images="feed.images"></swiper-component>
                 </template>
                 <div class="mt-3 flex gap-3">
-                    <button type="button" @click="toggleLike(feed)">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="icon icon-tabler icon-tabler-heart"
-                             width="20"
-                             height="20"
-                             viewBox="0 0 24 24" stroke-width="1.5" :stroke="feed.like_id ? 'red' : '#000000'" :fill="feed.like_id ? 'red' : 'none' " stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
-                        </svg>
-                    </button>
-                    <button type="button" @click="showContent(feed)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle-2"
-                             width="20"
-                             height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M3 20l1.3 -3.9a9 8 0 1 1 3.4 2.9l-4.7 1"/>
-                        </svg>
-                    </button>
-                    <button type="button" @click="copyUrl(feed)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="20"
-                             height="20"
-                             viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M10 14l11 -11"/>
-                            <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/>
-                        </svg>
-                    </button>
+                    <like-button :feed="feed" :auth="auth"></like-button>
+                    <comment-button :feed="feed" @showComment="showComment(feed)"></comment-button>
+                    <share-button :feed="feed" ></share-button>
                 </div>
             </div>
         </div>
@@ -79,20 +51,29 @@
 <script>
 import dropdownComponent from "./DropdownComponent.vue";
 import swiperComponent from "./SwiperComponent.vue";
-import {sendRequest} from '../common.js';
+import likeButton from "./buttons/LikeButton.vue";
+import CommentButton from "./buttons/CommentButton.vue";
+import ShareButton from "./buttons/ShareButton.vue";
 export default {
     name: 'FeedComponent',
     components:{
         dropdownComponent,
         swiperComponent,
+        likeButton,
+        CommentButton,
+        ShareButton,
     },
     props: {
         feed: {
             type: Object,
             required: true
         },
-        user: {
+        auth: {
             type: Object,
+            required: false,
+        },
+        showContentModal: {
+            type: Function,
             required: false,
         }
     },
@@ -100,40 +81,12 @@ export default {
 
     },
     methods:{
-        toggleDropdown() {
-            this.$refs.dropdownComponent.toggleDropdown();
-        },
         toggleModal(){
             this.modalOpen = !this.modalOpen;
         },
-        async toggleLike(feed){
-            if(feed.like_id){
-                await sendRequest('delete', `/api/users/${this.user.id}/actions/${feed.like_id}`);
-                feed.like_id = null;
-            } else {
-                let data = {
-                    'action': 'reading_process_like',
-                    'user_actionable_id': feed.id,
-                    'user_actionable_type': 'processes',
-                }
-                let result = await sendRequest('post', `/api/users/${this.user.id}/actions`, data);
-                feed.like_id = result.data.id;
-            }
+        showComment(feed){
+            this.$emit('openCommentModal', feed);
         },
-        showContent(feed){
-            this.contentModalOpen = true;
-        },
-        copyUrl(feed){
-            // 변수 url를 클립보드에 복사하는 기능 textarea를 생성하여 복사하는 방법
-            const url = window.location.origin + '/feeds/' + feed.id;
-            const textarea = document.createElement('textarea');
-            textarea.value = url;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            alert('URL이 복사되었습니다.');
-        }
     }
 };
 </script>

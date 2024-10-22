@@ -2,15 +2,26 @@ import '../bootstrap.js';
 import { createApp } from "vue";
 // import axios from "axios";
 import FeedComponent from "../components/FeedComponent.vue";
-import { sendRequest } from "../common.js";
+import ModalComponent from "../components/ModalComponent.vue";
+import CommentComponent from "../components/CommentComponent.vue";
+import LikeButton from "../components/buttons/LikeButton.vue";
+import ShareButton from "../components/buttons/ShareButton.vue";
+import CommentForm from "../components/CommentForm.vue";
+import CommentListComponent from "../components/CommentListComponent.vue";
 
 createApp({
     components: {
         "feed-component": FeedComponent,
+        "modal-component": ModalComponent,
+        "comment-component": CommentComponent,
+        "like-button": LikeButton,
+        "share-button": ShareButton,
+        "comment-form": CommentForm,
+        "comment-list": CommentListComponent,
     },
     data() {
         return {
-            user: null,
+            auth: null,
             feeds: {
                 current_page: 1,
                 data: [],
@@ -19,8 +30,8 @@ createApp({
             },
             loading: false,
             modalOpen: false,
-            contentModalOpen: true,
-            currentFeed: {
+            contentModalOpen: false,
+            selectedFeed: {
                 id: null,
                 user: {
                     name: null,
@@ -34,7 +45,7 @@ createApp({
     },
     async mounted() {
         window.addEventListener("scroll", this.handleScroll);
-        this.user = await this.fetchUser();
+        this.auth = await this.fetchUser();
         const feedsResponse = await this.fetchFeeds();
         this.feeds = feedsResponse.data;
     },
@@ -87,5 +98,19 @@ createApp({
                 this.feeds.total = feedsResponse.data.total;
             }
         },
+        showContentModal(feed){
+            this.contentModalOpen = true;
+            this.selectedFeed = feed;
+            console.log(feed);
+        },
+        scrollBottom(){
+            this.$nextTick(() => {
+                const modalContent = document.querySelector(".modal-body");
+                modalContent.scrollTo({
+                    top: modalContent.scrollHeight,
+                    behavior: "smooth",
+                })
+            });
+        }
     },
 }).mount("#app");

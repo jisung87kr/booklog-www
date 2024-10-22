@@ -1,12 +1,19 @@
 
 export async function sendRequest(method, url, data= {}, headers={}, callback=null){
     try {
-        let response = await window.axios({
-           url: url,
-           method: method,
-           data: data,
-           headers: headers
-        });
+        let options = {
+            url: url,
+            method: method,
+            headers: headers
+        };
+
+        if (method.toUpperCase() === 'GET') {
+            options.params = data;
+        } else {
+            options.data = data;
+        }
+
+        let response = await window.axios(options);
 
         if (response.data.status !== true) {
             throw new Error(response.data.message);
