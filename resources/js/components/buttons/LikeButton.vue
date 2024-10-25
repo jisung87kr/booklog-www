@@ -25,7 +25,7 @@ export default {
         },
         auth: {
             type: Object,
-            required: true,
+            required: false,
         }
     },
     methods: {

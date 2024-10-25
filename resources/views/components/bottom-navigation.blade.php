@@ -1,6 +1,6 @@
 <div x-data="">
-    <div class="block md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200">
-        <div class="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+    <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200">
+        <div class="grid h-full max-w-2xl grid-cols-5 mx-auto font-medium">
             <a href="{{ route('home') }}" class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

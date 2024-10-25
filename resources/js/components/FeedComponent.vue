@@ -9,7 +9,7 @@
                     <div class="mr-3 font-bold">{{ feed.user.name }}</div>
                     <div class="opacity-75" v-html="feed.created_at_human"></div>
                 </div>
-                <dropdown-component>
+                <dropdown-component v-if="auth">
                     <template v-slot:mybutton>
                         <button type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots" width="16"
@@ -33,10 +33,10 @@
                     </ul>
                 </dropdown-component>
             </div>
-            <div class="mt-2 pl-10">
-                <div class="mb-1" v-html="feed.note"></div>
+            <div class="mt-1 pl-10">
+                <div class="mb-1 text-gray-600" v-html="feed.note"></div>
                 <template v-if="feed.images.length > 0">
-                    <swiper-component :images="feed.images"></swiper-component>
+                    <swiper-component :images="feed.images" class="mt-3"></swiper-component>
                 </template>
                 <div class="mt-3 flex gap-3">
                     <like-button :model="feed" :auth="auth"></like-button>

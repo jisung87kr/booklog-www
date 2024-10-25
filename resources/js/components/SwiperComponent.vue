@@ -1,11 +1,13 @@
 <template>
     <div class="swiper border rounded-lg">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide !h-[300px] flex align-items-center justify-center bg-white"
-                 v-for="image in images" :key="image.id">
+        <div class="swiper-wrapper max-h-[300px] h-full">
+            <div class="swiper-slide flex align-items-center justify-center bg-white"
+                 v-for="image in images" :key="image.id"
+            >
                 <img :src="image.image_url"
-                     class="w-auto h-full block mx-auto"
-                     alt="">
+                     class="block mx-auto h-full w-auto"
+                     alt=""
+                >
             </div>
         </div>
 
@@ -35,7 +37,7 @@ export default {
             default: () => ({
                 loop: false,
                 modules: [Navigation, Pagination],
-                autoHeight: true,
+                autoHeight: false,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,
@@ -44,8 +46,8 @@ export default {
                 //     nextEl: '.swiper-button-next',
                 //     prevEl: '.swiper-button-prev',
                 // },
-                observer: true, // DOM 변경을 감지하여 업데이트
-                observeParents: true, // 부모 DOM 변경을 감지
+                // observer: true, // DOM 변경을 감지하여 업데이트
+                // observeParents: true, // 부모 DOM 변경을 감지
                 on: {
                     slideChange: function (event) {
                         // Swiper 인스턴스의 컨텍스트에서 this가 Swiper 인스턴스를 가리키도록 함

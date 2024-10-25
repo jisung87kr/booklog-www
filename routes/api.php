@@ -76,9 +76,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
     Route::delete('{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
 
-    Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comments');
+    Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comment')->except(['index']);
     Route::resource('posts', PostApiController::class)->names('post');
     Route::resource('{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 });
 
 Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
+Route::get('{type}/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');

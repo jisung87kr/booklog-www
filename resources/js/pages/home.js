@@ -107,7 +107,7 @@ createApp({
                 modalContent.scrollTo({
                     top: modalContent.scrollHeight,
                     behavior: "smooth",
-                })
+                });
             });
         },
     },

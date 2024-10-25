@@ -72,7 +72,7 @@ export default{
         },
         reportComment(comment) {
             this.$emit('reportComment', comment);
-        }
+        },
     }
 }
 </script>
