@@ -20,6 +20,10 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/', function () {
+    return redirect()->route('home');
+})->name('index');
+
+Route::get('/home', function () {
     return view('home');
 })->name('home');
 

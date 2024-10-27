@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\FeedApiController;
 use App\Http\Controllers\Api\PostApiController;
 use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\api\TaggableApiController;
+use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -83,3 +84,4 @@ Route::middleware('auth:sanctum')->group(function(){
 
 Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
 Route::get('{type}/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
+Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('recommend.users');

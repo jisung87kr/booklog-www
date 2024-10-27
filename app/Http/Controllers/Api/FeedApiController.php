@@ -16,10 +16,11 @@ class FeedApiController extends Controller
     public function index(Request $request)
     {
         try {
+            $filters = $request->all();
             if($request->user()){
-                $feeds = ReadingProcess::withLikes()->orderBy('id', 'desc')->paginate(10);
+                $feeds = ReadingProcess::filter($filters)->withLikes()->orderBy('id', 'desc')->paginate(10);
             } else {
-                $feeds = ReadingProcess::orderBy('id', 'desc')->paginate(10);
+                $feeds = ReadingProcess::filter($filters)->orderBy('id', 'desc')->paginate(10);
             }
             return ApiResponse::success('', $feeds);
         } catch (\Exception $e) {

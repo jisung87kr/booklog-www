@@ -67,4 +67,11 @@ class ReadingProcess extends Model
                 ->limit(1) // 한 개의 좋아요만 가져옴
         ]);
     }
+
+    public function scopeFilter($query, $filters)
+    {
+        $query->when($filters['q'] ?? null, function ($query, $q) {
+            $query->where('note', 'like', '%' . $q . '%');
+        });
+    }
 }
