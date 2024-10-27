@@ -37,7 +37,7 @@ export default {
             default: () => ({
                 loop: false,
                 modules: [Navigation, Pagination],
-                autoHeight: false,
+                autoHeight: true,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true,

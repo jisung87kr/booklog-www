@@ -1,15 +1,26 @@
 @vite(['resources/js/pages/home.js'])
 <x-app-layout>
-    <x-navigation></x-navigation>
-    <div id="app" class="container mx-auto max-w-2xl w-full">
-        <div class="bg-white divide-y sm:border sm:rounded-2xl sm:mt-3">
-            <feed-component :feed="feed"
-                            v-for="feed in feeds.data"
-                            :key="feed.id"
-                            :auth="auth"
-                            class="p-4"
-                            @open-comment-modal="showContentModal"
-            ></feed-component>
+    <div id="app" class="container-fluid mx-auto w-full sm:pt-3">
+        <div class="flex justify-center">
+            <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
+                <feed-component :feed="feed"
+                                v-for="feed in feeds.data"
+                                :key="feed.id"
+                                :auth="auth"
+                                class="p-4"
+                                @open-comment-modal="showContentModal"
+                ></feed-component>
+            </div>
+            <div class="max-w-lg w-full mx-6 hidden lg:block">
+                <div class="flex flex-col gap-6">
+                    <div class="bg-white border rounded-2xl p-6">
+                        <div>나를 위한 트랜드</div>
+                    </div>
+                    <div class="bg-white border rounded-2xl p-6">
+                        <div>팔로우 추천</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <modal-component :is-visible="contentModalOpen"
                          @close="contentModalOpen = false"
