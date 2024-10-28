@@ -12,8 +12,7 @@ class ActivityApiController extends Controller
     public function followers()
     {
         try {
-            //$followers = request()->user()->followers()->orderBy('id', 'desc')->paginate(10);
-            $followers = [];
+            $followers = request()->user()->followers()->orderBy('id', 'desc')->paginate(10);
             return ApiResponse::success('', $followers);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
