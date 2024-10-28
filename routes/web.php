@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
@@ -55,6 +56,9 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/account', [AccountController::class, 'account'])->name('account.index');
+
+    // activity
+    Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
 });
 
 // home // userBooks // add // readingProcess // account

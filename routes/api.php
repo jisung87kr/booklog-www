@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityApiController;
 use App\Http\Controllers\Api\AttachmentApiController;
 use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
@@ -80,6 +81,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comment')->except(['index']);
     Route::resource('posts', PostApiController::class)->names('post');
     Route::resource('{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
+
+    Route::get('activity/followers', [ActivityApiController::class, 'followers'])->name('activity.follower');
+    Route::get('activity/replies', [ActivityApiController::class, 'replies'])->name('activity.reply');
+    Route::get('activity/mentions', [ActivityApiController::class, 'mentions'])->name('activity.mention');
+    Route::get('activity/quotations', [ActivityApiController::class, 'quotations'])->name('activity.quotation');
 });
 
 Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
