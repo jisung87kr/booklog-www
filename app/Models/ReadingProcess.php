@@ -41,6 +41,16 @@ class ReadingProcess extends Model
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
+    public function mentionedUsers()
+    {
+        return $this->hasMany(Mention::class, 'mentions', 'reading_process_id', 'id');
+    }
+
+    public function quotations()
+    {
+        return $this->hasMany(Quotation::class, 'original_reading_process_id', 'id');
+    }
+
     public function getCreatedAtHumanAttribute()
     {
         return $this->created_at->diffforhumans();

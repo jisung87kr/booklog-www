@@ -22,7 +22,7 @@ class ActivityApiController extends Controller
     public function replies()
     {
         try {
-            $replies = Comment::where('user_id', request()->user()->id)->orderBy('id', 'desc')->paginate(10);
+            $replies = request()->user()->comments()->orderBy('id', 'desc')->paginate(10);
             return ApiResponse::success('', $replies);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
@@ -32,7 +32,7 @@ class ActivityApiController extends Controller
     public function mentions()
     {
         try {
-            $mentions = [];
+            $mentions = request()->user()->mentions()->orderBy('id', 'desc')->paginate(10);
             return ApiResponse::success('', $mentions);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
@@ -42,7 +42,7 @@ class ActivityApiController extends Controller
     public function quotations()
     {
         try {
-            $quotations = [];
+            $quotations = request()->user()->quotations()->orderBy('id', 'desc')->paginate(10);
             return ApiResponse::success('', $quotations);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
