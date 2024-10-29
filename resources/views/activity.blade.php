@@ -19,13 +19,12 @@
         <div class="flex justify-center mt-3">
             <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
                 <template v-if="activityTypeSelected == 'follow'">
-                    <feed-component :feed="feed"
-                                    v-for="feed in list.data"
-                                    :key="feed.id"
+                    <follower-component v-for="follow in list.data"
+                                    :key="follow.id"
+                                    :follow="follow"
                                     :auth="auth"
                                     class="p-4"
-                                    @open-comment-modal="showContentModal"
-                    ></feed-component>
+                    ></follower-component>
                 </template>
                 <template v-else-if="activityTypeSelected == 'reply'">
                     <feed-component :feed="feed"

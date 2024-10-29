@@ -86,6 +86,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('activity/replies', [ActivityApiController::class, 'replies'])->name('activity.reply');
     Route::get('activity/mentions', [ActivityApiController::class, 'mentions'])->name('activity.mention');
     Route::get('activity/quotations', [ActivityApiController::class, 'quotations'])->name('activity.quotation');
+
+    Route::post('follows', [UserApiController::class, 'follow'])->name('user.follow');
+    Route::delete('follows/{user}', [UserApiController::class, 'unFollow'])->name('user.unFollow');
 });
 
 Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');

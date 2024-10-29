@@ -18,4 +18,27 @@ class UserApiController extends Controller
             return ApiResponse::error('', $e->getMessage());
         }
     }
+
+    public function follow(Request $request)
+    {
+        try {
+            $result = request()->user()->followings()->create([
+                'follow_id' => $request->user()->id,
+                'following_id' => $request->input('user_id')
+            ]);
+            return ApiResponse::success('', $result);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
+
+    public function unFollow(User $user)
+    {
+        try {
+            $result = request()->user()->followings()->delete('following_id', $user->id);
+            return ApiResponse::success('', $result);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
 }

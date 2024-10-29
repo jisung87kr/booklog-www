@@ -8,6 +8,7 @@ import CommentListComponent from "../components/CommentListComponent.vue";
 import CommentForm from "../components/CommentForm.vue";
 import LikeButton from "../components/buttons/LikeButton.vue";
 import ShareButton from "../components/buttons/ShareButton.vue";
+import FollowerComponent from "../components/FollowerComponent.vue";
 
 createApp({
     components: {
@@ -18,6 +19,7 @@ createApp({
         "comment-form": CommentForm,
         "like-button": LikeButton,
         "share-button": ShareButton,
+        "follower-component": FollowerComponent,
     },
     data() {
         return {
@@ -34,11 +36,7 @@ createApp({
             auth: null,
             list: {
                 current_page: 1,
-                data: [
-                    {id: 1, user: {name: "name", profile_photo_url: "https://via.placeholder.com/150"}, note: "note", images: []},
-                    {id: 2, user: {name: "name", profile_photo_url: "https://via.placeholder.com/150"}, note: "note", images: []},
-                    {id: 2, user: {name: "name", profile_photo_url: "https://via.placeholder.com/150"}, note: "note", images: []},
-                ],
+                data: [],
                 last_page: null,
                 total: null,
             },
@@ -59,7 +57,8 @@ createApp({
     async mounted(){
         window.addEventListener("scroll", this.handleScroll);
         this.auth = await this.fetchUser();
-        this.getList(1);
+        await this.getList(1);
+        console.log(this.list);
     },
     methods: {
         async fetchUser() {
@@ -153,6 +152,9 @@ createApp({
             this.list.current_page = response.data.current_page;
             this.list.last_page = response.data.last_page;
             this.list.total = response.data.total;
+
+            console.log('loaded list');
+            console.log(this.list);
         },
     },
 }).mount("#app");
