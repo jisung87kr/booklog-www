@@ -9,6 +9,7 @@ import CommentForm from "../components/CommentForm.vue";
 import LikeButton from "../components/buttons/LikeButton.vue";
 import ShareButton from "../components/buttons/ShareButton.vue";
 import FollowerComponent from "../components/FollowerComponent.vue";
+import CommentComponent from "../components/CommentComponent.vue";
 
 createApp({
     components: {
@@ -16,6 +17,7 @@ createApp({
         "feed-component": FeedComponent,
         "modal-component": ModalComponent,
         "comment-list": CommentListComponent,
+        "comment-component": CommentComponent,
         "comment-form": CommentForm,
         "like-button": LikeButton,
         "share-button": ShareButton,
@@ -24,7 +26,7 @@ createApp({
     data() {
         return {
             // 쿼리스트리 q의 값 로드
-            activityTypeSelected: 'follow',
+            SelectedActivityType: 'follow',
             activityTypes: [
                 {key: 'follow', value: '팔로우'},
                 {key: 'reply', value: '답글'},
@@ -58,7 +60,6 @@ createApp({
         window.addEventListener("scroll", this.handleScroll);
         this.auth = await this.fetchUser();
         await this.getList(1);
-        console.log(this.list);
     },
     methods: {
         async fetchUser() {
@@ -127,12 +128,16 @@ createApp({
             });
         },
         clickTab(activityType){
-            this.activityTypeSelected = activityType.key;
+            this.SelectedActivityType = activityType.key;
             this.getList(1);
         },
         async getList(page){
+            if(page == 1){
+                this.list.data = [];
+            }
+
             let response = {};
-            switch (this.activityTypeSelected) {
+            switch (this.SelectedActivityType) {
                 case 'follow':
                     response = await this.fetchFollowers(page);
                     break;
@@ -152,9 +157,6 @@ createApp({
             this.list.current_page = response.data.current_page;
             this.list.last_page = response.data.last_page;
             this.list.total = response.data.total;
-
-            console.log('loaded list');
-            console.log(this.list);
         },
     },
 }).mount("#app");

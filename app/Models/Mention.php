@@ -11,5 +11,8 @@ class Mention extends Model
 
     protected $guarded = [];
 
-
+    public function readingProcess()
+    {
+        return $this->belongsTo(ReadingProcess::class, 'reading_process_id', 'id');
+    }
 }

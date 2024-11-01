@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div>
         <div class="w-full">
             <div class="flex justify-between">
                 <div class="flex items-center justify-between w-full">
@@ -10,7 +10,7 @@
                         <div class="mr-3 break-keep">
                             <span class="font-bold">{{ follow.follower_user.name }}</span>
                             <span>님이 회원님을 팔로우하기 시작했습니다.</span>
-                            <span class="text-sm text-gray-500 ms-1">{{follow.created_at_human}}</span>
+                            <span class="text-sm text-gray-500 ms-1">{{ follow.created_at_human }}</span>
                         </div>
                     </div>
                     <div class="shrink-0 ms-3">
@@ -32,33 +32,26 @@
 </template>
 
 <script>
-import {sendRequest} from "../common";
+import { sendRequest } from "../common";
+
 export default {
     name: 'FollowerComponent',
-    components:{
-
-    },
     props: {
         follow: {
             type: Object,
-            required: true
+            required: false
         },
         auth: {
             type: Object,
             required: false,
         },
     },
-    mounted() {
-        console.log(this.follow);
-    },
-    methods:{
-        async _follow(userId){
-            console.log(userId);
-            const response = await sendRequest('post', '/api/follows', {user_id: userId});
+    methods: {
+        async _follow(userId) {
+            const response = await sendRequest('post', '/api/follows', { user_id: userId });
             this.follow.is_following = true;
         },
-        async _unFollow(userId){
-            console.log(userId);
+        async _unFollow(userId) {
             const response = await sendRequest('delete', '/api/follows/' + userId);
             this.follow.is_following = false;
         }

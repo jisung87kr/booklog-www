@@ -3,9 +3,9 @@
         <div class="flex justify-between">
             <div class="flex">
                 <div class="profile shrink-0 mr-3">
-                    <img class="w-8 h-8 rounded-full" :src="model.user.profile_photo_url" alt="Neil image">
+                    <img class="w-8 h-8 rounded-full" :src="comment.user.profile_photo_url" alt="Neil image">
                 </div>
-                <div class="mr-3 font-bold">{{ model.user.name }}</div>
+                <div class="mr-3 font-bold">{{ comment.user.name }}</div>
                 <div class="opacity-75" v-html="comment.created_at_human"></div>
             </div>
             <dropdown-component>
@@ -30,7 +30,7 @@
                                 @click="removeComment(comment)"
                         >삭제</button>
                     </li>
-                    <li>
+                    <li v-if="auth && comment.user_id !== auth.id">
                         <button type="button"
                                 class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
                                 @click="reportComment(comment)"
@@ -40,20 +40,29 @@
             </dropdown-component>
         </div>
         <div class="ps-10">{{ comment.body }}</div>
+        <slot name="feed" v-if="feed">
+            <div class="ps-10">
+                <div class="border rounded-lg p-4 mt-3">
+                    <feed-component :feed="feed" :auth="auth"></feed-component>
+                </div>
+            </div>
+        </slot>
     </div>
 </template>
 <script>
     import DropdownComponent from './DropdownComponent.vue';
+    import FeedComponent from "./FeedComponent.vue";
     import {sendRequest} from "../common";
     export default {
     name: 'CommentComponent',
     components: {
         DropdownComponent,
+        FeedComponent,
     },
     props: {
         model: {
           type: Object,
-          required: true,
+          required: false,
         },
         comment: {
             type: Object,
@@ -62,11 +71,19 @@
         auth: {
             type: Object,
             required: false,
-        }
+        },
+        feed: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+    },
+    mounted(){
+      console.log(this.feed);
     },
     methods: {
         async removeComment(comment) {
-            const response = await sendRequest("DELETE", `api/processes/${this.model.id}/comments/${comment.id}`);
+            const response = await sendRequest("DELETE", `api/comments/${comment.id}`);
             alert('삭제되었습니다.');
             this.$emit('removeComment', this.comment);
         },

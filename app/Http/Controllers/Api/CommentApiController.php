@@ -50,7 +50,7 @@ class CommentApiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $type, $id, Comment $comment)
+    public function show(Comment $comment)
     {
         try {
             return ApiResponse::success('', $comment);
@@ -62,7 +62,7 @@ class CommentApiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $type, $id, Comment $comment)
+    public function update(Request $request, Comment $comment)
     {
         try {
             $validated = $request->validate([
@@ -78,7 +78,7 @@ class CommentApiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $type, $id, Comment $comment)
+    public function destroy(Comment $comment)
     {
         try {
             $comment->delete();

@@ -22,7 +22,20 @@ class ActivityApiController extends Controller
     public function replies()
     {
         try {
-            $replies = request()->user()->comments()->orderBy('id', 'desc')->paginate(10);
+            $replies = request()->user()->comments()->with('commentable')
+                ->where(function ($query) {
+                    $query->where('commentable_type', 'App\\Models\\ReadingProcess');
+                })
+                ->orWhereIn('id', function ($query) {
+                    $query->select('B.id')
+                        ->from('comments AS A')
+                        ->leftJoin('comments AS B', 'A.id', '=', 'B.parent_id')
+                        ->where('B.commentable_type', 'App\\Models\\ReadingProcess')
+                        ->whereNotNull('B.parent_id')
+                        ->where('A.user_id', request()->user()->id);
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(10);
             return ApiResponse::success('', $replies);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
@@ -32,7 +45,7 @@ class ActivityApiController extends Controller
     public function mentions()
     {
         try {
-            $mentions = request()->user()->mentions()->orderBy('id', 'desc')->paginate(10);
+            $mentions = request()->user()->mentions()->with('readingProcess')->orderBy('id', 'desc')->paginate(10);
             return ApiResponse::success('', $mentions);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());

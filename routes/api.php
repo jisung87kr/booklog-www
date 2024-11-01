@@ -78,7 +78,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
     Route::delete('{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
 
-    Route::resource('{type}/{id}/comments', CommentApiController::class)->names('comment')->except(['index']);
+    Route::post('{type}/{id}/comments', [CommentApiController::class, 'store'])->name('comment.store');
+    Route::put('/comments/{comment}', [CommentApiController::class, 'update'])->name('comment.update');
+    Route::delete('/comments/{comment}', [CommentApiController::class, 'destroy'])->name('comment.destroy');
     Route::resource('posts', PostApiController::class)->names('post');
     Route::resource('{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 
@@ -93,4 +95,5 @@ Route::middleware('auth:sanctum')->group(function(){
 
 Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
 Route::get('{type}/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
+Route::get('/comments/{comment}', [CommentApiController::class, 'show'])->name('comments.show');
 Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('recommend.users');

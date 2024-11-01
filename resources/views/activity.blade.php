@@ -9,7 +9,7 @@
                     >
                         <button type="button"
                                 class="shrink-0 px-3.5 py-2 border rounded-lg font-medium hover:bg-gray-200"
-                                :class="activityTypeSelected == activityType.key ? 'bg-gray-200' : ''"
+                                :class="SelectedActivityType == activityType.key ? 'bg-gray-200' : ''"
                                 @click="clickTab(activityType)"
                         >@{{activityType.value}}</button>
                     </template>
@@ -18,7 +18,7 @@
         </div>
         <div class="flex justify-center mt-3">
             <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
-                <template v-if="activityTypeSelected == 'follow'">
+                <template v-if="SelectedActivityType == 'follow'">
                     <follower-component v-for="follow in list.data"
                                     :key="follow.id"
                                     :follow="follow"
@@ -26,32 +26,31 @@
                                     class="p-4"
                     ></follower-component>
                 </template>
-                <template v-else-if="activityTypeSelected == 'reply'">
-                    <feed-component :feed="feed"
-                                    v-for="feed in list.data"
-                                    :key="feed.id"
-                                    :auth="auth"
-                                    class="p-4"
-                                    @open-comment-modal="showContentModal"
-                    ></feed-component>
+                <template v-else-if="SelectedActivityType == 'reply'">
+                    <comment-component v-for="comment in list.data"
+                                        :key="comment.id"
+                                        :comment="comment"
+                                        :auth="auth"
+                                        :feed="comment.commentable"
+                                        class="p-4"
+                    >
+                    </comment-component>
                 </template>
-                <template v-else-if="activityTypeSelected == 'mention'">
-                    <feed-component :feed="feed"
-                                    v-for="feed in list.data"
-                                    :key="feed.id"
-                                    :auth="auth"
-                                    class="p-4"
-                                    @open-comment-modal="showContentModal"
-                    ></feed-component>
+                <template v-else-if="SelectedActivityType == 'mention'">
+                    <div class="p-4">
+                        <feed-component v-for="metion in list.data"
+                                        :key="metion.id"
+                                        :auth="auth"
+                                        :feed="metion.reading_process"></feed-component>
+                    </div>
                 </template>
-                <template v-else-if="activityTypeSelected == 'quotation'">
-                    <feed-component :feed="feed"
-                                    v-for="feed in list.data"
-                                    :key="feed.id"
-                                    :auth="auth"
-                                    class="p-4"
-                                    @open-comment-modal="showContentModal"
-                    ></feed-component>
+                <template v-else-if="SelectedActivityType == 'quotation'">
+                    <div class="p-4">
+                        <feed-component v-for="metion in list.data"
+                                        :key="metion.id"
+                                        :auth="auth"
+                                        :feed="metion.reading_process"></feed-component>
+                    </div>
                 </template>
             </div>
         </div>

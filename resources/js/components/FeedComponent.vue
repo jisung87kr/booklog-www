@@ -28,7 +28,7 @@
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200 rounded-t-lg"><a href="">저장</a></li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">관심 없음</a></li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">차단하기</a></li>
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">신고하기</a></li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200" v-if="auth.id !== feed.user.id"><a href="">신고하기</a></li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 rounded-b-lg"><a href="">링크복사</a></li>
                     </ul>
                 </dropdown-component>
@@ -78,7 +78,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.feed.user);
+        console.log(this.feed);
     },
     methods:{
         toggleModal(){
