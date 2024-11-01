@@ -55,7 +55,7 @@ export default{
             let params = {
                 page: page,
             };
-            const response = await sendRequest("GET", `api/processes/${this.model.id}/comments`, params);
+            const response = await sendRequest("GET", `api/posts/${this.model.id}/comments`, params);
             this.comments.current_page = response.data.current_page;
             this.comments.last_page = response.data.last_page;
             this.comments.total = response.data.total;

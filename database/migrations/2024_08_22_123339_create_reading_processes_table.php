@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('book_user_id');
             $table->foreignId('user_id');
             $table->foreignId('book_id');
-            $table->foreignId('parent_id')->nullable();
             $table->integer('current_page');
-            $table->text('note')->nullable();
+            $table->string('title')->nullable();
+            $table->text('content')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
         });

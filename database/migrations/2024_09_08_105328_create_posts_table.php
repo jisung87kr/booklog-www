@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('type')->default(\App\Enums\PostTypeEnum::POST);
             $table->foreignId('user_id')->nullable();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('content');
             $table->string('status')->default(\App\Enums\PostStatusEnum::DRAFT);
+            $table->foreignId('parent_id')->nullable();
+            $table->foreignId('original_parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

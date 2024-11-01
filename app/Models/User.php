@@ -100,9 +100,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Mention::class,  'mentioned_user_id', 'id');
     }
-
-    public function quotations()
-    {
-        return $this->hasMany(Quotation::class, 'quoting_user_id', 'id');
-    }
 }

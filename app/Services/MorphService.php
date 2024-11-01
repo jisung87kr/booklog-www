@@ -11,7 +11,7 @@ class MorphService{
         switch ($type){
             case 'books':
                 return Book::findOrFail($id);
-            case 'processes':
+            case 'readingProcesses':
                 return ReadingProcess::findOrFail($id);
             case 'posts':
                 return Post::findOrFail($id);

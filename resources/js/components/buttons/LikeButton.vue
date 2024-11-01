@@ -40,9 +40,9 @@ export default {
                 model.like_id = null;
             } else {
                 let data = {
-                    'action': 'reading_process_like',
+                    'action': 'post_like',
                     'user_actionable_id': model.id,
-                    'user_actionable_type': 'processes',
+                    'user_actionable_type': 'posts',
                 }
                 let result = await sendRequest('post', `/api/users/${this.auth.id}/actions`, data);
                 model.like_id = result.data.id;

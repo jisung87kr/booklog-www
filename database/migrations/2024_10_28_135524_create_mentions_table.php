@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mentions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reading_process_id')->comment('독서 과정')->constrained('reading_processes', 'id')->onDelete('cascade');
+            $table->foreignId('post_id')->comment('게시글')->constrained('posts', 'id')->onDelete('cascade');
             $table->foreignId('mentioned_user_id')->comment('인용된 사용자')->constrained('users', 'id')->onDelete('cascade');
             $table->timestamps();
         });

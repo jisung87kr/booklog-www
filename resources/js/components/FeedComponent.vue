@@ -34,7 +34,7 @@
                 </dropdown-component>
             </div>
             <div class="mt-1 pl-10">
-                <div class="mb-1 text-gray-600" v-html="feed.note"></div>
+                <div class="mb-1 text-gray-600" v-html="feed.content"></div>
                 <template v-if="feed.images.length > 0">
                     <swiper-component :images="feed.images" class="mt-3"></swiper-component>
                 </template>

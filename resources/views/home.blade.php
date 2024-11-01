@@ -47,7 +47,10 @@
                         <div class="text-sm">좋아요 400개</div>
                     </div>
                     <div class="mt-3" v-if="auth">
-                        <comment-form :model="selectedFeed" @stored-comment="scrollBottom"></comment-form>
+                        <comment-form :model="selectedFeed"
+                                      :auth="auth"
+                                      @stored-comment="scrollBottom"
+                        ></comment-form>
                     </div>
                 </div>
             </template>

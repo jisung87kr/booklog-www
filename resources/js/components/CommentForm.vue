@@ -44,7 +44,7 @@ export default {
                 body: this.comment,
             };
 
-            const response = await sendRequest('post', `/api/processes/${this.model.id}/comments`, params);
+            const response = await sendRequest('post', `/api/posts/${this.model.id}/comments`, params);
             const storedComment = response.data;
             this.comment = '';
             this.$emit('storedComment', storedComment);

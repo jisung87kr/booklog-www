@@ -10,6 +10,7 @@ enum UserActionEnum: string
     case READING_PROCESS_SHARE = 'reading_process_share';
     case READING_PROCESS_REPORT = 'reading_process_report';
     case COMMENT_REPORT = 'comment_report';
+    case POST_LIKE = 'post_like';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum UserActionEnum: string
             UserActionEnum::READING_PROCESS_SHARE => '피드 공유',
             UserActionEnum::READING_PROCESS_REPORT => '피드 신고',
             UserActionEnum::COMMENT_REPORT => '댓글 신고',
+            UserActionEnum::POST_LIKE => '게시물 좋아요',
         };
     }
 }
