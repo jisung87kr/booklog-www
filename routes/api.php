@@ -97,3 +97,4 @@ Route::get('feeds', [FeedApiController::class, 'index'])->name('feed.index');
 Route::get('{type}/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
 Route::get('/comments/{comment}', [CommentApiController::class, 'show'])->name('comments.show');
 Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('recommend.users');
+Route::get('@{user}', [UserApiController::class, 'show'])->name('user.show');

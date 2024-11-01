@@ -26,6 +26,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'username',
         'name',
         'email',
         'password',
@@ -99,5 +100,10 @@ class User extends Authenticatable
     public function mentions()
     {
         return $this->hasMany(Mention::class,  'mentioned_user_id', 'id');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'username';
     }
 }

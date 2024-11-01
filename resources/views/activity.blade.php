@@ -37,20 +37,18 @@
                     </comment-component>
                 </template>
                 <template v-else-if="SelectedActivityType == 'mention'">
-                    <div class="p-4">
-                        <feed-component v-for="metion in list.data"
-                                        :key="metion.id"
-                                        :auth="auth"
-                                        :feed="metion.reading_process"></feed-component>
-                    </div>
+                    <feed-component v-for="metion in list.data"
+                                    :key="metion.id"
+                                    :auth="auth"
+                                    class-name="p-4"
+                                    :feed="metion.post"></feed-component>
                 </template>
                 <template v-else-if="SelectedActivityType == 'quotation'">
-                    <div class="p-4">
-                        <feed-component v-for="metion in list.data"
-                                        :key="metion.id"
-                                        :auth="auth"
-                                        :feed="metion.reading_process"></feed-component>
-                    </div>
+                    <feed-component v-for="metion in list.data"
+                                    :key="metion.id"
+                                    :auth="auth"
+                                    class-name="p-4"
+                                    :feed="metion.post"></feed-component>
                 </template>
             </div>
         </div>

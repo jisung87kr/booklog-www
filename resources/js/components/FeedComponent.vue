@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div :class="className">
         <div class="w-full">
             <div class="flex justify-between">
                 <div class="flex">
@@ -75,6 +75,11 @@ export default {
         showContentModal: {
             type: Function,
             required: false,
+        },
+        className:{
+            type: String,
+            required: false,
+            default: ''
         }
     },
     mounted() {

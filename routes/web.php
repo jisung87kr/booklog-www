@@ -46,6 +46,9 @@ Route::get('/users/{user}/books', [UserBookController::class, 'index'])->name('u
 // search
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
+// profile
+Route::get('/@{username}', [UserController::class, 'show'])->name('user.show');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
