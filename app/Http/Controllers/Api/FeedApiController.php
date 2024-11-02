@@ -22,7 +22,7 @@ class FeedApiController extends Controller
             ];
 
             if($request->user()){
-                $feeds = Post::filter($filters)->withLikes()->orderBy('id', 'desc')->paginate(10);
+                $feeds = Post::filter($filters)->withLikes()->published()->orderBy('id', 'desc')->paginate(10);
             } else {
                 $feeds = Post::filter($filters)->orderBy('id', 'desc')->paginate(10);
             }

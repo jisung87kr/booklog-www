@@ -315,7 +315,7 @@
         let params = {
           page: this.data.current_page,
         }
-        axios.get(`/api/users/${this.user.id}/books`, {
+        axios.get(`/api/users/${this.user.username}/books`, {
           params: params,
         }).then(res => {
           console.log(res.data);

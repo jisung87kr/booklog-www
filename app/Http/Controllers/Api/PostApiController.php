@@ -17,7 +17,8 @@ class PostApiController extends Controller
     public function index()
     {
         try {
-            $posts = Post::published()->paginate(10);
+            $filters = request()->all();
+            $posts = Post::published()->filter($filters)->paginate(10);
             return ApiResponse::success("", $posts);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
@@ -33,7 +34,12 @@ class PostApiController extends Controller
             $validated = $request->validate([
                 'title' => 'required',
                 'content' => 'required',
+                'parent_id' => 'nullable',
+                'original_parent_id' => 'nullable',
             ]);
+
+            $validated['status'] = PostStatusEnum::PUBLISHED;
+
             $post = $request->user()->posts()->create($validated);
             return ApiResponse::success("", $post);
         } catch (\Exception $e) {
@@ -62,6 +68,8 @@ class PostApiController extends Controller
             $validated = $request->validate([
                 'title' => 'nullable',
                 'content' => 'nullable',
+                'parent_id' => 'nullable',
+                'original_parent_id' => 'nullable',
                 'status' => ['nullable', Rule::enum(PostStatusEnum::class)]
             ]);
             $post->update($validated);

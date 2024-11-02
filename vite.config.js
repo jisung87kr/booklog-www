@@ -28,6 +28,7 @@ export default defineConfig({
     resolve: {
         alias: {
             'vue': 'vue/dist/vue.esm-bundler.js', // alias 설정 추가
+            '@': 'resources/js',
         },
     },
 });

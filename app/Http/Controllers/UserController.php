@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function show(User $username)
+    public function profile(User $user)
     {
-        dd($username);
+        return view('profile', compact('user'));
     }
 }

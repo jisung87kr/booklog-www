@@ -25,16 +25,13 @@ createApp({
     },
     data() {
         return {
-            // 쿼리스트리 q의 값 로드
-            selectedActivityType: 'follow',
+            selectedActivityType: 'post',
             activityTypes: [
-                {key: 'follow', value: '팔로우'},
+                {key: 'post', value: '포스트'},
                 {key: 'reply', value: '답글'},
-                {key: 'mention', value: '언급'},
-                {key: 'quotation', value: '인용'},
+                {key: 'quotation', value: '리포스트'},
             ],
-            q: new URLSearchParams(window.location.search).get('q') || '',
-            qsearch_type: new URLSearchParams(window.location.search).get('qsearch_type') || '',
+            user: window.userData,
             auth: null,
             list: {
                 current_page: 1,
@@ -64,15 +61,20 @@ createApp({
     methods: {
         async fetchUser() {
             try {
-                const response = await axios.get('/api/user');
+                const response = await axios.get(`/api/user`);
                 return response.data;
             } catch (error) {
                 return null;
             }
         },
-        async fetchFollowers() {
+        async fetchPosts() {
             try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/followers`);
+                let params = {
+                    user_id: this.user.id,
+                }
+                const response = await axios.get(`/api/posts`, {
+                    params: params,
+                });
                 return response.data;
             } catch (error) {
                 return null;
@@ -80,15 +82,7 @@ createApp({
         },
         async fetchReplies() {
             try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/replies`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchMentions() {
-            try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/mentions`);
+                const response = await axios.get(`/api/users/${this.user.username}/activity/replies`);
                 return response.data;
             } catch (error) {
                 return null;
@@ -96,7 +90,7 @@ createApp({
         },
         async fetchQuotation() {
             try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/quotations`);
+                const response = await axios.get(`/api/users/${this.user.username}/activity/quotations`);
                 return response.data;
             } catch (error) {
                 return null;
@@ -138,14 +132,11 @@ createApp({
 
             let response = {};
             switch (this.selectedActivityType) {
-                case 'follow':
-                    response = await this.fetchFollowers(page);
+                case 'post':
+                    response = await this.fetchPosts(page);
                     break;
                 case 'reply':
                     response = await this.fetchReplies(page);
-                    break;
-                case 'mention':
-                    response = await this.fetchMentions(page);
                     break;
                 case 'quotation':
                     response = await this.fetchQuotation(page);
@@ -157,6 +148,8 @@ createApp({
             this.list.current_page = response.data.current_page;
             this.list.last_page = response.data.last_page;
             this.list.total = response.data.total;
+
+            console.log(this.list);
         },
     },
 }).mount("#app");

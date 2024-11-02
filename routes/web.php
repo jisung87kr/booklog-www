@@ -47,7 +47,7 @@ Route::get('/users/{user}/books', [UserBookController::class, 'index'])->name('u
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // profile
-Route::get('/@{username}', [UserController::class, 'show'])->name('user.show');
+Route::get('/@{user}', [UserController::class, 'profile'])->name('profile');
 
 Route::middleware([
     'auth:sanctum',
