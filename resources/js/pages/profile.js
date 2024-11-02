@@ -10,6 +10,8 @@ import LikeButton from "../components/buttons/LikeButton.vue";
 import ShareButton from "../components/buttons/ShareButton.vue";
 import FollowerComponent from "../components/FollowerComponent.vue";
 import CommentComponent from "../components/CommentComponent.vue";
+import followToggleButton from "../components/buttons/FollowToggleButton.vue";
+import dropdownComponent from "../components/DropdownComponent.vue";
 
 createApp({
     components: {
@@ -22,6 +24,8 @@ createApp({
         "like-button": LikeButton,
         "share-button": ShareButton,
         "follower-component": FollowerComponent,
+        "follow-toggle-button": followToggleButton,
+        "dropdown-component": dropdownComponent,
     },
     data() {
         return {
@@ -151,5 +155,13 @@ createApp({
 
             console.log(this.list);
         },
+        async _follow(userId) {
+            const response = await sendRequest('post', '/api/follows', { user_id: userId });
+            this.follow.is_following = true;
+        },
+        async _unFollow(userId) {
+            const response = await sendRequest('delete', '/api/follows/' + userId);
+            this.follow.is_following = false;
+        }
     },
 }).mount("#app");

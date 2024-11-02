@@ -28,28 +28,63 @@
                                 <span class="px-1">∙</span><a :href="user.user_link" target="_blank" v-html="user.user_link"></a>
                             </template>
                         </div>
-                        <button type="button" class="rounded-full border border-zinc-900 w-6 h-6 text-center flex justify-center items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-linecap="round" stroke-linejoin="round" width="20" height="20" stroke-width="1">
-                                <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                                <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-                            </svg>
-                        </button>
+                        <template v-if="auth && user.id != auth.id">
+                            <dropdown-component>
+                                <template v-slot:mybutton>
+                                    <button type="button" class="rounded-full border border-zinc-900 w-6 h-6 text-center flex justify-center items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                             stroke-linecap="round" stroke-linejoin="round" width="20" height="20" stroke-width="1">
+                                            <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                            <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                        </svg>
+                                    </button>
+                                </template>
+                                <ul class="dropdown w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute right-0 top-5 z-10">
+                                    <li>
+                                        <button type="button"
+                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >링크복사</button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >이 프로필 정보</button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >차단하기</button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >신고하기</button>
+                                    </li>
+                                </ul>
+                            </dropdown-component>
+
+                        </template>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 my-6">
-                        <button type="button"
-                                class="rounded-lg px-3 py-2 bg-zinc-800 text-white text-sm font-bold"
-                                v-if="user.is_following == false"
-                        >팔로우</button>
-                        <button type="button"
-                                class="rounded-lg px-3 py-2 bg-zinc-800 text-white text-sm font-bold"
-                                v-if="user.is_following == true"
-                        >팔로잉</button>
-                        <button type="button"
-                                class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold"
-                        >언급</button>
-                    </div>
+                    <template v-if="auth && user.id == auth.id">
+                        <button type="button" class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold w-full mt-6">프로필 수정</button>
+                    </template>
+                    <template v-else>
+                        <div class="grid grid-cols-2 gap-4 my-6">
+{{--                            <button type="button"--}}
+{{--                                    class="rounded-lg px-3 py-2 bg-zinc-800 text-white text-sm font-bold"--}}
+{{--                                    v-if="user.is_following == false"--}}
+{{--                            >팔로우</button>--}}
+{{--                            <button type="button"--}}
+{{--                                    class="rounded-lg px-3 py-2 bg-zinc-800 text-white text-sm font-bold"--}}
+{{--                                    v-if="user.is_following == true"--}}
+{{--                            >팔로잉</button>--}}
+                            <follow-toggle-button :user="user"></follow-toggle-button>
+                            <button type="button"
+                                    class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold"
+                            >언급</button>
+                        </div>
+                    </template>
                 </div>
                 <div class="grid grid-cols-3">
                     <template v-for="type in activityTypes"
@@ -80,7 +115,6 @@
                             ></comment-component>
                         </template>
                         <template v-else-if="selectedActivityType == 'quotation'">
-                            @@
                             <feed-component v-for="quotation in list.data"
                                                :key="quotation.id"
                                                :feed="quotation"

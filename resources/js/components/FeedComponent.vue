@@ -6,7 +6,9 @@
                     <div class="profile shrink-0 mr-3">
                         <img class="w-8 h-8 rounded-full" :src="feed.user.profile_photo_url">
                     </div>
-                    <div class="mr-3 font-bold">{{ feed.user.name }}</div>
+                    <div class="mr-3 font-bold">
+                        <a :href="'/@'+feed.user.username">{{ feed.user.username }}</a>
+                    </div>
                     <div class="opacity-75" v-html="feed.created_at_human"></div>
                 </div>
                 <dropdown-component v-if="auth">

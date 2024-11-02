@@ -51,6 +51,10 @@ class Post extends Model
         $query->when($filters['user_id'] ?? null, function ($query, $userId) {
             $query->where('user_id', $userId);
         });
+
+        $query->when($filters['q'] ?? null, function ($query, $q) {
+            $query->where('content', 'like', "%{$q}%");
+        });
     }
 
     // withLikes 스코프 정의

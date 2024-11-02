@@ -19,12 +19,13 @@ class FeedApiController extends Controller
         try {
             $filters = [
                 'type' => 'post',
+                'q' => $request->input('q'),
             ];
 
             if($request->user()){
-                $feeds = Post::filter($filters)->withLikes()->published()->orderBy('id', 'desc')->paginate(10);
+                $feeds = Post::withLikes()->published()->filter($filters)->orderBy('id', 'desc')->paginate(10);
             } else {
-                $feeds = Post::filter($filters)->orderBy('id', 'desc')->paginate(10);
+                $feeds = Post::withLikes()->published()->filter($filters)->orderBy('id', 'desc')->paginate(10);
             }
             return ApiResponse::success('', $feeds);
         } catch (\Exception $e) {

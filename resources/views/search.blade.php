@@ -22,7 +22,7 @@
                         <template v-for="user in recommendedUsers" :key="user.id">
                             <avatar-component :user="user">
                                 <template v-slot:follower-count>
-                                    <div class="mt-3 text-sm">팔로워 100명</div>
+                                    <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
                                 </template>
                             </avatar-component>
                         </template>
