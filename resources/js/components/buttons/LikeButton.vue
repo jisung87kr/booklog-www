@@ -40,7 +40,7 @@ export default {
                 model.like_id = null;
             } else {
                 let data = {
-                    'action': 'post_like',
+                    'action': 'like',
                     'user_actionable_id': model.id,
                     'user_actionable_type': 'posts',
                 }

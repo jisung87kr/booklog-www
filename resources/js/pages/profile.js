@@ -12,6 +12,7 @@ import FollowerComponent from "../components/FollowerComponent.vue";
 import CommentComponent from "../components/CommentComponent.vue";
 import followToggleButton from "../components/buttons/FollowToggleButton.vue";
 import dropdownComponent from "../components/DropdownComponent.vue";
+import UserActionButton from "../components/buttons/UserActionButton.vue";
 
 createApp({
     components: {
@@ -26,6 +27,7 @@ createApp({
         "follower-component": FollowerComponent,
         "follow-toggle-button": followToggleButton,
         "dropdown-component": dropdownComponent,
+        "user-action-button": UserActionButton,
     },
     data() {
         return {

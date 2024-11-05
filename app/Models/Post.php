@@ -18,6 +18,78 @@ class Post extends Model
     protected $guarded = [];
     protected $with = ['attachments', 'comments', 'user', 'images'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('withActions', function (Builder $builder) {
+            $builder->select('*')
+                ->addSelect([
+                    'bookmark_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::Bookmark)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'like_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::LIKE)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'uninterested_id' => DB::table('user_actions')
+                        ->select('i```d')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::UNINTERESTED)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'share_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::SHARE)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'block_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::BLOCK)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'report_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::REPORT)
+                        ->limit(1)
+                ])
+                ->addSelect([
+                    'show_profile_id' => DB::table('user_actions')
+                        ->select('id')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_id', auth()->id())
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', UserActionEnum::SHOW_PROFILE)
+                        ->limit(1)
+                ]);
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -55,22 +127,5 @@ class Post extends Model
         $query->when($filters['q'] ?? null, function ($query, $q) {
             $query->where('content', 'like', "%{$q}%");
         });
-    }
-
-    // withLikes 스코프 정의
-    public function scopeWithLikes($query)
-    {
-        $userId = auth()->id();
-
-        // 서브쿼리를 사용하여 like_id를 가져옴
-        $query->addSelect([
-            'like_id' => DB::table('user_actions')
-                ->select('id')
-                ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                ->where('user_actions.user_id', $userId)
-                ->where('user_actions.user_actionable_type', Post::class)
-                ->where('user_actions.action', UserActionEnum::POST_LIKE)
-                ->limit(1) // 한 개의 좋아요만 가져옴
-        ]);
     }
 }

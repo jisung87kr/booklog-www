@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserActionEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -73,6 +74,28 @@ class User extends Authenticatable
                DB::raw('(SELECT COUNT(*) FROM follows WHERE follows.following_id = users.id) as followers_count'),
                DB::raw("IF((SELECT id FROM follows WHERE following_id = users.id AND follow_id = '{$userId}') IS NOT NULL, true, false) AS is_following")
             ]);
+
+            $actions = [
+                'bookmark_id' => UserActionEnum::Bookmark,
+                'like_id' => UserActionEnum::LIKE,
+                'uninterested_id' => UserActionEnum::UNINTERESTED,
+                'share_id' => UserActionEnum::SHARE,
+                'block_id' => UserActionEnum::BLOCK,
+                'report_id' => UserActionEnum::REPORT,
+                'show_profile_id' => UserActionEnum::SHOW_PROFILE,
+            ];
+
+            foreach ($actions as $alias => $action) {
+                $builder->addSelect([
+                    $alias => DB::table('user_actions')
+                        ->select('user_actions.id')
+                        ->whereColumn('user_actions.user_actionable_id', 'users.id')
+                        ->where('user_actions.user_id', $userId)
+                        ->where('user_actions.user_actionable_type', User::class)
+                        ->where('user_actions.action', $action)
+                        ->limit(1)
+                ]);
+            }
         });
     }
 

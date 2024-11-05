@@ -4,24 +4,26 @@ namespace App\Enums;
 // SNS 유저 액션 상수 정의
 enum UserActionEnum: string
 {
-    case BOOK_LIKE = 'book_like';
-    case BOOK_SHARE = 'book_share';
-    case READING_PROCESS_LIKE = 'reading_process_like';
-    case READING_PROCESS_SHARE = 'reading_process_share';
-    case READING_PROCESS_REPORT = 'reading_process_report';
-    case COMMENT_REPORT = 'comment_report';
-    case POST_LIKE = 'post_like';
+    case Bookmark = 'bookmark';
+    case LIKE = 'like';
+    case UNINTERESTED = 'uninterested';
+    case SHARE = 'share';
+    case BLOCK = 'block';
+    case REPORT = 'report';
+    case SHOW_PROFILE = 'show_profile';
+    case FOLLOW = 'follow';
 
     public function label(): string
     {
         return match ($this) {
-            UserActionEnum::BOOK_LIKE => '좋아요',
-            UserActionEnum::BOOK_SHARE => '공유',
-            UserActionEnum::READING_PROCESS_LIKE => '피드 좋아요',
-            UserActionEnum::READING_PROCESS_SHARE => '피드 공유',
-            UserActionEnum::READING_PROCESS_REPORT => '피드 신고',
-            UserActionEnum::COMMENT_REPORT => '댓글 신고',
-            UserActionEnum::POST_LIKE => '게시물 좋아요',
+            UserActionEnum::Bookmark => '저장',
+            UserActionEnum::LIKE => '좋아요',
+            UserActionEnum::UNINTERESTED => '관심없음',
+            UserActionEnum::SHARE => '공유',
+            UserActionEnum::BLOCK => '차단',
+            UserActionEnum::REPORT => '신고',
+            UserActionEnum::SHOW_PROFILE => '프로필 보기',
+            UserActionEnum::FOLLOW => '팔로우',
         };
     }
 }

@@ -34,3 +34,16 @@ export async function sendRequest(method, url, data= {}, headers={}, callback=nu
         throw error;
     }
 }
+
+export function copyText(text){
+    if(text === ''){
+        alert('복사할 대상이 없습니다.');
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('복사되었습니다.');
+}

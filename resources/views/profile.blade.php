@@ -42,24 +42,44 @@
                                 </template>
                                 <ul class="dropdown w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute right-0 top-5 z-10">
                                     <li>
-                                        <button type="button"
-                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
-                                        >링크복사</button>
+                                        <user-action-button actionable-type="user"
+                                                            action-name="share"
+                                                            :model="user"
+                                                            :auth="auth"
+                                                            class-name="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >
+                                            <span>링크복사</span>
+                                        </user-action-button>
                                     </li>
                                     <li>
-                                        <button type="button"
-                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
-                                        >이 프로필 정보</button>
+                                        <user-action-button actionable-type="user"
+                                                             action-name="show_profile"
+                                                             :model="user"
+                                                             :auth="auth"
+                                                             class-name="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >
+                                            <span>이 프로필 정보</span>
+                                        </user-action-button>
                                     </li>
                                     <li>
-                                        <button type="button"
-                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
-                                        >차단하기</button>
+                                        <user-action-button actionable-type="user"
+                                                            action-name="block"
+                                                            :model="user"
+                                                            :auth="auth"
+                                                            class-name="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >
+                                            <span>차단하기</span><span v-if="user && user.block_id"> 취소</span>
+                                        </user-action-button>
                                     </li>
                                     <li>
-                                        <button type="button"
-                                                class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
-                                        >신고하기</button>
+                                        <user-action-button actionable-type="user"
+                                                            action-name="report"
+                                                            :model="user"
+                                                            :auth="auth"
+                                                            class-name="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"
+                                        >
+                                            <span>신고하기</span><span v-if="user && user.report_id"> 취소</span>
+                                        </user-action-button>
                                     </li>
                                 </ul>
                             </dropdown-component>

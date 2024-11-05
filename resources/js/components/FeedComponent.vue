@@ -27,11 +27,31 @@
                     </template>
 
                     <ul class="dropdown w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute right-0 top-5 z-10">
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200 rounded-t-lg"><a href="">저장</a></li>
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">관심 없음</a></li>
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200"><a href="">차단하기</a></li>
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200" v-if="auth.id !== feed.user.id"><a href="">신고하기</a></li>
-                        <li class="w-full px-4 py-2 hover:bg-indigo-50 rounded-b-lg"><a href="">링크복사</a></li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200 rounded-t-lg">
+                            <user-action-button actionable-type="post" action-name="bookmark" :model="feed" :auth="auth">
+                                <span>저장</span><span v-if="feed && feed.bookmark_id"> 취소</span>
+                            </user-action-button>
+                        </li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200">
+                            <user-action-button actionable-type="post" action-name="uninterested" :model="feed" :auth="auth">
+                                <span>관심없음</span><span v-if="feed && feed.uninterested_id"> 취소</span>
+                            </user-action-button>
+                        </li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200">
+                            <user-action-button actionable-type="post" action-name="block" :model="feed" :auth="auth">
+                                <span>차단하기</span><span v-if="feed && feed.block_id"> 취소</span>
+                            </user-action-button>
+                        </li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200" v-if="auth.id !== feed.user.id">
+                            <user-action-button actionable-type="post" action-name="report" :model="feed" :auth="auth">
+                                <span>신고하기</span><span v-if="feed && feed.report_id"> 취소</span>
+                            </user-action-button>
+                        </li>
+                        <li class="w-full px-4 py-2 hover:bg-indigo-50 rounded-b-lg">
+                            <user-action-button actionable-type="post" action-name="share" :model="feed" :auth="auth">
+                                <span>링크복사</span>
+                            </user-action-button>
+                        </li>
                     </ul>
                 </dropdown-component>
             </div>
@@ -56,6 +76,7 @@ import swiperComponent from "./SwiperComponent.vue";
 import likeButton from "./buttons/LikeButton.vue";
 import CommentButton from "./buttons/CommentButton.vue";
 import ShareButton from "./buttons/ShareButton.vue";
+import UserActionButton from "./buttons/UserActionButton.vue";
 export default {
     name: 'FeedComponent',
     components:{
@@ -64,6 +85,7 @@ export default {
         likeButton,
         CommentButton,
         ShareButton,
+        UserActionButton
     },
     props: {
         feed: {
