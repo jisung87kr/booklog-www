@@ -1,6 +1,6 @@
 @vite(['resources/js/pages/activity.js'])
 <x-app-layout>
-    <div id="app" class="container-fluid mx-auto w-full sm:pt-3">
+    <div class="container-fluid mx-auto w-full sm:pt-3">
         <div class="flex justify-center mt-3 md:mt-0">
             <div class="overflow-x-auto">
                 <div class="flex flex-nowrap gap-3">

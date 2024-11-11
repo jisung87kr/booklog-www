@@ -8,6 +8,8 @@ import LikeButton from "../components/buttons/LikeButton.vue";
 import ShareButton from "../components/buttons/ShareButton.vue";
 import CommentForm from "../components/CommentForm.vue";
 import CommentListComponent from "../components/CommentListComponent.vue";
+import AvatarComponent from "../components/AvatarComponent.vue";
+import PostFormComponent from "../components/PostFormComponent.vue";
 
 createApp({
     components: {
@@ -18,6 +20,9 @@ createApp({
         "share-button": ShareButton,
         "comment-form": CommentForm,
         "comment-list": CommentListComponent,
+        'modal-Component': ModalComponent,
+        "avatar-component": AvatarComponent,
+        "post-form-component": PostFormComponent,
     },
     data() {
         return {

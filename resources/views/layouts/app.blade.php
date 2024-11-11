@@ -17,8 +17,8 @@
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body class="font-sans antialiased">
-        <x-banner />
+    <body id="app" class="font-sans antialiased">
+{{--        <x-banner />--}}
 
         <div class="min-h-screen bg-gray-100 md:ps-[82px]">
             <x-navigation class="block md:hidden"></x-navigation>

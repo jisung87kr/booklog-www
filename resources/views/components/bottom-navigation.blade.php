@@ -1,4 +1,4 @@
-<div x-data="">
+<div>
     <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 flex md:top-0 md:h-full md:w-auto md:items-center md:border-r place-content-between flex-col">
         <div class="hidden md:block p-5">logo</div>
         <div class="flex max-w-2xl mx-auto font-medium md:block items-center align-items-center">
@@ -17,8 +17,7 @@
                     <path d="M21 21l-6 -6" />
                 </svg>
             </a>
-            <a href="" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5"
-               @click.prevent="$store.navigationStore.openCreateProcessForm()">
+            <a href="" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
