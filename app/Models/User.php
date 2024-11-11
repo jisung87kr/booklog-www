@@ -75,6 +75,8 @@ class User extends Authenticatable
                DB::raw("IF((SELECT id FROM follows WHERE following_id = users.id AND follow_id = '{$userId}') IS NOT NULL, true, false) AS is_following")
             ]);
 
+            //TODO http://booklog.test:9499/api/feeds?page=1 에서 쿼리 오류남.
+            // 프로필에서는 문제 없음
             $actions = [
                 'bookmark_id' => UserActionEnum::Bookmark,
                 'like_id' => UserActionEnum::LIKE,

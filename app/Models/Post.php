@@ -23,70 +23,29 @@ class Post extends Model
         parent::boot();
 
         static::addGlobalScope('withActions', function (Builder $builder) {
-            $builder->select('*')
-                ->addSelect([
+            $builder->select('*');
+
+            $actions = [
+                'bookmark_id' => UserActionEnum::Bookmark,
+                'like_id' => UserActionEnum::LIKE,
+                'uninterested_id' => UserActionEnum::UNINTERESTED,
+                'share_id' => UserActionEnum::SHARE,
+                'block_id' => UserActionEnum::BLOCK,
+                'report_id' => UserActionEnum::REPORT,
+                'show_profile_id' => UserActionEnum::SHOW_PROFILE,
+            ];
+
+            foreach ($actions as $alias => $action) {
+                $builder->addSelect([
                     'bookmark_id' => DB::table('user_actions')
                         ->select('id')
                         ->whereColumn('user_actions.user_actionable_id', 'posts.id')
                         ->where('user_actions.user_id', auth()->id())
                         ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::Bookmark)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'like_id' => DB::table('user_actions')
-                        ->select('id')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::LIKE)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'uninterested_id' => DB::table('user_actions')
-                        ->select('i```d')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::UNINTERESTED)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'share_id' => DB::table('user_actions')
-                        ->select('id')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::SHARE)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'block_id' => DB::table('user_actions')
-                        ->select('id')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::BLOCK)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'report_id' => DB::table('user_actions')
-                        ->select('id')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::REPORT)
-                        ->limit(1)
-                ])
-                ->addSelect([
-                    'show_profile_id' => DB::table('user_actions')
-                        ->select('id')
-                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
-                        ->where('user_actions.user_id', auth()->id())
-                        ->where('user_actions.user_actionable_type', Post::class)
-                        ->where('user_actions.action', UserActionEnum::SHOW_PROFILE)
+                        ->where('user_actions.action', $action)
                         ->limit(1)
                 ]);
+            }
         });
     }
 
