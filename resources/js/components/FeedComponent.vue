@@ -71,22 +71,8 @@
 </template>
 
 <script>
-import dropdownComponent from "./DropdownComponent.vue";
-import swiperComponent from "./SwiperComponent.vue";
-import likeButton from "./buttons/LikeButton.vue";
-import CommentButton from "./buttons/CommentButton.vue";
-import ShareButton from "./buttons/ShareButton.vue";
-import UserActionButton from "./buttons/UserActionButton.vue";
 export default {
     name: 'FeedComponent',
-    components:{
-        dropdownComponent,
-        swiperComponent,
-        likeButton,
-        CommentButton,
-        ShareButton,
-        UserActionButton
-    },
     props: {
         feed: {
             type: Object,

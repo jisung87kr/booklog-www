@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
+use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,7 @@ class UserApiController extends Controller
     public function follow(Request $request)
     {
         try {
-            $result = request()->user()->followings()->create([
+            $result = Follow::create([
                 'follow_id' => $request->user()->id,
                 'following_id' => $request->input('user_id')
             ]);
@@ -35,7 +36,7 @@ class UserApiController extends Controller
     public function unFollow(User $user)
     {
         try {
-            $result = request()->user()->followings()->delete('following_id', $user->id);
+            $result = Follow::where('follow_id', request()->user()->id)->where('following_id', $user->id)->delete();
             return ApiResponse::success('', $result);
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());

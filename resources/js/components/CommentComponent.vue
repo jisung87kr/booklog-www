@@ -43,10 +43,46 @@
         <slot name="feed" v-if="feed">
             <div class="ps-10">
                 <div class="border rounded-lg p-4 mt-3">
-                    <feed-component :feed="feed" :auth="auth"></feed-component>
+                    <feed-component :feed="feed"
+                                    :auth="auth"
+                                    @open-comment-modal="showContentModal"
+                    ></feed-component>
                 </div>
             </div>
         </slot>
+        <modal-component :is-visible="contentModalOpen"
+                         @close="contentModalOpen = false"
+        >
+            <template v-slot:modal-header>
+                <div class="p-3">
+                    <div class="mb-3 font-bold">댓글</div>
+                </div>
+            </template>
+            <div class="p-3">
+                <div>
+                    <comment-list :model="selectedFeed"
+                                  :auth="auth"
+                    ></comment-list>
+                </div>
+            </div>
+            <template v-slot:modal-footer>
+                <div class="p-3 border-t">
+                    <div class="flex gap-2">
+                        <like-button :auth="auth" :model="selectedFeed"></like-button>
+                        <share-button :feed="selectedFeed"></share-button>
+                    </div>
+                    <div class="mt-1">
+                        <div class="text-sm">좋아요 400개</div>
+                    </div>
+                    <div class="mt-3" v-if="auth">
+                        <comment-form :model="selectedFeed"
+                                      :auth="auth"
+                                      @stored-comment="scrollBottom"
+                        ></comment-form>
+                    </div>
+                </div>
+            </template>
+        </modal-component>
     </div>
 </template>
 <script>
@@ -78,6 +114,22 @@
             default: false,
         },
     },
+    data() {
+        return {
+            loading: false,
+            modalOpen: false,
+            contentModalOpen: false,
+            selectedFeed: {
+                id: null,
+                user: {
+                    name: null,
+                    profile_photo_url: null,
+                },
+                note: null,
+                images: [],
+            },
+        }
+    },
     mounted(){
       console.log(this.feed);
     },
@@ -96,7 +148,11 @@
             let result = await sendRequest('POST', `/api/users/${this.auth.id}/actions`, data);
             alert('신고되었습니다.');
             this.$emit('reportComment', this.comment);
-        }
+        },
+        showContentModal(feed){
+            this.contentModalOpen = true;
+            this.selectedFeed = feed;
+        },
     }
 };
 </script>

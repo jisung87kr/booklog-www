@@ -19,7 +19,7 @@
                     <div class="opacity-60 font-medium px-6">팔로우 추천</div>
                     <div class="divide-y">
                         <template v-for="user in recommendedUsers" :key="user.id">
-                            <avatar-component :user="user">
+                            <avatar-component :user="user" class="p-4">
                                 <template v-slot:follower-count>
                                     <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
                                 </template>

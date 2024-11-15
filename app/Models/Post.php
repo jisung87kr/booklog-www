@@ -37,7 +37,7 @@ class Post extends Model
 
             foreach ($actions as $alias => $action) {
                 $builder->addSelect([
-                    'bookmark_id' => DB::table('user_actions')
+                    $alias => DB::table('user_actions')
                         ->select('id')
                         ->whereColumn('user_actions.user_actionable_id', 'posts.id')
                         ->where('user_actions.user_id', auth()->id())

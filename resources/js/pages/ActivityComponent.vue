@@ -41,14 +41,18 @@
                                         :key="mention.id"
                                         :auth="auth"
                                         class-name="p-4"
-                                        :feed="mention.post"></feed-component>
+                                        :feed="mention.post"
+                                        @open-comment-modal="showContentModal"
+                        ></feed-component>
                     </template>
                     <template v-else-if="selectedActivityType == 'quotation'">
                         <feed-component v-for="quotation in list.data"
                                         :key="quotation.id"
                                         :auth="auth"
                                         class-name="p-4"
-                                        :feed="quotation"></feed-component>
+                                        :feed="quotation"
+                                        @open-comment-modal="showContentModal"
+                        ></feed-component>
                     </template>
                 </template>
                 <template v-else>
@@ -56,6 +60,39 @@
                 </template>
             </div>
         </div>
+        <modal-component :is-visible="contentModalOpen"
+                         @close="contentModalOpen = false"
+        >
+            <template v-slot:modal-header>
+                <div class="p-3">
+                    <div class="mb-3 font-bold">댓글</div>
+                </div>
+            </template>
+            <div class="p-3">
+                <div>
+                    <comment-list :model="selectedFeed"
+                                  :auth="auth"
+                    ></comment-list>
+                </div>
+            </div>
+            <template v-slot:modal-footer>
+                <div class="p-3 border-t">
+                    <div class="flex gap-2">
+                        <like-button :auth="auth" :model="selectedFeed"></like-button>
+                        <share-button :feed="selectedFeed"></share-button>
+                    </div>
+                    <div class="mt-1">
+                        <div class="text-sm">좋아요 400개</div>
+                    </div>
+                    <div class="mt-3" v-if="auth">
+                        <comment-form :model="selectedFeed"
+                                      :auth="auth"
+                                      @stored-comment="scrollBottom"
+                        ></comment-form>
+                    </div>
+                </div>
+            </template>
+        </modal-component>
     </div>
 </template>
 <script>
@@ -196,6 +233,7 @@ export default {
             this.list.last_page = response.data.last_page;
             this.list.total = response.data.total;
         },
+
     },
 }
 </script>

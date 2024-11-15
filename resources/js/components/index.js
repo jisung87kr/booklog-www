@@ -13,9 +13,11 @@ import CommentForm from "./CommentForm.vue";
 import CommentListComponent from "./CommentListComponent.vue";
 import AvatarComponent from "./AvatarComponent.vue";
 import FollowerComponent from "./FollowerComponent.vue";
+import swiperComponent from "./SwiperComponent.vue";
 
 //버튼
 import LikeButton from "./buttons/LikeButton.vue";
+import CommentButton from "./buttons/CommentButton.vue";
 import ShareButton from "./buttons/ShareButton.vue";
 import followToggleButton from "./buttons/FollowToggleButton.vue";
 import dropdownComponent from "./DropdownComponent.vue";
@@ -38,8 +40,10 @@ export default {
     'modal-Component': ModalComponent,
     "avatar-component": AvatarComponent,
     "follower-component": FollowerComponent,
+    "swiper-component": swiperComponent,
     //버튼
     "like-button": LikeButton,
+    "comment-button": CommentButton,
     "share-button": ShareButton,
     "follow-toggle-button": followToggleButton,
     "dropdown-component": dropdownComponent,
