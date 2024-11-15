@@ -1,7 +1,5 @@
 @vite(['resources/js/pages/home.js'])
 <x-app-layout>
-    <post-form-component></post-form-component>
-
     <div class="container-fluid mx-auto w-full sm:pt-3">
         <div class="flex justify-center">
             <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">

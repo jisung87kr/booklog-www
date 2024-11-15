@@ -1,5 +1,7 @@
 <template>
-    <button type="button" @click="openModal">쓰기</button>
+    <button type="button" @click="openModal">
+        <slot></slot>
+    </button>
     <modal-component :is-visible="showModal"
                      @close="closeModal()">
         <template v-slot:modal-header>
@@ -8,9 +10,9 @@
                 <div class="text-center text-bold">새로운 포스팅</div>
             </div>
         </template>
-        <div class="border-t border-b p-4 relative">
+        <div class="border-t border-b p-4 pt-3 relative">
             <avatar-component :user="auth" :follow-button="false" :user-name="false"></avatar-component>
-            <div id="editor" class="" ref="editor"></div>
+            <div id="editor" class="!outline-none !h-auto p-0 !mb-2" ref="editor"></div>
             <div class="flex gap-3">
                 <button type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">
@@ -45,13 +47,47 @@
         </div>
         <template v-slot:modal-footer>
             <div class="flex px-4 py-4 border-b justify-end">
-                <button type="button" class="px-4 py-1.5 text-sm border rounded-lg">게시</button>
+                <button type="button" class="px-4 py-1.5 text-sm border rounded-lg" @click="storePost()">게시</button>
             </div>
         </template>
     </modal-component>
 </template>
+<style>
+.ql-editor{
+    padding: 0;
+    height: auto !important;
+    overflow: scroll;
+    max-height: 50vh;
+}
+
+.ql-editor:focus-visible{
+    outline: none !important;
+}
+
+.ql-editor.ql-blank::before{
+    left: 0 !important;
+}
+
+.ql-mention-list-container{
+     background: white;
+     border: 1px solid #ccc;
+     z-index: 10;
+     border-radius: 10px;
+ }
+
+.ql-mention-list-item{
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.ql-mention-list-item.selected{
+    background: #f4f4f4;
+}
+</style>
 <script>
 import ModalComponent from "./ModalComponent.vue";
+import {sendRequest} from "../common.js";
 export default {
     components: {
         ModalComponent
@@ -74,6 +110,8 @@ export default {
                 profile_photo_url: 'https://via.placeholder.com/150'
             },
             showModal: false,
+            content: null,
+            quill: null,
         }
     },
     mounted() {
@@ -88,6 +126,16 @@ export default {
         },
         closeModal(){
             this.showModal = false;
+        },
+        async storePost(){
+            let params = {
+                content: this.content,
+                tags: this.getHashTags(),
+                mentions: this.getMentions()
+            }
+
+            const response = await sendRequest('POST', '/api/posts', params);
+            this.$emit('storedPost', response.data);
         },
         getHashTags(){
             return this.$refs.editor.innerText.match(/#[a-zA-Z0-9ㄱ-ㅎ가-힣]+/g);
@@ -112,7 +160,11 @@ export default {
             return atValues;
         },
         initEditor(){
-            const quill = new Quill(this.$refs.editor, {
+            this.quill = new Quill(this.$refs.editor, {
+                placeholder: "새로운 감상이 있나요 ?",
+                toolbar: {
+                    container: [],
+                },
                 modules: {
                     mention: {
                         allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
@@ -141,6 +193,21 @@ export default {
                     }
                 }
             });
+
+            this.quill.on("text-change", () => {
+                this.content = this.quill.root.innerHTML;
+            });
+
+            this.quill.root.innerHTML = this.content;
+        }
+    },
+    watch: {
+        // 외부에서 content 속성이 변경되면 Quill 에디터 내용 업데이트
+        content(newContent) {
+            if (this.quill && newContent !== this.quill.root.innerHTML) {
+                this.quill.root.innerHTML = newContent;
+
+            }
         }
     }
 }

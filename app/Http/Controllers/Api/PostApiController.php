@@ -32,7 +32,7 @@ class PostApiController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => 'required',
+                'title' => 'nullable',
                 'content' => 'required',
                 'parent_id' => 'nullable',
                 'original_parent_id' => 'nullable',
