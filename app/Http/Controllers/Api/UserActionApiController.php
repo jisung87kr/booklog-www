@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserAction;
 use App\Services\MorphService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UserActionApiController extends Controller
@@ -51,6 +52,7 @@ class UserActionApiController extends Controller
             $action = $request->user()->actions()->create($validated);
             return ApiResponse::success('', $action);
         } catch (\Exception $e){
+            Log::error($e->getMessage(), $e->getTrace());
             return ApiResponse::error('', $e->getMessage());
         }
     }

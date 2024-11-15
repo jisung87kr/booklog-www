@@ -36,15 +36,15 @@ export default {
             }
 
             if(model.like_id){
-                await sendRequest('delete', `/api/users/${this.auth.id}/actions/${model.like_id}`);
+                await sendRequest('delete', `/api/users/${this.auth.username}/actions/${model.like_id}`);
                 model.like_id = null;
             } else {
                 let data = {
                     'action': 'like',
                     'user_actionable_id': model.id,
-                    'user_actionable_type': 'posts',
+                    'user_actionable_type': 'post',
                 }
-                let result = await sendRequest('post', `/api/users/${this.auth.id}/actions`, data);
+                let result = await sendRequest('post', `/api/users/${this.auth.username}/actions`, data);
                 model.like_id = result.data.id;
             }
         },
