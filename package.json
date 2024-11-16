@@ -8,7 +8,7 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/typography": "^0.5.0",
-        "@vitejs/plugin-vue": "^5.1.4",
+        "@vitejs/plugin-vue": "^5.2.0",
         "autoprefixer": "^10.4.7",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
@@ -19,7 +19,9 @@
     "dependencies": {
         "@vueuse/core": "^11.2.0",
         "flowbite": "^2.5.1",
+        "pinia": "^2.2.6",
         "quill-mention": "^6.0.2",
-        "swiper": "^11.1.14"
+        "swiper": "^11.1.14",
+        "vue": "^3.5.13"
     }
 }
