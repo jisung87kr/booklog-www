@@ -1,3 +1,116 @@
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useUserStore } from '../stores/user';
+// 사용자 인증 스토어 사용 설정
+const userStore = useUserStore();
+await userStore.checkUser();
+const auth = ref(userStore.user);
+
+const feeds = ref({
+    current_page: 1,
+    data: [],
+    last_page: null,
+    total: null,
+});
+const loading = ref(false);
+const modalOpen = ref(false);
+const contentModalOpen = ref(false);
+const selectedFeed = ref({
+    id: null,
+    user: {
+        name: null,
+        profile_photo_url: null,
+    },
+    note: null,
+    images: [],
+});
+
+const q = ref(new URLSearchParams(window.location.search).get('q') || '');
+const qsearch_type = ref(new URLSearchParams(window.location.search).get('qsearch_type') || '');
+const recommendedUsers = ref([]);
+
+const fetchFeeds = async (page = 1) => {
+    try {
+        loading.value = true;
+        let params = {
+            page: page,
+            q: q.value,
+            qsearch_type: qsearch_type.value,
+        };
+        let response = await axios({
+            method: "get",
+            url: `/api/feeds`,
+            params,
+        });
+
+        if (response.data.status !== true) {
+            throw new Error(response.data.message);
+        }
+
+        return response.data;
+    } catch (error) {
+        alert(error.message);
+    } finally {
+        loading.value = false;
+    }
+};
+
+const handleScroll = async () => {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= documentHeight * 0.8 && !loading.value && feeds.value.current_page < feeds.value.last_page) {
+        const nextPage = feeds.value.current_page + 1;
+        const feedsResponse = await fetchFeeds(nextPage);
+
+        feeds.value.data = [...feeds.value.data, ...feedsResponse.data.data];
+        feeds.value.current_page = feedsResponse.data.current_page;
+        feeds.value.last_page = feedsResponse.data.last_page;
+        feeds.value.total = feedsResponse.data.total;
+    }
+};
+
+const showContentModal = (feed) => {
+    contentModalOpen.value = true;
+    selectedFeed.value = feed;
+};
+
+const scrollBottom = () => {
+    nextTick(() => {
+        const modalContent = document.querySelector(".modal-body");
+        modalContent.scrollTo({
+            top: modalContent.scrollHeight,
+            behavior: "smooth",
+        });
+    });
+};
+
+const fetchRecommendedUsers = async () => {
+    loading.value = true;
+    const response = await axios.get('/api/recommend/users');
+    recommendedUsers.value = response.data;
+    loading.value = false;
+};
+
+const search = async () => {
+    feeds.value = await fetchFeeds();
+};
+
+onMounted(async () => {
+    await fetchRecommendedUsers();
+    window.addEventListener("scroll", handleScroll);
+    if (q.value) {
+        const feedsResponse = await fetchFeeds();
+        feeds.value = feedsResponse;
+    }
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
+
+</script>
 <template>
     <div class="container-fluid mx-auto w-full sm:pt-3">
         <div class="flex justify-center">
@@ -18,7 +131,7 @@
                 <template v-if="q == ''">
                     <div class="opacity-60 font-medium px-6">팔로우 추천</div>
                     <div class="divide-y">
-                        <template v-for="user in recommendedUsers" :key="user.id">
+                        <template v-for="user in recommendedUsers.data" :key="user.id">
                             <avatar-component :user="user" class="p-4">
                                 <template v-slot:follower-count>
                                     <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
@@ -75,112 +188,3 @@
         </modal-component>
     </div>
 </template>
-<script>
-import {sendRequest} from "../common.js";
-
-export default {
-    data() {
-        return {
-            // 쿼리스트리 q의 값 로드
-            q: new URLSearchParams(window.location.search).get('q') || '',
-            qsearch_type: new URLSearchParams(window.location.search).get('qsearch_type') || '',
-            recommendedUsers: [],
-            auth: null,
-            feeds: {
-                current_page: 1,
-                data: [],
-                last_page: null,
-                total: null,
-            },
-            loading: false,
-            modalOpen: false,
-            contentModalOpen: false,
-            selectedFeed: {
-                id: null,
-                user: {
-                    name: null,
-                    profile_photo_url: null,
-                },
-                note: null,
-                images: [],
-            },
-        };
-    },
-    async mounted(){
-        this.recommendedUsers = await this.fetchRecommendedUsers();
-        window.addEventListener("scroll", this.handleScroll);
-        this.auth = await this.fetchUser();
-        if(this.q){
-            const feedsResponse = await this.fetchFeeds();
-            this.feeds = feedsResponse;
-            console.log(this.feed);
-        }
-    },
-    methods: {
-        async fetchUser() {
-            try {
-                const response = await axios.get('/api/user');
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchRecommendedUsers() {
-            this.loading = true;
-            const response = await sendRequest('GET', '/api/recommend/users');
-            return response.data;
-        },
-        async fetchFeeds(page = 1) {
-            try {
-                this.loading = true;
-                let params = {
-                    page: page,
-                    q: this.q,
-                    qsearch_type: this.qsearch_type,
-                }
-
-                let response = await sendRequest('GET', `/api/feeds`, params);
-                return response.data;
-            } catch (error) {
-                alert(error.message);
-            } finally {
-                this.loading = false;
-            }
-        },
-        async handleScroll() {
-            // 현재 스크롤 위치 계산
-            const scrollTop = window.scrollY; // 스크롤 위치
-            const windowHeight = window.innerHeight; // 화면 높이
-            const documentHeight = document.documentElement.scrollHeight; // 전체 문서 높이
-
-            // 스크롤이 80% 이상일 때
-            if (scrollTop + windowHeight >= documentHeight * 0.8 && !this.loading && this.feeds.current_page < this.feeds.last_page) {
-                const nextPage = this.feeds.current_page + 1;
-                const feedsResponse = await this.fetchFeeds(nextPage);
-
-                // 기존 데이터에 새 데이터를 추가
-                this.feeds.data = [...this.feeds.data, ...feedsResponse.data.data];
-                this.feeds.current_page = feedsResponse.data.current_page;
-                this.feeds.last_page = feedsResponse.data.last_page;
-                this.feeds.total = feedsResponse.data.total;
-            }
-        },
-        showContentModal(feed){
-            this.contentModalOpen = true;
-            this.selectedFeed = feed;
-        },
-        scrollBottom(){
-            this.$nextTick(() => {
-                const modalContent = document.querySelector(".modal-body");
-                modalContent.scrollTo({
-                    top: modalContent.scrollHeight,
-                    behavior: "smooth",
-                });
-            });
-        },
-        async search(){
-            this.feeds = await this.fetchFeeds();
-        }
-    },
-}
-</script>

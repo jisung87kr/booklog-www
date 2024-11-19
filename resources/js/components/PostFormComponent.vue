@@ -104,11 +104,7 @@ export default {
     },
     data() {
         return {
-            auth: {
-                username: 'username',
-                name: 'name',
-                profile_photo_url: 'https://via.placeholder.com/150'
-            },
+            auth: {},
             showModal: false,
             content: null,
             quill: null,

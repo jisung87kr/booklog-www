@@ -1,3 +1,149 @@
+<script setup>
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import axios from 'axios';
+import { useUserStore } from "../stores/user.js";
+
+// 사용자 인증 스토어 사용 설정
+const userStore = useUserStore();
+await userStore.checkUser();
+const auth = ref(userStore.user);
+
+const selectedActivityType = ref('follow');
+const activityTypes = [
+    { key: 'follow', value: '팔로우' },
+    { key: 'reply', value: '답글' },
+    { key: 'mention', value: '언급' },
+    { key: 'quotation', value: '인용' },
+];
+
+const q = ref(new URLSearchParams(window.location.search).get('q') || '');
+const qsearch_type = ref(new URLSearchParams(window.location.search).get('qsearch_type') || '');
+const list = ref({
+    current_page: 1,
+    data: [],
+    last_page: null,
+    total: null,
+});
+const loading = ref(false);
+const contentModalOpen = ref(false);
+const selectedFeed = ref({
+    id: null,
+    user: {
+        name: null,
+        profile_photo_url: null,
+    },
+    note: null,
+    images: [],
+});
+
+const fetchFollowers = async () => {
+    try {
+        const response = await axios.get(`/api/users/${userStore.user.username}/activity/followers`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const fetchReplies = async () => {
+    try {
+        const response = await axios.get(`/api/users/${userStore.user.username}/activity/replies`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const fetchMentions = async () => {
+    try {
+        const response = await axios.get(`/api/users/${userStore.user.username}/activity/mentions`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const fetchQuotation = async () => {
+    try {
+        const response = await axios.get(`/api/users/${userStore.user.username}/activity/quotations`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const showContentModal = (feed) => {
+    contentModalOpen.value = true;
+    selectedFeed.value = feed;
+};
+
+const handleScroll = async () => {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= documentHeight * 0.8 && !loading.value && list.value.current_page < list.value.last_page) {
+        const nextPage = list.value.current_page + 1;
+        await getList(nextPage);
+    }
+};
+
+const scrollBottom = () => {
+    nextTick(() => {
+        const modalContent = document.querySelector(".modal-body");
+        modalContent.scrollTo({
+            top: modalContent.scrollHeight,
+            behavior: "smooth",
+        });
+    });
+};
+
+const clickTab = (activityType) => {
+    selectedActivityType.value = activityType.key;
+    getList(1);
+};
+
+const getList = async (page) => {
+    if (page === 1) {
+        list.value.data = [];
+    }
+
+    let response = {};
+    switch (selectedActivityType.value) {
+        case 'follow':
+            response = await fetchFollowers();
+            break;
+        case 'reply':
+            response = await fetchReplies();
+            break;
+        case 'mention':
+            response = await fetchMentions();
+            break;
+        case 'quotation':
+            response = await fetchQuotation();
+            break;
+    }
+
+    list.value.data = [...list.value.data, ...response.data.data];
+    list.value.current_page = response.data.current_page;
+    list.value.last_page = response.data.last_page;
+    list.value.total = response.data.total;
+};
+
+onMounted(async () => {
+    window.addEventListener("scroll", handleScroll);
+    await getList(1);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
+</script>
+
 <template>
     <div class="container-fluid mx-auto w-full sm:pt-3">
         <div class="flex justify-center mt-3 md:mt-0">
@@ -86,7 +232,6 @@
                     </div>
                     <div class="mt-3" v-if="auth">
                         <comment-form :model="selectedFeed"
-                                      :auth="auth"
                                       @stored-comment="scrollBottom"
                         ></comment-form>
                     </div>
@@ -95,145 +240,3 @@
         </modal-component>
     </div>
 </template>
-<script>
-
-export default {
-    data() {
-        return {
-            // 쿼리스트리 q의 값 로드
-            selectedActivityType: 'follow',
-            activityTypes: [
-                {key: 'follow', value: '팔로우'},
-                {key: 'reply', value: '답글'},
-                {key: 'mention', value: '언급'},
-                {key: 'quotation', value: '인용'},
-            ],
-            q: new URLSearchParams(window.location.search).get('q') || '',
-            qsearch_type: new URLSearchParams(window.location.search).get('qsearch_type') || '',
-            auth: null,
-            list: {
-                current_page: 1,
-                data: [],
-                last_page: null,
-                total: null,
-            },
-            loading: false,
-            modalOpen: false,
-            contentModalOpen: false,
-            selectedFeed: {
-                id: null,
-                user: {
-                    name: null,
-                    profile_photo_url: null,
-                },
-                note: null,
-                images: [],
-            },
-        };
-    },
-    async mounted(){
-        window.addEventListener("scroll", this.handleScroll);
-        this.auth = await this.fetchUser();
-        await this.getList(1);
-    },
-    methods: {
-        async fetchUser() {
-            try {
-                const response = await axios.get('/api/user');
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchFollowers() {
-            try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/followers`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchReplies() {
-            try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/replies`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchMentions() {
-            try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/mentions`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchQuotation() {
-            try {
-                const response = await axios.get(`/api/users/${this.auth.username}/activity/quotations`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        showContentModal(feed){
-            this.contentModalOpen = true;
-            this.selectedFeed = feed;
-        },
-        async handleScroll() {
-            // 현재 스크롤 위치 계산
-            const scrollTop = window.scrollY; // 스크롤 위치
-            const windowHeight = window.innerHeight; // 화면 높이
-            const documentHeight = document.documentElement.scrollHeight; // 전체 문서 높이
-
-            // 스크롤이 80% 이상일 때
-            if (scrollTop + windowHeight >= documentHeight * 0.8 && !this.loading && this.feeds.current_page < this.feeds.last_page) {
-                const nextPage = this.feeds.current_page + 1;
-                this.getList(page);
-            }
-        },
-        scrollBottom(){
-            this.$nextTick(() => {
-                const modalContent = document.querySelector(".modal-body");
-                modalContent.scrollTo({
-                    top: modalContent.scrollHeight,
-                    behavior: "smooth",
-                });
-            });
-        },
-        clickTab(activityType){
-            this.selectedActivityType = activityType.key;
-            this.getList(1);
-        },
-        async getList(page){
-            if(page == 1){
-                this.list.data = [];
-            }
-
-            let response = {};
-            switch (this.selectedActivityType) {
-                case 'follow':
-                    response = await this.fetchFollowers(page);
-                    break;
-                case 'reply':
-                    response = await this.fetchReplies(page);
-                    break;
-                case 'mention':
-                    response = await this.fetchMentions(page);
-                    break;
-                case 'quotation':
-                    response = await this.fetchQuotation(page);
-                    break;
-            }
-
-            // 기존 데이터에 새 데이터를 추가
-            this.list.data = [...this.list.data, ...response.data.data];
-            this.list.current_page = response.data.current_page;
-            this.list.last_page = response.data.last_page;
-            this.list.total = response.data.total;
-        },
-
-    },
-}
-</script>

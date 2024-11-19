@@ -1,4 +1,6 @@
 <x-app-layout>
-    <activity-component></activity-component>
+    <suspense>
+        <activity-component></activity-component>
+    </suspense>
     <x-footer></x-footer>
 </x-app-layout>

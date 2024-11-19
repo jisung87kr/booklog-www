@@ -10,6 +10,7 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/components/**/*.vue',
+        './resources/js/pages/**/*.vue',
         "./node_modules/flowbite/**/*.js",
     ],
 

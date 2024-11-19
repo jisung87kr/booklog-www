@@ -1,3 +1,141 @@
+<script setup>
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import axios from 'axios';
+import { useUserStore } from '../stores/user.js';
+
+// 사용자 인증 스토어 사용 설정
+const userStore = useUserStore();
+await userStore.checkUser();
+const auth = ref(userStore.user);
+
+const selectedActivityType = ref('post');
+const activityTypes = [
+    { key: 'post', value: '포스트' },
+    { key: 'reply', value: '답글' },
+    { key: 'quotation', value: '리포스트' },
+];
+
+const user = ref(window.userData);
+
+const list = ref({
+    current_page: 1,
+    data: [],
+    last_page: null,
+    total: null,
+});
+const loading = ref(false);
+const contentModalOpen = ref(false);
+const selectedFeed = ref({
+    id: null,
+    user: {
+        name: null,
+        profile_photo_url: null,
+    },
+    note: null,
+    images: [],
+});
+
+const fetchPosts = async () => {
+    try {
+        let params = {
+            user_id: user.value.id,
+        };
+        const response = await axios.get(`/api/posts`, {
+            params: params,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const fetchReplies = async () => {
+    try {
+        const response = await axios.get(`/api/users/${user.value.username}/activity/replies`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const fetchQuotation = async () => {
+    try {
+        const response = await axios.get(`/api/users/${user.value.username}/activity/quotations`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+const showContentModal = (feed) => {
+    contentModalOpen.value = true;
+    selectedFeed.value = feed;
+};
+
+const handleScroll = async () => {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollTop + windowHeight >= documentHeight * 0.8 && !loading.value && list.value.current_page < list.value.last_page) {
+        const nextPage = list.value.current_page + 1;
+        await getList(nextPage);
+    }
+};
+
+const scrollBottom = () => {
+    nextTick(() => {
+        const modalContent = document.querySelector(".modal-body");
+        modalContent.scrollTo({
+            top: modalContent.scrollHeight,
+            behavior: "smooth",
+        });
+    });
+};
+
+const clickTab = (activityType) => {
+    selectedActivityType.value = activityType.key;
+    getList(1);
+};
+
+const getList = async (page) => {
+    if (page === 1) {
+        list.value.data = [];
+    }
+
+    let response = {};
+    switch (selectedActivityType.value) {
+        case 'post':
+            response = await fetchPosts();
+            break;
+        case 'reply':
+            response = await fetchReplies();
+            break;
+        case 'quotation':
+            response = await fetchQuotation();
+            break;
+    }
+
+    if (response && response.data) {
+        list.value.data = [...list.value.data, ...response.data.data];
+        list.value.current_page = response.data.current_page;
+        list.value.last_page = response.data.last_page;
+        list.value.total = response.data.total;
+    }
+};
+
+onMounted(async () => {
+    window.addEventListener("scroll", handleScroll);
+    await getList(1);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
+</script>
 <template>
     <div class="container-fluid mx-auto w-full sm:pt-3">
         <div class="flex justify-center mt-3 md:mt-0">
@@ -112,6 +250,7 @@
                                             :feed="post"
                                             :auth="auth"
                                             class="p-6"
+                                            @open-comment-modal="showContentModal"
                             ></feed-component>
                         </template>
                         <template v-else-if="selectedActivityType == 'reply'">
@@ -128,6 +267,7 @@
                                             :feed="quotation"
                                             :auth="auth"
                                             class="p-6"
+                                            @open-comment-modal="showContentModal"
                             ></feed-component>
                         </template>
                     </div>
@@ -138,144 +278,36 @@
             </div>
         </div>
     </div>
+    <modal-component :is-visible="contentModalOpen"
+                     @close="contentModalOpen = false"
+    >
+        <template v-slot:modal-header>
+            <div class="p-3">
+                <div class="mb-3 font-bold">댓글</div>
+            </div>
+        </template>
+        <div class="p-3">
+            <div>
+                <comment-list :model="selectedFeed"
+                              :auth="auth"
+                ></comment-list>
+            </div>
+        </div>
+        <template v-slot:modal-footer>
+            <div class="p-3 border-t">
+                <div class="flex gap-2">
+                    <like-button :auth="auth" :model="selectedFeed"></like-button>
+                    <share-button :feed="selectedFeed"></share-button>
+                </div>
+                <div class="mt-1">
+                    <div class="text-sm">좋아요 400개</div>
+                </div>
+                <div class="mt-3" v-if="auth">
+                    <comment-form :model="selectedFeed"
+                                  @stored-comment="scrollBottom"
+                    ></comment-form>
+                </div>
+            </div>
+        </template>
+    </modal-component>
 </template>
-<script>
-
-export default {
-    data() {
-        return {
-            selectedActivityType: 'post',
-            activityTypes: [
-                {key: 'post', value: '포스트'},
-                {key: 'reply', value: '답글'},
-                {key: 'quotation', value: '리포스트'},
-            ],
-            user: window.userData,
-            auth: null,
-            list: {
-                current_page: 1,
-                data: [],
-                last_page: null,
-                total: null,
-            },
-            loading: false,
-            modalOpen: false,
-            contentModalOpen: false,
-            selectedFeed: {
-                id: null,
-                user: {
-                    name: null,
-                    profile_photo_url: null,
-                },
-                note: null,
-                images: [],
-            },
-        };
-    },
-    async mounted(){
-        window.addEventListener("scroll", this.handleScroll);
-        this.auth = await this.fetchUser();
-        await this.getList(1);
-    },
-    methods: {
-        async fetchUser() {
-            try {
-                const response = await axios.get(`/api/user`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchPosts() {
-            try {
-                let params = {
-                    user_id: this.user.id,
-                }
-                const response = await axios.get(`/api/posts`, {
-                    params: params,
-                });
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchReplies() {
-            try {
-                const response = await axios.get(`/api/users/${this.user.username}/activity/replies`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        async fetchQuotation() {
-            try {
-                const response = await axios.get(`/api/users/${this.user.username}/activity/quotations`);
-                return response.data;
-            } catch (error) {
-                return null;
-            }
-        },
-        showContentModal(feed){
-            this.contentModalOpen = true;
-            this.selectedFeed = feed;
-        },
-        async handleScroll() {
-            // 현재 스크롤 위치 계산
-            const scrollTop = window.scrollY; // 스크롤 위치
-            const windowHeight = window.innerHeight; // 화면 높이
-            const documentHeight = document.documentElement.scrollHeight; // 전체 문서 높이
-
-            // 스크롤이 80% 이상일 때
-            if (scrollTop + windowHeight >= documentHeight * 0.8 && !this.loading && this.feeds.current_page < this.feeds.last_page) {
-                const nextPage = this.feeds.current_page + 1;
-                this.getList(page);
-            }
-        },
-        scrollBottom(){
-            this.$nextTick(() => {
-                const modalContent = document.querySelector(".modal-body");
-                modalContent.scrollTo({
-                    top: modalContent.scrollHeight,
-                    behavior: "smooth",
-                });
-            });
-        },
-        clickTab(activityType){
-            this.selectedActivityType = activityType.key;
-            this.getList(1);
-        },
-        async getList(page){
-            if(page == 1){
-                this.list.data = [];
-            }
-
-            let response = {};
-            switch (this.selectedActivityType) {
-                case 'post':
-                    response = await this.fetchPosts(page);
-                    break;
-                case 'reply':
-                    response = await this.fetchReplies(page);
-                    break;
-                case 'quotation':
-                    response = await this.fetchQuotation(page);
-                    break;
-            }
-
-            // 기존 데이터에 새 데이터를 추가
-            this.list.data = [...this.list.data, ...response.data.data];
-            this.list.current_page = response.data.current_page;
-            this.list.last_page = response.data.last_page;
-            this.list.total = response.data.total;
-        },
-        async _follow(userId) {
-            const response = await sendRequest('post', '/api/follows', { user_id: userId });
-            this.follow.is_following = true;
-        },
-        async _unFollow(userId) {
-            const response = await sendRequest('delete', '/api/follows/' + userId);
-            this.follow.is_following = false;
-        }
-    },
-}
-</script>

@@ -131,7 +131,7 @@
         }
     },
     mounted(){
-      console.log(this.feed);
+
     },
     methods: {
         async removeComment(comment) {

@@ -35,6 +35,8 @@ export default {
                 return false;
             }
 
+            console.log(this.auth);
+
             if(model.like_id){
                 await sendRequest('delete', `/api/users/${this.auth.username}/actions/${model.like_id}`);
                 model.like_id = null;
