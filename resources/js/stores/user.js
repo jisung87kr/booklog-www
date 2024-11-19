@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 export const useUserStore = defineStore('user', {
     state: () => ({
         isLogin: false,
-        user: null,
+        user: window.auth,
     }),
     actions: {
         async checkUser() {

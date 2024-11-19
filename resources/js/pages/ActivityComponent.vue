@@ -5,7 +5,7 @@ import { useUserStore } from "../stores/user.js";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
-await userStore.checkUser();
+//await userStore.checkUser();
 const auth = ref(userStore.user);
 
 const selectedActivityType = ref('follow');

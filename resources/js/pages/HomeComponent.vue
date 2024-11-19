@@ -5,8 +5,9 @@ import {useUserStore} from "../stores/user.js";
 import {usePostFormStore} from "../stores/postForm.js";
 
 const userStore = useUserStore();
-await userStore.checkUser();
+//await userStore.checkUser();
 const auth = ref(userStore.user);
+console.log(auth);
 
 const postFormStore = usePostFormStore();
 postFormStore.$onAction(

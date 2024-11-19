@@ -7,7 +7,7 @@ import {useUserStore} from "../stores/user.js";
 import {usePostFormStore} from "../stores/postForm.js";
 
 const userStore = useUserStore();
-await userStore.checkUser();
+//await userStore.checkUser();
 const auth = ref(userStore.user);
 const postFormStore = usePostFormStore();
 
@@ -48,6 +48,7 @@ const storePost = async () => {
     //const response = await sendRequest('POST', '/api/posts', params);
     await postFormStore.createPost(params);
     showModal.value = false;
+    content.value = '';
     emit('storePost', params);
 };
 

@@ -3,7 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user';
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
-await userStore.checkUser();
+//await userStore.checkUser();
 const auth = ref(userStore.user);
 
 const feeds = ref({
