@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\BookProcessApiController;
 use App\Http\Controllers\Api\UserBookProcessApiController;
 use App\Models\Api\ImageApiController;
 use App\Http\Controllers\Api\UserActionApiController;
+use App\Http\Responses\ApiResponse;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,7 +34,11 @@ use App\Http\Controllers\Api\UserActionApiController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    try {
+        return ApiResponse::success('', $request->user());
+    } catch (\Exception $e) {
+        return ApiResponse::error('', $e->getMessage());
+    }
 });
 
 
