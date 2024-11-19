@@ -1,3 +1,141 @@
+<script setup>
+import { ref, watch, onMounted, nextTick, defineEmits } from 'vue';
+import ModalComponent from "./ModalComponent.vue";
+import { sendRequest } from "../common.js";
+import Quill from 'quill';
+import {useUserStore} from "../stores/user.js";
+import {usePostFormStore} from "../stores/postForm.js";
+
+const userStore = useUserStore();
+await userStore.checkUser();
+const auth = ref(userStore.user);
+const postFormStore = usePostFormStore();
+
+const props = defineProps({
+    auth: {
+        type: Object,
+        required: true
+    },
+    open: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const showModal = ref(props.open);
+const content = ref(null);
+const quill = ref(null);
+const emit = defineEmits(['storePost']);
+
+const openModal = () => {
+    showModal.value = true;
+    nextTick(() => {
+        initEditor();
+    });
+};
+
+const closeModal = () => {
+    showModal.value = false;
+};
+
+const storePost = async () => {
+    let params = {
+        content: content.value,
+        tags: getHashTags(),
+        mentions: getMentions()
+    };
+
+    //const response = await sendRequest('POST', '/api/posts', params);
+    await postFormStore.createPost(params);
+    showModal.value = false;
+    emit('storePost', params);
+};
+
+const getHashTags = () => {
+    return quill.value.root.innerText.match(/#[a-zA-Z0-9ㄱ-ㅎ가-힣]+/g);
+};
+
+const getMentions = () => {
+    return quill.value.root.innerText.match(/@[a-zA-Z0-9ㄱ-ㅎ가-힣]+/g);
+};
+
+const fetchTags = () => {
+    return [
+        { id: 3, value: "Fredrik Sundqvist 2" },
+        { id: 4, value: "Patrik Sjölin 2" }
+    ];
+};
+
+const fetchMentions = () => {
+    return [
+        { id: 1, value: "Fredrik Sundqvist" },
+        { id: 2, value: "Patrik Sjölin" }
+    ];
+};
+
+const initEditor = () => {
+    quill.value = new Quill(document.querySelector("#editor"), {
+        placeholder: "새로운 감상이 있나요 ?",
+        toolbar: {
+            container: [],
+        },
+        modules: {
+            mention: {
+                allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+                mentionDenotationChars: ["@", "#"],
+                source: (searchTerm, renderList, mentionChar) => {
+                    let values;
+
+                    if (mentionChar === "@") {
+                        values = fetchMentions();
+                    } else {
+                        values = fetchTags();
+                    }
+
+                    if (searchTerm.length === 0) {
+                        renderList(values, searchTerm);
+                    } else {
+                        const matches = [];
+                        for (let i = 0; i < values.length; i++)
+                            if (
+                                ~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())
+                            )
+                                matches.push(values[i]);
+                        renderList(matches, searchTerm);
+                    }
+                }
+            }
+        }
+    });
+
+    quill.value.on("text-change", () => {
+        content.value = quill.value.root.innerHTML;
+    });
+
+    quill.value.root.innerHTML = content.value;
+};
+
+onMounted(() => {
+    if (props.open) {
+        initEditor();
+    }
+});
+
+watch(() => props.open, (newVal) => {
+    showModal.value = newVal;
+    if (newVal) {
+        nextTick(() => {
+            initEditor();
+        });
+    }
+});
+
+watch(content, (newContent) => {
+    if (quill.value && newContent !== quill.value.root.innerHTML) {
+        quill.value.root.innerHTML = newContent;
+    }
+});
+</script>
 <template>
     <button type="button" @click="openModal">
         <slot></slot>
@@ -12,7 +150,7 @@
         </template>
         <div class="border-t border-b p-4 pt-3 relative">
             <avatar-component :user="auth" :follow-button="false" :user-name="false"></avatar-component>
-            <div id="editor" class="!outline-none !h-auto p-0 !mb-2" ref="editor"></div>
+            <div id="editor" class="!outline-none !h-auto p-0 !my-3" ref="editor"></div>
             <div class="flex gap-3">
                 <button type="button">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">
@@ -69,11 +207,11 @@
 }
 
 .ql-mention-list-container{
-     background: white;
-     border: 1px solid #ccc;
-     z-index: 10;
-     border-radius: 10px;
- }
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+    border-radius: 10px;
+}
 
 .ql-mention-list-item{
     padding: 10px;
@@ -85,126 +223,3 @@
     background: #f4f4f4;
 }
 </style>
-<script>
-import ModalComponent from "./ModalComponent.vue";
-import {sendRequest} from "../common.js";
-export default {
-    components: {
-        ModalComponent
-    },
-    props: {
-        auth: {
-            type: Object,
-            required: true
-        },
-        open: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        return {
-            auth: {},
-            showModal: false,
-            content: null,
-            quill: null,
-        }
-    },
-    mounted() {
-        this.showModal = this.open;
-    },
-    methods:{
-        openModal(){
-          this.showModal = true;
-            this.$nextTick(() => {
-                this.initEditor();
-            });
-        },
-        closeModal(){
-            this.showModal = false;
-        },
-        async storePost(){
-            let params = {
-                content: this.content,
-                tags: this.getHashTags(),
-                mentions: this.getMentions()
-            }
-
-            const response = await sendRequest('POST', '/api/posts', params);
-            this.$emit('storedPost', response.data);
-        },
-        getHashTags(){
-            return this.$refs.editor.innerText.match(/#[a-zA-Z0-9ㄱ-ㅎ가-힣]+/g);
-        },
-        getMentions(){
-            return this.$refs.editor.innerText.match(/@[a-zA-Z0-9ㄱ-ㅎ가-힣]+/g);
-        },
-        fetchTags(){
-            const hashValues = [
-                { id: 3, value: "Fredrik Sundqvist 2" },
-                { id: 4, value: "Patrik Sjölin 2" }
-            ];
-
-            return hashValues;
-        },
-        fetchMentions(){
-            const atValues = [
-                { id: 1, value: "Fredrik Sundqvist" },
-                { id: 2, value: "Patrik Sjölin" }
-            ];
-
-            return atValues;
-        },
-        initEditor(){
-            this.quill = new Quill(this.$refs.editor, {
-                placeholder: "새로운 감상이 있나요 ?",
-                toolbar: {
-                    container: [],
-                },
-                modules: {
-                    mention: {
-                        allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-                        mentionDenotationChars: ["@", "#"],
-                        source: (searchTerm, renderList, mentionChar) => {
-                            let values;
-
-                            if (mentionChar === "@") {
-                                values = this.fetchMentions();
-                            } else {
-                                values = this.fetchTags();
-                            }
-
-                            if (searchTerm.length === 0) {
-                                renderList(values, searchTerm);
-                            } else {
-                                const matches = [];
-                                for (let i = 0; i < values.length; i++)
-                                    if (
-                                        ~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())
-                                    )
-                                        matches.push(values[i]);
-                                renderList(matches, searchTerm);
-                            }
-                        }
-                    }
-                }
-            });
-
-            this.quill.on("text-change", () => {
-                this.content = this.quill.root.innerHTML;
-            });
-
-            this.quill.root.innerHTML = this.content;
-        }
-    },
-    watch: {
-        // 외부에서 content 속성이 변경되면 Quill 에디터 내용 업데이트
-        content(newContent) {
-            if (this.quill && newContent !== this.quill.root.innerHTML) {
-                this.quill.root.innerHTML = newContent;
-
-            }
-        }
-    }
-}
-</script>

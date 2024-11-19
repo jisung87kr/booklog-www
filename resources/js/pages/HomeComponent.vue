@@ -2,10 +2,30 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import axios from 'axios';
 import {useUserStore} from "../stores/user.js";
+import {usePostFormStore} from "../stores/postForm.js";
 
 const userStore = useUserStore();
 await userStore.checkUser();
 const auth = ref(userStore.user);
+
+const postFormStore = usePostFormStore();
+postFormStore.$onAction(
+    async ({
+         name, // action 이름.
+         store, // Store 인스턴스, `someStore`와 같음.
+         args, // action으로 전달된 매개변수로 이루어진 배열.
+         after, // action에서 return 또는 resolve 이후의 훅.
+         onError, // action에서 throw 또는 reject 될 경우의 훅.
+     }) => {
+        if(name === 'createPost'){
+            after(async () => {
+                alert('게시되었습니다.');
+                modalOpen.value = false;
+                await fetchFeeds();
+            });
+        }
+    }
+)
 
 const feeds = ref({
     current_page: 1,
@@ -38,7 +58,7 @@ const fetchFeeds = async (page = 1) => {
             throw new Error(response.data.message);
         }
 
-        return response.data;
+        feeds.value = { ...response.data.data };
     } catch (error) {
         alert(error.message);
     } finally {
@@ -80,8 +100,7 @@ const scrollBottom = () => {
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     //auth.value = await fetchUser();
-    const feedsResponse = await fetchFeeds();
-    feeds.value = feedsResponse.data;
+    await fetchFeeds();
 });
 
 onBeforeUnmount(() => {
