@@ -1,3 +1,38 @@
+<script setup>
+import { ref, onMounted, onBeforeUnmount, defineEmits } from 'vue';
+import {wrapWithSpan} from "../common.js";
+
+const props = defineProps({
+    feed: {
+        type: Object,
+        required: true,
+    },
+    auth: {
+        type: Object,
+        required: false,
+    },
+    showContentModal: {
+        type: Function,
+        required: false,
+    },
+    className:{
+        type: String,
+        required: false,
+        default: ''
+    }
+});
+
+const emit = defineEmits(['openCommentModal']);
+
+const modalOpen = ref(false);
+
+const toggleModal = () => {
+    modalOpen.value = !modalOpen.value;
+};
+const showComment = (model) => {
+    emit('openCommentModal', model);
+};
+</script>
 <template>
     <div :class="className">
         <div class="w-full">
@@ -56,7 +91,7 @@
                 </dropdown-component>
             </div>
             <div class="mt-1 pl-10">
-                <div class="mb-1 text-gray-600" v-html="feed.content"></div>
+                <div class="mb-1 text-gray-600 feed-content" v-html="wrapWithSpan(feed.content)"></div>
                 <template v-if="feed.images.length > 0">
                     <swiper-component :images="feed.images" class="mt-3"></swiper-component>
                 </template>
@@ -69,38 +104,8 @@
         </div>
     </div>
 </template>
-
-<script>
-export default {
-    name: 'FeedComponent',
-    props: {
-        feed: {
-            type: Object,
-            required: true
-        },
-        auth: {
-            type: Object,
-            required: false,
-        },
-        showContentModal: {
-            type: Function,
-            required: false,
-        },
-        className:{
-            type: String,
-            required: false,
-            default: ''
-        }
-    },
-    mounted() {
-    },
-    methods:{
-        toggleModal(){
-            this.modalOpen = !this.modalOpen;
-        },
-        showComment(model){
-            this.$emit('openCommentModal', model);
-        },
-    }
-};
-</script>
+<style scoped>
+.feed-content .tagbox{
+    background: royalblue;
+}
+</style>

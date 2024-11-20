@@ -145,4 +145,11 @@ class User extends Authenticatable
     {
         return 'username';
     }
+
+    public function scopeFilter(Builder $query, array $filters)
+    {
+        $query->when($filters['q'] ?? false, function (Builder $query, $q) {
+            $query->where('username', 'like', '%'.$q.'%');
+        });
+    }
 }

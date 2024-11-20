@@ -9,6 +9,7 @@ use App\Models\ReadingProcess;
 use App\Services\AttachmentService;
 use App\Services\MorphService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AttachmentApiController extends Controller
 {
@@ -48,7 +49,11 @@ class AttachmentApiController extends Controller
 
             if($files && is_array($files)){
                 $request->validate([
-                    'files.*' => 'required|mimes:jpg,jpeg,png,gif,zip,pdf',
+                    'files.*' => 'required|mimes:jpg,jpeg,png,gif,zip,pdf|max:5096',
+                ], [
+                    'files.*.required' => '파일은 필수입니다.',
+                    'files.*.mimes' => '허용되지 않는 파일 형식입니다. jpg, jpeg, png, gif, zip, pdf만 가능합니다.',
+                    'files.*.max' => '파일 크기가 5MB를 초과할 수 없습니다.',
                 ]);
 
                 foreach ($files as $file) {
@@ -59,6 +64,7 @@ class AttachmentApiController extends Controller
             }
             return ApiResponse::success('wqe', $uploadedFiles);
         } catch (\Exception $e) {
+            Log::error($e->getMessage(), $e->getTrace());
             return ApiResponse::error('', $e->getMessage());
         }
     }

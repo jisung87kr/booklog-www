@@ -10,6 +10,18 @@ use Illuminate\Http\Request;
 
 class UserApiController extends Controller
 {
+    public function  index(Request $request)
+    {
+        try {
+            $filter = [
+                'q' => $request->query('q'),
+            ];
+            $users = User::filter($filter)->paginate(30);
+            return ApiResponse::success('', $users);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+    }
     public function recommend()
     {
         try {

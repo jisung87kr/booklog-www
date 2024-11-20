@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('/posts', PostApiController::class)->names('post')->except(['index']);
 
+    Route::get('/{type}/{id}/images', [ImageApiController::class, 'store'])->name('image.store');
     Route::resource('/{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 
     Route::post('follows', [UserApiController::class, 'follow'])->name('user.follow');
@@ -80,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('/users/{user}/actions', UserActionApiController::class)->names('user.action');
 
+    Route::get('/users', [UserApiController::class, 'index'])->name('api.user.index');
     Route::get('/users/{user}/books', [UserBookApiController::class, 'index'])->name('api.user.book.index');
     Route::post('/users/{user}/books', [UserBookApiController::class, 'store'])->name('api.user.book.store');
     Route::put('/users/{user}/books', [UserBookApiController::class, 'updateOrder'])->name('api.user.book.updateOrder');
