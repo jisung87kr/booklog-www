@@ -7,7 +7,6 @@ import {usePostFormStore} from "../stores/postForm.js";
 const userStore = useUserStore();
 //await userStore.checkUser();
 const auth = ref(userStore.user);
-console.log(auth);
 
 const postFormStore = usePostFormStore();
 postFormStore.$onAction(
@@ -22,7 +21,7 @@ postFormStore.$onAction(
             after(async () => {
                 alert('게시되었습니다.');
                 modalOpen.value = false;
-                await fetchFeeds();
+                feeds.value = await fetchFeeds();
             });
         }
     }
@@ -59,7 +58,7 @@ const fetchFeeds = async (page = 1) => {
             throw new Error(response.data.message);
         }
 
-        feeds.value = { ...response.data.data };
+        return response.data.data;
     } catch (error) {
         alert(error.message);
     } finally {
@@ -76,7 +75,7 @@ const handleScroll = async () => {
         const nextPage = feeds.value.current_page + 1;
         const feedsResponse = await fetchFeeds(nextPage);
 
-        feeds.value.data = [...feeds.value.data, ...feedsResponse.data.data];
+        feeds.value.data = [...feeds.value.data, ...feedsResponse.data];
         feeds.value.current_page = feedsResponse.data.current_page;
         feeds.value.last_page = feedsResponse.data.last_page;
         feeds.value.total = feedsResponse.data.total;
@@ -100,8 +99,7 @@ const scrollBottom = () => {
 
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
-    //auth.value = await fetchUser();
-    await fetchFeeds();
+    feeds.value = await fetchFeeds();
 });
 
 onBeforeUnmount(() => {
