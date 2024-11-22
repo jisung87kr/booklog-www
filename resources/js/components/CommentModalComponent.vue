@@ -23,6 +23,10 @@ commentModalStore.$onAction(
         } else if(name === 'fetchComments'){
             after(async () => {
             });
+        } else if(name === 'storeComment'){
+            after(async () => {
+
+            });
         }
     }
 )

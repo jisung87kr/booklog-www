@@ -6,6 +6,7 @@ import Quill from 'quill';
 import {useUserStore} from "../stores/user.js";
 import {usePostFormStore} from "../stores/postForm.js";
 import AttachedImageComponent from "../components/AttachedImageComponent.vue";
+import TextEditorComponent from "./TextEditorComponent.vue";
 
 const userStore = useUserStore();
 //await userStore.checkUser();
@@ -25,7 +26,6 @@ const props = defineProps({
 
 const showModal = ref(props.open);
 const content = ref(null);
-const quill = ref(null);
 const emit = defineEmits(['storePost']);
 const fileInput = ref(null);
 const images = ref([]);
@@ -38,9 +38,6 @@ const openModal = () => {
         return false;
     }
     showModal.value = true;
-    nextTick(() => {
-        initEditor();
-    });
 };
 
 const closeModal = () => {
@@ -59,9 +56,7 @@ const storePost = async () => {
         mentions: getMentions(content.value),
     };
 
-    //const response = await sendRequest('POST', '/api/posts', params);
     await postFormStore.createPost(params);
-    //console.log(postFormStore.post.id);
 
     // 파일업로드
     await uploadImages('post', postFormStore.post.id, selectedFiles.value);
@@ -69,83 +64,6 @@ const storePost = async () => {
     showModal.value = false;
     content.value = '';
     emit('storePost', params);
-};
-
-const fetchTags = async (searchTerm) => {
-    const response = await sendRequest('GET', `/api/tags?q=${searchTerm}`);
-
-    const result = response.data.data.map(tag => {
-        tag.value = tag.name;
-        return tag;
-    });
-
-    return result;
-};
-
-const fetchBooks = async (searchTerm) => {
-    const response = await sendRequest('GET', `/api/books?q=${searchTerm}`);
-
-    const result = response.data.data.map(tag => {
-        tag.value = tag.title;
-        return tag;
-    });
-
-    return result;
-};
-
-const fetchMentions = async (searchTerm) => {
-    const response = await sendRequest('GET', `/api/users?q=${searchTerm}`);
-
-    const result = response.data.data.map(tag => {
-        tag.value = tag.username;
-        return tag;
-    });
-
-    return result;
-};
-
-const initEditor = () => {
-    quill.value = new Quill(document.querySelector("#editor"), {
-        placeholder: "새로운 감상이 있나요 ?",
-        toolbar: {
-            container: [],
-        },
-        modules: {
-            mention: {
-                allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-                mentionDenotationChars: ["@", "#", "$"],
-                source: async (searchTerm, renderList, mentionChar) => {
-                    let values;
-
-                    if (mentionChar === "@") {
-                        values = await fetchMentions(searchTerm);
-                    } else if(mentionChar === '$') {
-                        values = await fetchBooks(searchTerm);
-                    } else{
-                        values = await fetchTags(searchTerm);
-                    }
-
-                    if (searchTerm.length === 0) {
-                        renderList(values, searchTerm);
-                    } else {
-                        const matches = [];
-                        for (let i = 0; i < values.length; i++)
-                            if (
-                                ~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())
-                            )
-                                matches.push(values[i]);
-                        renderList(matches, searchTerm);
-                    }
-                }
-            }
-        }
-    });
-
-    quill.value.on("text-change", () => {
-        content.value = quill.value.root.innerHTML;
-    });
-
-    quill.value.root.innerHTML = content.value;
 };
 
 // 버튼 클릭 시 파일 input을 트리거하는 함수
@@ -192,25 +110,16 @@ const uploadImages = async (type, id, files) => {
     }
 };
 
+const changeContent = (newContent) => {
+    content.value = newContent;
+}
+
 onMounted(() => {
-    if (props.open) {
-        initEditor();
-    }
+
 });
 
 watch(() => props.open, (newVal) => {
     showModal.value = newVal;
-    if (newVal) {
-        nextTick(() => {
-            initEditor();
-        });
-    }
-});
-
-watch(content, (newContent) => {
-    if (quill.value && newContent !== quill.value.root.innerHTML) {
-        quill.value.root.innerHTML = newContent;
-    }
 });
 </script>
 <template>
@@ -227,7 +136,7 @@ watch(content, (newContent) => {
         </template>
         <div class="border-t border-b p-4 pt-3 relative">
             <avatar-component :user="auth" :follow-button="false" :user-name="false"></avatar-component>
-            <div id="editor" class="!outline-none !h-auto p-0 !mt-3" ref="editor"></div>
+            <text-editor-component :content="content" @update-content="changeContent" placeholder="새로운 감상이 있나요?"></text-editor-component>
             <div id="previewContainer">
                 <attached-image-component :images="images" @delete-image="deleteImage(idx)"></attached-image-component>
             </div>

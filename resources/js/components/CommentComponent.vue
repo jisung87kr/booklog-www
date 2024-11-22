@@ -39,7 +39,7 @@
                 </ul>
             </dropdown-component>
         </div>
-        <div class="ps-10">{{ comment.body }}</div>
+        <div class="ps-10" v-html="comment.body"></div>
         <slot name="feed" v-if="feed">
             <div class="ps-10">
                 <div class="border rounded-lg p-4 mt-3">

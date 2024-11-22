@@ -5,6 +5,7 @@ export const useCommentModalStore = defineStore('commentModal', {
     state: () => ({
         model: null,
         comments: null,
+        comment: null,
         isOpen: false,
         type: null,
     }),
@@ -20,6 +21,10 @@ export const useCommentModalStore = defineStore('commentModal', {
         async fetchComments() {
             const response = await sendRequest( `/api/${this.type}/${this.model.id}/comments`);
             this.comments = response.data;
+        },
+        async storeComment(params) {
+            const response = await sendRequest('post', `/api/posts/${this.model.id}/comments`, params);
+            this.comment = response.data;
         }
     }
 });
