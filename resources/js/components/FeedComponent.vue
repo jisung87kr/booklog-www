@@ -11,10 +11,6 @@ const props = defineProps({
         type: Object,
         required: false,
     },
-    showContentModal: {
-        type: Function,
-        required: false,
-    },
     className:{
         type: String,
         required: false,
@@ -22,16 +18,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['openCommentModal']);
 
-const modalOpen = ref(false);
-
-const toggleModal = () => {
-    modalOpen.value = !modalOpen.value;
-};
-const showComment = (model) => {
-    emit('openCommentModal', model);
-};
 </script>
 <template>
     <div :class="className">
@@ -97,7 +84,7 @@ const showComment = (model) => {
                 </template>
                 <div class="mt-3 flex gap-3">
                     <like-button :model="feed" :auth="auth"></like-button>
-                    <comment-button :model="feed" @showComment="showComment"></comment-button>
+                    <comment-button :model="feed"></comment-button>
                     <share-button :feed="feed" ></share-button>
                 </div>
             </div>

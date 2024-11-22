@@ -46,6 +46,29 @@ class Post extends Model
                         ->limit(1)
                 ]);
             }
+
+            $actionCount = [
+              'like_count' => UserActionEnum::LIKE,
+              'share_count' => UserActionEnum::SHARE,
+            ];
+
+            foreach ($actionCount as $index => $item) {
+                $builder->addSelect([
+                    $index => DB::table('user_actions')
+                        ->selectRaw('count(*)')
+                        ->whereColumn('user_actions.user_actionable_id', 'posts.id')
+                        ->where('user_actions.user_actionable_type', Post::class)
+                        ->where('user_actions.action', $item)
+                ]);
+            }
+
+            $builder->addSelect([
+                'comment_count' => DB::table('comments')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('comments.commentable_id', 'posts.id')
+                    ->where('comments.commentable_type', Post::class)
+            ]);
+
         });
     }
 

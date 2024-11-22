@@ -35,7 +35,7 @@
                 {{ $slot }}
             </main>
         </div>
-
+        <comment-modal-component></comment-modal-component>
         @stack('modals')
     </body>
 </html>

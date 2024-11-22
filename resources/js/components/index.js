@@ -23,6 +23,9 @@ import followToggleButton from "./buttons/FollowToggleButton.vue";
 import dropdownComponent from "./DropdownComponent.vue";
 import UserActionButton from "./buttons/UserActionButton.vue";
 
+//모달
+import CommentModalComponent from "./CommentModalComponent.vue";
+
 
 export default {
     // 페이지
@@ -48,4 +51,6 @@ export default {
     "follow-toggle-button": followToggleButton,
     "dropdown-component": dropdownComponent,
     "user-action-button": UserActionButton,
+    // 모달
+    "comment-modal-component": CommentModalComponent,
 }

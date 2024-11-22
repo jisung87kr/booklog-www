@@ -72,7 +72,7 @@
                         <share-button :feed="selectedFeed"></share-button>
                     </div>
                     <div class="mt-1">
-                        <div class="text-sm">좋아요 400개</div>
+                        <div class="text-sm">좋아요 {{selectedFeed.like_cnt}}개</div>
                     </div>
                     <div class="mt-3" v-if="auth">
                         <comment-form :model="selectedFeed"

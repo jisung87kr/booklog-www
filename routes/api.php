@@ -109,3 +109,4 @@ Route::get('/comments/{comment}', [CommentApiController::class, 'show'])->name('
 Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('recommend.users');
 Route::get('/@{user}', [UserApiController::class, 'show'])->name('user.show');
 Route::get('/posts', [PostApiController::class, 'index'])->name('post.index');
+Route::post('/actions', [UserActionApiController::class, 'store'])->name('action.store');

@@ -38,7 +38,7 @@ class UserActionApiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
         try {
             $validated = $request->validate([
@@ -49,7 +49,16 @@ class UserActionApiController extends Controller
 
             $model = $this->morphService->getMorphModel($validated['user_actionable_type'], $validated['user_actionable_id']);
             $validated['user_actionable_type'] = $model::class;
-            $action = $request->user()->actions()->create($validated);
+            if($request->user()){
+                $action = $request->user()->actions()->create($validated);
+            } else {
+                if($validated['action'] == UserActionEnum::SHARE->value){
+                    $action = UserAction::create($validated);
+                } else {
+                    throw new \Exception('로그인이 필요한 서비스입니다.');
+                }
+            }
+
             return ApiResponse::success('', $action);
         } catch (\Exception $e){
             Log::error($e->getMessage(), $e->getTrace());

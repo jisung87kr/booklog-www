@@ -1,5 +1,6 @@
 <template>
-    <template v-for="comment in comments.data"
+    <template v-if="comments.data.length > 0"
+              v-for="comment in comments.data"
               :key="comment.id"
     >
         <comment-component :model="model"
@@ -10,6 +11,7 @@
                            @report-comment="reportComment(comment)"
         ></comment-component>
     </template>
+    <div class="text-gray-800" v-else>등록된 댓글이 없습니다.</div>
     <div class="text-center mt-1 border-t pt-3"
          v-if="comments.total > 1 && comments.current_page < comments.last_page"
     >
