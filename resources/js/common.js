@@ -77,3 +77,39 @@ export function wrapWithSpan(text){
 
     return wrappedText;
 }
+
+export function jsonToFormData(data, formData = new FormData(), parentKey = '') {
+    if (typeof data === 'object' && data !== null) {
+        Object.keys(data).forEach(key => {
+            const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+            const value = data[key];
+
+            if (value === null) {
+                // null 값을 건너뜁니다.
+                return;
+            }
+
+            if (value instanceof FileList) {
+                // FileList를 배열로 변환하여 처리
+                Array.from(value).forEach((file, index) => {
+                    formData.append(`${fullKey}[${index}]`, file);
+                });
+            } else if (Array.isArray(value)) {
+                // 배열인 경우, 각 요소를 처리
+                value.forEach((item, index) => {
+                    jsonToFormData(item, formData, `${fullKey}[${index}]`);
+                });
+            } else if (typeof value === 'object') {
+                // 객체인 경우, 재귀적으로 호출
+                jsonToFormData(value, formData, fullKey);
+            } else {
+                // 기본 타입 (문자열, 숫자 등)
+                formData.append(fullKey, value);
+            }
+        });
+    } else if (data !== null) {
+        // 기본 타입이면서 null이 아닌 경우에만 추가
+        formData.append(parentKey, data);
+    }
+    return formData;
+}

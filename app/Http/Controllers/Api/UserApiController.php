@@ -31,7 +31,6 @@ class UserApiController extends Controller
             $user = $request->user();
             $validated = Validator::make($request->all(), [
                 'name' => ['nullable', 'string', 'max:255'],
-                'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
                 'introduction' => ['nullable', 'string', 'max:255'],
                 'link' => ['nullable', 'string', 'max:255'],
                 'is_secret' => ['nullable', 'boolean'],

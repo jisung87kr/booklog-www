@@ -25,6 +25,7 @@ import UserActionButton from "./buttons/UserActionButton.vue";
 
 //모달
 import CommentModalComponent from "./CommentModalComponent.vue";
+import ProfileModalComponent from "./ProfileModalComponent.vue";
 
 
 export default {
@@ -53,4 +54,5 @@ export default {
     "user-action-button": UserActionButton,
     // 모달
     "comment-modal-component": CommentModalComponent,
+    "profile-modal-component": ProfileModalComponent,
 }

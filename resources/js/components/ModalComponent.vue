@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible" class="modal-wrapper" @click.self="closeModal">
-        <div class="modal">
+        <div class="modal" :style="{ width: computedWidth }">
             <slot name="modal-header"></slot>
             <div class="modal-body">
                 <slot></slot>
@@ -17,10 +17,20 @@ export default {
             type: Boolean,
             default: false,
         },
+        width: {
+            type: String,
+            default: "500px", // 기본값을 지정
+        },
+    },
+    computed: {
+        computedWidth() {
+            // 유효한 CSS 단위가 포함되지 않으면 px로 처리
+            return this.width.match(/^\d+$/) ? `${this.width}px` : this.width;
+        },
     },
     methods: {
         closeModal() {
-            this.$emit('close');
+            this.$emit("close");
         },
     },
 };
@@ -44,14 +54,13 @@ export default {
 .modal {
     background: white;
     border-radius: 8px;
-    max-width: 500px;
-    width: 100%;
+    max-width: 100%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.modal-body{
+.modal-body {
     max-height: 80%;
-    //overflow: auto;
+    overflow: auto;
 }
 
 button {
