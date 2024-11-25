@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserApiController extends Controller
 {
@@ -22,6 +24,31 @@ class UserApiController extends Controller
             return ApiResponse::error('', $e->getMessage());
         }
     }
+
+    public function update(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $validated = Validator::make($request->all(), [
+                'name' => ['nullable', 'string', 'max:255'],
+                'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+                'introduction' => ['nullable', 'string', 'max:255'],
+                'link' => ['nullable', 'string', 'max:255'],
+                'is_secret' => ['nullable', 'boolean'],
+            ])->validated();
+
+            if ($request->file('photo')) {
+                $user->updateProfilePhoto($request->file('photo'));
+            }
+
+            $user->update($validated);
+            return ApiResponse::success('', $user);
+        } catch (\Exception $e) {
+            return ApiResponse::error('', $e->getMessage());
+        }
+
+    }
+
     public function recommend()
     {
         try {

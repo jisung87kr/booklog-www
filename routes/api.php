@@ -101,6 +101,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/users/{user}/badges', [UserBadgeApiController::class, 'index'])->name('api.badge.index');
     Route::post('/users/{user}/badges', [UserBadgeApiController::class, 'store'])->name('api.badge.store');
     Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
+
+    Route::PUT('/{user}', [UserApiController::class, 'update'])->name('user.update');
 });
 
 Route::get('/feeds', [FeedApiController::class, 'index'])->name('feed.index');
