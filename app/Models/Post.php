@@ -16,7 +16,7 @@ class Post extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = ['attachments', 'comments', 'user', 'images'];
+    protected $with = ['attachments', 'user', 'images'];
 
     protected static function boot()
     {

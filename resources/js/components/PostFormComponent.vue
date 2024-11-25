@@ -14,10 +14,6 @@ const auth = ref(userStore.user);
 const postFormStore = usePostFormStore();
 
 const props = defineProps({
-    auth: {
-        type: Object,
-        required: true
-    },
     open: {
         type: Boolean,
         default: false
