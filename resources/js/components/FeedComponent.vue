@@ -1,27 +1,21 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineEmits } from 'vue';
 import {wrapWithSpan} from "../common.js";
+import {useUserStore} from "../stores/user.js";
 
+const userStore = useUserStore();
+const auth = ref(userStore.user);
 const props = defineProps({
     feed: {
         type: Object,
         required: true,
     },
-    auth: {
-        type: Object,
-        required: false,
-    },
-    className:{
-        type: String,
-        required: false,
-        default: ''
-    }
 });
 
 
 </script>
 <template>
-    <div :class="className">
+    <div>
         <div class="w-full">
             <div class="flex justify-between">
                 <div class="flex">

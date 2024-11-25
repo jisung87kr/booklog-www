@@ -30,8 +30,6 @@ export default {
     },
     data(){
         return {
-            className: this.className,
-            activeClassName: this.activeClassName,
             isFollowing: this.user.is_following,
         }
     },

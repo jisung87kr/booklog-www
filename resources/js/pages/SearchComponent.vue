@@ -130,7 +130,6 @@ onBeforeUnmount(() => {
                         <feed-component v-for="feed in feeds.data"
                                         :feed="feed"
                                         :key="feed.id"
-                                        :auth="auth"
                                         class="p-4"
                         ></feed-component>
                     </template>
