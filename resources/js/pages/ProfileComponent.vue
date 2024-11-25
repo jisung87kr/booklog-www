@@ -2,6 +2,9 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '../stores/user.js';
+import ModalComponent from "../components/ModalComponent.vue";
+import AvatarComponent from "../components/AvatarComponent.vue";
+import ProfileModalComponent from "../components/ProfileModalComponent.vue";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
@@ -16,6 +19,7 @@ const activityTypes = [
 ];
 
 const user = ref(window.userData);
+const showProfileModal = ref(true);
 
 const list = ref({
     current_page: 1,
@@ -206,7 +210,7 @@ onBeforeUnmount(() => {
                         </template>
                     </div>
                     <template v-if="auth && user.id == auth.id">
-                        <button type="button" class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold w-full mt-6">프로필 수정</button>
+                        <profile-modal-component :user="user"></profile-modal-component>
                     </template>
                     <template v-else>
                         <div class="grid grid-cols-2 gap-4 my-6">
