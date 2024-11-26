@@ -104,7 +104,7 @@ export default{
 
             let url = '';
             switch (this.actionableType) {
-                case 'posts':
+                case 'post':
                     url = window.location.origin + '/feeds/' + model.id;
                     break;
                 default:
