@@ -23,17 +23,17 @@ const scrollBottom = () => {
                      @close="commentModalStore.closeModal"
     >
     <template v-slot:modal-header>
-        <div class="p-3">
+        <div class="px-6 py-3">
             <div class="mb-3 font-bold">댓글</div>
         </div>
     </template>
-    <div class="p-3">
+    <div class="px-6 py-3">
         <div>
             <comment-list-component :model="commentModalStore.model"></comment-list-component>
         </div>
     </div>
     <template v-slot:modal-footer>
-        <div class="p-3 border-t">
+        <div class="px-6 py-3 border-t">
             <div class="flex gap-2">
                 <like-button :auth="auth" :model="commentModalStore.model"></like-button>
                 <share-button :feed="commentModalStore.model"></share-button>

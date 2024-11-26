@@ -91,9 +91,9 @@ class CommentApiController extends Controller
     public function getCommentableModel(string $type, $id)
     {
         switch ($type){
-            case 'processes':
+            case 'readingProcess':
                 return ReadingProcess::findOrFail($id);
-            case 'posts':
+            case 'post':
                 return Post::findOrFail($id);
             default:
                 abort(404);

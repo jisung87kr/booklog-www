@@ -61,7 +61,7 @@ class ImageApiController extends Model
         switch ($type){
             case 'post':
                 return Post::findOrFail($id);
-            case 'processes':
+            case 'readingProcess':
                 return ReadingProcess::findOrFail($id);
             default:
                 abort(404);

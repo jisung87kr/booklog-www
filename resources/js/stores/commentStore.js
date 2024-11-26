@@ -23,7 +23,7 @@ export const useCommentModalStore = defineStore('commentModal', {
             this.comments = response.data;
         },
         async storeComment(params) {
-            const response = await sendRequest('post', `/api/posts/${this.model.id}/comments`, params);
+            const response = await sendRequest('post', `/api/${this.type}/${this.model.id}/comments`, params);
             this.comment = response.data;
         }
     }
