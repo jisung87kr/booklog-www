@@ -15,6 +15,7 @@ import 'swiper/css/pagination';
 import Quill from "quill";
 import "quill-mention/autoregister";
 import 'quill/dist/quill.snow.css';
+import lodash from "lodash";
 
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -23,6 +24,7 @@ window.Swiper = Swiper;
 window.Navigation = Navigation;
 window.Pagination = Pagination;
 window.Quill = Quill;
+window.lodash = lodash;
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

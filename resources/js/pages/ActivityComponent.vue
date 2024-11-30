@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
                         <feed-component v-for="mention in list.data"
                                         :key="mention.id"
                                         :auth="auth"
-                                        class-name="p-4"
+                                        class="p-4"
                                         :feed="mention.post"
                         ></feed-component>
                     </template>
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
                         <feed-component v-for="quotation in list.data"
                                         :key="quotation.id"
                                         :auth="auth"
-                                        class-name="p-4"
+                                        class="p-4"
                                         :feed="quotation"
                         ></feed-component>
                     </template>

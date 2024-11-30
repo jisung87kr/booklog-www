@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user';
+import {sendRequest} from '../common.js';
+import throttle from 'lodash/throttle';
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
 //await userStore.checkUser();
@@ -37,14 +39,11 @@ const fetchFeeds = async (page = 1) => {
             q: q.value,
             qsearch_type: qsearch_type.value,
         };
-        let response = await axios({
-            method: "get",
-            url: `/api/feeds`,
-            params,
-        });
 
-        if (response.data.status !== true) {
-            throw new Error(response.data.message);
+        let response = await sendRequest('GET', '/api/feeds', params);
+
+        if (response.status !== true) {
+            throw new Error(response.message);
         }
 
         return response.data;
@@ -78,8 +77,16 @@ const fetchRecommendedUsers = async () => {
     loading.value = false;
 };
 
+const throttleEvent = throttle(async (callback) => {
+    await callback();
+}, 1000);
+
+
 const search = async () => {
-    feeds.value = await fetchFeeds();
+    throttleEvent(async () => {
+        const feedsResponse = await fetchFeeds();
+        feeds.value = feedsResponse;
+    });
 };
 
 onMounted(async () => {
@@ -109,7 +116,7 @@ onBeforeUnmount(() => {
                                 <path d="M21 21l-6 -6" />
                             </svg>
                         </button>
-                        <input type="text" name="q" class="border-none w-full focus:border-none" placeholder="검색" v-model="q" @keyup="search()">
+                        <input type="text" name="q" class="w-full border-none focus:ring-transparent" placeholder="검색" v-model="q" @keyup="search">
                         <input type="hidden" name="qsearch_type" class="border-none w-full focus:border-none" placeholder="검색" v-model="qsearch_type">
                     </div>
                 </form>
