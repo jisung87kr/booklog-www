@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Comment;
 use App\Models\Post;
-use App\Models\ReadingProcess;
 use Illuminate\Http\Request;
 
 class CommentApiController extends Controller
@@ -91,8 +90,6 @@ class CommentApiController extends Controller
     public function getCommentableModel(string $type, $id)
     {
         switch ($type){
-            case 'readingProcess':
-                return ReadingProcess::findOrFail($id);
             case 'post':
                 return Post::findOrFail($id);
             default:

@@ -3,7 +3,6 @@ namespace App\Services;
 
 use App\Models\Book;
 use App\Models\Post;
-use App\Models\ReadingProcess;
 use App\Models\User;
 
 class MorphService{
@@ -12,8 +11,6 @@ class MorphService{
         switch ($type){
             case 'book':
                 return Book::findOrFail($id);
-            case 'readingProcess':
-                return ReadingProcess::findOrFail($id);
             case 'post':
                 return Post::findOrFail($id);
             case 'user':

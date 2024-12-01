@@ -17,10 +17,6 @@ class Book extends Model
 //        return $this->belongsToMany(User::class);
 //    }
 //
-//    public function processes()
-//    {
-//        return $this->hasMany(ReadingProcess::class);
-//    }
 
     public function bookcases()
     {

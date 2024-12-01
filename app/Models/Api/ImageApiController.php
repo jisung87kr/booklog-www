@@ -5,7 +5,6 @@ namespace App\Models\Api;
 use App\Http\Responses\ApiResponse;
 use App\Models\Image;
 use App\Models\Post;
-use App\Models\ReadingProcess;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -61,8 +60,6 @@ class ImageApiController extends Model
         switch ($type){
             case 'post':
                 return Post::findOrFail($id);
-            case 'readingProcess':
-                return ReadingProcess::findOrFail($id);
             default:
                 abort(404);
         }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Post;
-use App\Models\ReadingProcess;
 use App\Services\AttachmentService;
 use App\Services\MorphService;
 use Illuminate\Http\Request;
