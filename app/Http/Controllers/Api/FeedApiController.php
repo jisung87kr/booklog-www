@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
-use App\Models\Bookcase;
+use App\Models\BookUserBookcase;
 use App\Models\Post;
 use App\Models\ReadingProcess;
 use Illuminate\Http\Request;

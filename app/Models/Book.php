@@ -12,14 +12,19 @@ class Book extends Model
 
     protected $guarded = [];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
+//    public function users()
+//    {
+//        return $this->belongsToMany(User::class);
+//    }
+//
+//    public function processes()
+//    {
+//        return $this->hasMany(ReadingProcess::class);
+//    }
 
-    public function processes()
+    public function bookcases()
     {
-        return $this->hasMany(ReadingProcess::class);
+        return $this->belongsToMany(UserBookcase::class, 'book_user_bookcase', 'book_id', 'bookcase_id');
     }
 
     public function authors()

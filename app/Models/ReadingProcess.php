@@ -13,17 +13,12 @@ class ReadingProcess extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['tags', 'images', 'user', 'comments'];
+    protected $with = [];
     protected $appends = ['created_at_human', 'like_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
-    public function bookcase()
-    {
-        return $this->belongsTo(BookCase::class, 'book_user_id', 'id');
     }
 
     public function comments()

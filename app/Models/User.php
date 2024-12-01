@@ -104,9 +104,21 @@ class User extends Authenticatable
         });
     }
 
+    public function bookcases()
+    {
+        return $this->hasMany(UserBookcase::class);
+    }
+
     public function books()
     {
-        return $this->belongsToMany(Book::class)->withPivot(['created_at', 'updated_at', 'idx'])->withTimestamps();
+        return $this->hasManyThrough(
+            Book::class,
+            UserBookcase::class,
+            'user_id',        // UserBookcase에서 User를 참조하는 키
+            'id',             // Book에서 Bookcase를 참조하는 키 (중간 테이블 사용)
+            'id',             // User에서 기본 키
+            'id'              // UserBookcase에서 기본 키
+        );
     }
 
     public function badges()

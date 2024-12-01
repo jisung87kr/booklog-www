@@ -49,8 +49,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/books/{book}', [BookApiController::class, 'update'])->name('api.book.update');
     Route::delete('/books/{book}', [BookApiController::class, 'destroy'])->name('api.book.destroy');
 
-    Route::get('/books/{book}/processes', [BookProcessApiController::Class, 'index'])->name('api.book.process.index');
-    Route::get('/books/{book}/processes/{process}', [BookProcessApiController::Class, 'show'])->name('api.book.process.show');
+//    Route::get('/books/{book}/processes', [BookProcessApiController::Class, 'index'])->name('api.book.process.index');
+//    Route::get('/books/{book}/processes/{process}', [BookProcessApiController::Class, 'show'])->name('api.book.process.show');
 
     Route::get('/badges', [BadgeApiController::class, 'index'])->name('api.badge.index');
     Route::get('/badges/{badge}', [BadgeApiController::class, 'show'])->name('api.badge.show');
@@ -63,9 +63,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/{type}/{id}/tags', [TaggableApiController::class, 'sync'])->name('taggable.sync');
     Route::resource('/authors', AuthorApiController::class)->names('author');
 
-    Route::get('/{processes}/{process}/images', [ImageApiController::class, 'index'])->name('process.image.index');
-    Route::post('/{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
-    Route::delete('/{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
+//    Route::get('/{processes}/{process}/images', [ImageApiController::class, 'index'])->name('process.image.index');
+//    Route::post('/{processes}/{process}/images', [ImageApiController::class, 'store'])->name('process.image.store');
+//    Route::delete('/{processes}/{process}/images/{image}', [ImageApiController::class, 'removeImage'])->name('process.image.removeImage');
 
     Route::post('/{type}/{id}/comments', [CommentApiController::class, 'store'])->name('comment.store');
     Route::put('/comments/{comment}', [CommentApiController::class, 'update'])->name('comment.update');
@@ -87,11 +87,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/users/{user}/books', [UserBookApiController::class, 'updateOrder'])->name('api.user.book.updateOrder');
     Route::delete('/users/{user}/books/{book}', [UserBookApiController::class, 'destroy'])->name('api.user.book.destroy');
 
-    Route::get('/users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'index'])->name('api.book.process.index');
-    Route::get('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'show'])->name('api.book.process.show');
-    Route::post('users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'store'])->name('api.book.process.store');
-    Route::put('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'update'])->name('api.book.process.update');
-    Route::delete('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'destroy'])->name('api.book.process.destroy');
+//    Route::get('/users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'index'])->name('api.book.process.index');
+//    Route::get('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'show'])->name('api.book.process.show');
+//    Route::post('users/{user}/books/{book}/processes', [UserBookProcessApiController::Class, 'store'])->name('api.book.process.store');
+//    Route::put('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'update'])->name('api.book.process.update');
+//    Route::delete('/users/{user}/books/{book}/processes/{process}', [UserBookProcessApiController::Class, 'destroy'])->name('api.book.process.destroy');
 
     Route::get('/users/{user}/activity/followers', [ActivityApiController::class, 'followers'])->name('activity.follower');
     Route::get('/users/{user}/activity/replies', [ActivityApiController::class, 'replies'])->name('activity.reply');

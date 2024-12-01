@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Book;
-use App\Models\Bookcase;
+use App\Models\BookUserBookcase;
 use App\Models\ReadingProcess;
 use App\Models\Tag;
 use App\Models\User;
@@ -27,7 +27,7 @@ class UserBookProcessApiController extends Controller
     public function index(User $user, Book $book)
     {
         try {
-            $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+            $bookcase = BookUserBookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             $processes = $bookcase->processes()->latest()->paginate(30);
             return ApiResponse::success('', $processes);
         } catch (\Exception $e) {
@@ -53,10 +53,10 @@ class UserBookProcessApiController extends Controller
             ]);
 
             DB::beginTransaction();
-            $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+            $bookcase = BookUserBookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             if(!$bookcase){
                 $request->user()->books()->attach($book->id);
-                $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+                $bookcase = BookUserBookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             }
 
             $validated['user_id'] = $user->id;
@@ -83,7 +83,7 @@ class UserBookProcessApiController extends Controller
             ]);
 
             DB::beginTransaction();
-            $bookcase = Bookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
+            $bookcase = BookUserBookcase::where('user_id', $user->id)->where('book_id', $book->id)->first();
             if (!$bookcase) {
                 return ApiResponse::error('Bookcase not found', 404);
             }
