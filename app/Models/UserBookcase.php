@@ -13,6 +13,8 @@ class UserBookcase extends Model
 
     protected $guarded = [];
 
+    protected $table = 'user_bookcases';
+
     public function user()
     {
         return $this->belongsTo(User::class);

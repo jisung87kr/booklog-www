@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ActivityApiController;
 use App\Http\Controllers\Api\AttachmentApiController;
 use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
+use App\Http\Controllers\Api\BookcaseApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\FeedApiController;
@@ -12,7 +13,10 @@ use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\api\TaggableApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
+use App\Http\Controllers\Api\UserBookcaseApiController;
 use App\Http\Controllers\Api\UserPostApiController;
+use App\Models\BookUserBookcase;
+use App\Models\UserBookcase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookApiController;
@@ -90,6 +94,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/users/{user}/badges/{badge}', [UserBadgeApiController::class, 'destroy'])->name('api.badge.destroy');
 
     Route::PUT('/{user}', [UserApiController::class, 'update'])->name('user.update');
+
+    Route::PUT('/users/{user}/bookcases/order', [UserBookcaseApiController::class, 'updateOrder'])->name('user.bookcase.updateOrder');
+    Route::resource('/users/{user}/bookcases', UserBookcaseApiController::class)->names('user.bookcase');
 });
 
 Route::get('/feeds', [FeedApiController::class, 'index'])->name('feed.index');

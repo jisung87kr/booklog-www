@@ -106,7 +106,7 @@ class User extends Authenticatable
 
     public function bookcases()
     {
-        return $this->hasMany(UserBookcase::class);
+        return $this->hasMany(UserBookcase::class)->orderBy('order');
     }
 
     public function books()
