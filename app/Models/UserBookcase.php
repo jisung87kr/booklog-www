@@ -13,7 +13,6 @@ class UserBookcase extends Model
 
     protected $guarded = [];
 
-    protected $table = 'user_bookcases';
 
     public function user()
     {
@@ -22,6 +21,6 @@ class UserBookcase extends Model
 
     public function books()
     {
-        return $this->belongsToMany(Book::class);
+        return $this->belongsToMany(Book::class, 'book_user_bookcase', 'bookcase_id', 'book_id')->withPivot(['order'])->withTimestamps()->orderBy('order');
     }
 }

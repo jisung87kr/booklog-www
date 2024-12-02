@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bookcase_id')->constrained('user_bookcases')->onDelete('cascade');
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
+            $table->integer('order')->default(0);
             $table->timestamps();
         });
     }

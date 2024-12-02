@@ -98,6 +98,8 @@ class UserBookcaseApiController extends Controller
         try {
             $validated = $request->validate([
                 'bookcases' => 'required|array',
+                'bookcases.*.id' => 'required|integer',
+                'bookcases.*.order' => 'required|integer',
             ]);
 
             $bookcases = $validated['bookcases'];

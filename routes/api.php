@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AttachmentApiController;
 use App\Http\Controllers\Api\AuthorApiController;
 use App\Http\Controllers\Api\BadgeApiController;
 use App\Http\Controllers\Api\BookcaseApiController;
+use App\Http\Controllers\Api\BookUserBookcaseApiController;
 use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\FeedApiController;
@@ -97,6 +98,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::PUT('/users/{user}/bookcases/order', [UserBookcaseApiController::class, 'updateOrder'])->name('user.bookcase.updateOrder');
     Route::resource('/users/{user}/bookcases', UserBookcaseApiController::class)->names('user.bookcase');
+
+    Route::PUT('/bookcases/{bookcase}/order', [BookUserBookcaseApiController::class, 'updateOrder'])->name('bookcase.updateOrder');
+    Route::resource('/bookcases/{bookcase}/books', BookUserBookcaseApiController::class)->names('bookcase.book');
 });
 
 Route::get('/feeds', [FeedApiController::class, 'index'])->name('feed.index');
