@@ -2,17 +2,17 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '../stores/user.js';
-import ModalComponent from "../components/ModalComponent.vue";
-import AvatarComponent from "../components/AvatarComponent.vue";
 import ProfileModalComponent from "../components/ProfileModalComponent.vue";
+import BookcaseComponent from "../components/BookcaseComponent.vue";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
 //await userStore.checkUser();
 const auth = ref(userStore.user);
 
-const selectedActivityType = ref('post');
+const selectedActivityType = ref('bookcase');
 const activityTypes = [
+    { key: 'bookcase', value: '책장' },
     { key: 'post', value: '포스트' },
     { key: 'reply', value: '답글' },
     { key: 'quotation', value: '리포스트' },
@@ -38,6 +38,22 @@ const selectedFeed = ref({
     note: null,
     images: [],
 });
+
+
+const fetchBookcases = async () => {
+    try {
+        let params = {
+            user_id: user.value.id,
+        };
+        const response = await axios.get(`/api/users/${user.value.username}/bookcases`, {
+            params: params,
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 const fetchPosts = async () => {
     try {
@@ -97,6 +113,9 @@ const getList = async (page) => {
 
     let response = {};
     switch (selectedActivityType.value) {
+        case 'bookcase':
+            response = await fetchBookcases();
+            break;
         case 'post':
             response = await fetchPosts();
             break;
@@ -221,7 +240,7 @@ onBeforeUnmount(() => {
                         </div>
                     </template>
                 </div>
-                <div class="grid grid-cols-3">
+                <div class="grid grid-cols-4">
                     <template v-for="type in activityTypes"
                               :key="type.key">
                         <button type="button"
@@ -233,6 +252,14 @@ onBeforeUnmount(() => {
                 </div>
                 <template v-if="list.data.length > 0">
                     <div class="divide-y">
+                        <template v-if="selectedActivityType == 'bookcase'">
+                            <bookcase-component v-for="bookcase in list.data"
+                                            :key="bookcase.id"
+                                            :bookcase="bookcase"
+                                            :auth="auth"
+                                            class="p-6"
+                            ></bookcase-component>
+                        </template>
                         <template v-if="selectedActivityType == 'post'">
                             <feed-component v-for="post in list.data"
                                             :key="post.id"

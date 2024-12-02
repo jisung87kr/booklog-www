@@ -17,6 +17,7 @@ class Post extends Model
 
     protected $guarded = [];
     protected $with = ['attachments', 'user', 'images'];
+    protected $appends = ['formatted_created_at'];
 
     protected static function boot()
     {
@@ -94,6 +95,11 @@ class Post extends Model
 
     public function scopePublished(){
         return $this->where('status', PostStatusEnum::PUBLISHED);
+    }
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at->diffForHumans();
     }
 
     public function scopeFilter(Builder $query, $filters)

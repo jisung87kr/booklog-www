@@ -79,7 +79,7 @@ const props = defineProps({
                 <div class="mt-3 flex gap-3">
                     <like-button :model="feed" :auth="auth"></like-button>
                     <comment-button :model="feed"></comment-button>
-                    <share-button :feed="feed" ></share-button>
+                    <share-button :model="feed" type="post"></share-button>
                 </div>
             </div>
         </div>

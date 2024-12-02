@@ -36,7 +36,7 @@ const scrollBottom = () => {
         <div class="px-6 py-3 border-t">
             <div class="flex gap-2">
                 <like-button :auth="auth" :model="commentModalStore.model"></like-button>
-                <share-button :feed="commentModalStore.model"></share-button>
+                <share-button :model="commentModalStore.model" type="post"></share-button>
             </div>
             <div class="mt-3" v-if="auth">
                 <comment-form :model="commentModalStore.model"

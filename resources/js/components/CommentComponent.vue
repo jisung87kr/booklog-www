@@ -69,7 +69,7 @@
                 <div class="p-3 border-t">
                     <div class="flex gap-2">
                         <like-button :auth="auth" :model="selectedFeed"></like-button>
-                        <share-button :feed="selectedFeed"></share-button>
+                        <share-button :model="selectedFeed" type="post"></share-button>
                     </div>
                     <div class="mt-1">
                         <div class="text-sm">좋아요 {{selectedFeed.like_cnt}}개</div>

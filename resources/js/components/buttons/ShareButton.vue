@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center">
-        <button type="button" @click="handelClick(feed)">
+        <button type="button" @click="handelClick(model)">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="20"
                  height="20"
                  viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round"
@@ -10,7 +10,7 @@
                 <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/>
             </svg>
         </button>
-        <span class="ms-1 text-xs">{{feed.share_count}}</span>
+        <span class="ms-1 text-xs">{{model.share_count}}</span>
     </div>
 </template>
 <script>
@@ -20,8 +20,12 @@ import {useUserStore} from "../../stores/user.js";
 export default{
     name: 'ShareButton',
     props: {
-        feed: {
+        model: {
             type: Object,
+            required: true
+        },
+        type: {
+            type: String,
             required: true
         }
     },
@@ -35,19 +39,28 @@ export default{
         this.auth = userStore.user;
     },
     methods: {
-        async handelClick(feed){
+        async handelClick(model){
             this.$emit('click');
             let data = {
                 'action': 'share',
-                'user_actionable_id': feed.id,
+                'user_actionable_id': model.id,
                 'user_actionable_type': 'post',
             }
             let result = await sendRequest('post', `/api/actions`, data);
-            this.copyUrl(feed);
-            feed.share_count++;
+            this.copyUrl(model);
+            model.share_count++;
         },
-        copyUrl(feed){
-            const url = window.location.origin + '/feeds/' + feed.id;
+        copyUrl(model){
+            let url = '';
+            switch (this.type){
+                case 'bookcase':
+                    url = window.location.origin + '/bookcases/' + model.id;
+                    break;
+                case 'post':
+                    url = window.location.origin + '/feeds/' + model.id;
+                    break;
+            }
+
             const textarea = document.createElement('textarea');
             textarea.value = url;
             document.body.appendChild(textarea);

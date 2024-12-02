@@ -29,7 +29,7 @@ export default {
         auth: {
             type: Object,
             required: false,
-        }
+        },
     },
     methods: {
         async toggleLike(model){
