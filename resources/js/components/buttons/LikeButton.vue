@@ -47,9 +47,14 @@ export default {
                 model.like_id = null;
                 model.like_count--;
             } else {
+                let modelId = model.id;
+                if(this.type === 'book'){
+                   modelId = model.book_id;
+                }
+
                 let data = {
                     'action': 'like',
-                    'user_actionable_id': model.id,
+                    'user_actionable_id': modelId,
                     'user_actionable_type': this.type,
                 }
                 let result = await sendRequest('post', `/api/users/${this.auth.username}/actions`, data);

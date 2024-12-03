@@ -40,10 +40,15 @@ export default{
     },
     methods: {
         async handelClick(model){
+            let modelId = model.id;
+            if(this.type === 'book'){
+                modelId = model.book_id;
+            }
+
             this.$emit('click');
             let data = {
                 'action': 'share',
-                'user_actionable_id': model.id,
+                'user_actionable_id': modelId,
                 'user_actionable_type': this.type,
             }
             let result = await sendRequest('post', `/api/actions`, data);
@@ -58,6 +63,9 @@ export default{
                     break;
                 case 'post':
                     url = window.location.origin + '/feeds/' + model.id;
+                    break;
+                case 'book':
+                    url = window.location.origin + '/books/' + model.book_id;
                     break;
             }
 

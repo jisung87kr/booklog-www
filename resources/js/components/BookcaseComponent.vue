@@ -2,6 +2,7 @@
 import { ref, defineProps } from 'vue';
 import DropdownComponent from "./DropdownComponent.vue";
 import {useUserStore} from "../stores/user.js";
+import BookComponent from "./BookComponent.vue";
 
 const userStore = useUserStore();
 const auth = ref(userStore.user);
@@ -26,7 +27,7 @@ const props = defineProps({
             </div>
             <div class="shrink-0 w-30 flex gap-1">
                 <div>
-                    <button type="button" class="border rounded-lg px-3 py-2 text-xs font-bold text-gray-900">책장보기</button>
+                    <a :href="'/@'+bookcase.user.username+'/bookcases/'+bookcase.id" class="border rounded-lg px-3 py-2 text-xs font-bold text-gray-900 block">책장보기</a>
                 </div>
                 <dropdown-component v-if="auth">
                     <template v-slot:mybutton>
@@ -77,13 +78,7 @@ const props = defineProps({
         <div class="overflow-x-auto mt-1">
             <div class="flex gap-3" v-if="props.bookcase.books.length > 0">
                 <template v-for="book in props.bookcase.books" :key="book.id">
-                    <div class="shrink-0 w-[170px]">
-                        <div class="border rounded-lg overflow-hidden mb-2">
-                            <img src="https://placehold.co/600x400" alt="">
-                        </div>
-                        <div class="line-clamp-1 font-bold">{{book.title}}</div>
-                        <div class="line-clamp-1 text-sm text-gray-600">{{book.author}}</div>
-                    </div>
+                    <book-component :book="book" class="shrink-0 w-[170px]"></book-component>
                 </template>
             </div>
         </div>

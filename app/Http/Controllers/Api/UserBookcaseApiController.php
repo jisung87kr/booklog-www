@@ -17,7 +17,7 @@ class UserBookcaseApiController extends Controller
     public function index(User $user)
     {
         try {
-            $bookcases = $user->bookcases()->with('books')->where('privacy', false)->paginate(20);
+            $bookcases = $user->bookcases()->with(['books', 'user'])->where('privacy', false)->paginate(20);
             return ApiResponse::success('', $bookcases);
         } catch(\Exception $e) {
             return ApiResponse::error($e->getMessage());

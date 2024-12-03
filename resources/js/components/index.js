@@ -3,6 +3,7 @@ import HomeComponent from '../pages/HomeComponent.vue';
 import ActivityComponent from "../pages/ActivityComponent.vue";
 import ProfileComponent from "../pages/ProfileComponent.vue";
 import SearchComponent from "../pages/SearchComponent.vue";
+import BookcaseComponent from "../pages/BookcaseComponent.vue";
 
 // 컴포넌트
 import PostFormComponent from "./PostFormComponent.vue";
@@ -34,6 +35,7 @@ export default {
     "activity-component": ActivityComponent,
     "profile-component": ProfileComponent,
     "search-component": SearchComponent,
+    "bookcase-component": BookcaseComponent,
     // 컴포넌트
     "post-form-component": PostFormComponent,
     "feed-component": FeedComponent,

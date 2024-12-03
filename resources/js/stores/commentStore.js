@@ -19,11 +19,20 @@ export const useCommentModalStore = defineStore('commentModal', {
             this.isOpen = false;
         },
         async fetchComments() {
-            const response = await sendRequest( `/api/${this.type}/${this.model.id}/comments`);
+            let modelId = this.model.id;
+            if(this.type === 'book'){
+                modelId = this.model.book_id;
+            }
+            const response = await sendRequest( `/api/${this.type}/${modelId}/comments`);
             this.comments = response.data;
         },
         async storeComment(params) {
-            const response = await sendRequest('post', `/api/${this.type}/${this.model.id}/comments`, params);
+            let modelId = this.model.id;
+            if(this.type === 'book'){
+                modelId = this.model.book_id;
+            }
+
+            const response = await sendRequest('post', `/api/${this.type}/${modelId}/comments`, params);
             this.comment = response.data;
         }
     }

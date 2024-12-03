@@ -59,7 +59,13 @@ const fetchComments = async(page) => {
     let params = {
         page: page,
     };
-    const response = await sendRequest("GET", `api/${commentModalStore.type}/${props.model.id}/comments`, params);
+
+    let modelId = props.model.id;
+    if(commentModalStore.type === 'book'){
+        modelId = props.model.book_id;
+    }
+
+    const response = await sendRequest("GET", `/api/${commentModalStore.type}/${modelId}/comments`, params);
     comments.value.current_page = response.data.current_page;
     comments.value.last_page = response.data.last_page;
     comments.value.total = response.data.total;
