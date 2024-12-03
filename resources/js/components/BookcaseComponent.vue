@@ -5,6 +5,7 @@ import {useUserStore} from "../stores/user.js";
 
 const userStore = useUserStore();
 const auth = ref(userStore.user);
+const type = ref('bookcase');
 
 const props = defineProps({
     bookcase: Object,
@@ -18,9 +19,9 @@ const props = defineProps({
                 <div>{{ props.bookcase.title }}</div>
                 <div class="text-sm text-gray-600">{{ props.bookcase.description }}</div>
                 <div class="mt-2 flex gap-3">
-                    <like-button :model="bookcase" :auth="auth" type="bookcase"></like-button>
-                    <comment-button :model="bookcase" type="bookcase"></comment-button>
-                    <share-button :model="bookcase" type="bookcase"></share-button>
+                    <like-button :model="bookcase" :auth="auth" :type="type"></like-button>
+                    <comment-button :model="bookcase" :type="type"></comment-button>
+                    <share-button :model="bookcase" :type="type"></share-button>
                 </div>
             </div>
             <div class="shrink-0 w-30 flex gap-1">
@@ -44,27 +45,27 @@ const props = defineProps({
 
                     <ul class="dropdown w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg absolute right-0 top-5 z-10">
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200 rounded-t-lg">
-                            <user-action-button actionable-type="post" action-name="bookmark" :model="bookcase" :auth="auth">
+                            <user-action-button :actionable-type="type" action-name="bookmark" :model="bookcase" :auth="auth">
                                 <span>저장</span><span v-if="bookcase && bookcase.bookmark_id"> 취소</span>
                             </user-action-button>
                         </li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200">
-                            <user-action-button actionable-type="post" action-name="uninterested" :model="bookcase" :auth="auth">
+                            <user-action-button :actionable-type="type" action-name="uninterested" :model="bookcase" :auth="auth">
                                 <span>관심없음</span><span v-if="bookcase && bookcase.uninterested_id"> 취소</span>
                             </user-action-button>
                         </li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200">
-                            <user-action-button actionable-type="post" action-name="block" :model="bookcase" :auth="auth">
+                            <user-action-button :actionable-type="type" action-name="block" :model="bookcase" :auth="auth">
                                 <span>차단하기</span><span v-if="bookcase && bookcase.block_id"> 취소</span>
                             </user-action-button>
                         </li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 border-b border-gray-200" v-if="auth.id !== bookcase.user_id">
-                            <user-action-button actionable-type="post" action-name="report" :model="bookcase" :auth="auth">
+                            <user-action-button :actionable-type="type" action-name="report" :model="bookcase" :auth="auth">
                                 <span>신고하기</span><span v-if="bookcase && bookcase.report_id"> 취소</span>
                             </user-action-button>
                         </li>
                         <li class="w-full px-4 py-2 hover:bg-indigo-50 rounded-b-lg">
-                            <user-action-button actionable-type="post" action-name="share" :model="bookcase" :auth="auth">
+                            <user-action-button :actionable-type="type" action-name="share" :model="bookcase" :auth="auth">
                                 <span>링크복사</span>
                             </user-action-button>
                         </li>
