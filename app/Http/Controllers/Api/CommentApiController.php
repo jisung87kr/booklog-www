@@ -6,17 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Services\MorphService;
 use Illuminate\Http\Request;
 
 class CommentApiController extends Controller
 {
+    private $morphService;
+    public function __construct(MorphService $morphService)
+    {
+        $this->morphService = $morphService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(string $type, $id)
     {
         try {
-            $model = $this->getCommentableModel($type, $id);
+            $model = $this->morphService->getMorphModel($type, $id);
             return ApiResponse::success('', $model->comments()->paginate(10));
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
@@ -30,7 +36,7 @@ class CommentApiController extends Controller
     public function store(Request $request, string $type, $id)
     {
         try {
-            $model = $this->getCommentableModel($type, $id);
+            $model = $this->morphService->getMorphModel($type, $id);
             $validated = $request->validate([
                 'body' => 'required',
             ]);
@@ -84,16 +90,6 @@ class CommentApiController extends Controller
             return ApiResponse::success('', '');
         } catch (\Exception $e) {
             return ApiResponse::error('', $e->getMessage());
-        }
-    }
-
-    public function getCommentableModel(string $type, $id)
-    {
-        switch ($type){
-            case 'post':
-                return Post::findOrFail($id);
-            default:
-                abort(404);
         }
     }
 }

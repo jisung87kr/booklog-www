@@ -77,8 +77,8 @@ const props = defineProps({
                     <swiper-component :images="feed.images" class="mt-3"></swiper-component>
                 </template>
                 <div class="mt-3 flex gap-3">
-                    <like-button :model="feed" :auth="auth"></like-button>
-                    <comment-button :model="feed"></comment-button>
+                    <like-button :model="feed" :auth="auth" type="post"></like-button>
+                    <comment-button :model="feed" type="post"></comment-button>
                     <share-button :model="feed" type="post"></share-button>
                 </div>
             </div>

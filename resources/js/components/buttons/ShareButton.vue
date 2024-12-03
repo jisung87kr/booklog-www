@@ -44,7 +44,7 @@ export default{
             let data = {
                 'action': 'share',
                 'user_actionable_id': model.id,
-                'user_actionable_type': 'post',
+                'user_actionable_type': this.type,
             }
             let result = await sendRequest('post', `/api/actions`, data);
             this.copyUrl(model);

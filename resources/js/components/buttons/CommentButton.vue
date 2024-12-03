@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center">
-        <button type="button" @click="commentModalStore.openModal(model)">
+        <button type="button" @click="openModal">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-circle-2"
                  width="20"
                  height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
@@ -22,12 +22,19 @@ export default {
             type: Object,
             required: true
         },
+        type: {
+            type: String,
+            required: true
+        }
     },
     mounted(){
         this.commentModalStore = useCommentModalStore();
     },
     methods:{
-
+        openModal(){
+            this.commentModalStore.type = this.type;
+            this.commentModalStore.openModal(this.model);
+        }
     }
 }
 </script>

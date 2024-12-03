@@ -29,14 +29,14 @@ const scrollBottom = () => {
     </template>
     <div class="px-6 py-3">
         <div>
-            <comment-list-component :model="commentModalStore.model"></comment-list-component>
+            <comment-list-component :model="commentModalStore.model" :type="commentModalStore.type"></comment-list-component>
         </div>
     </div>
     <template v-slot:modal-footer>
         <div class="px-6 py-3 border-t">
             <div class="flex gap-2">
-                <like-button :auth="auth" :model="commentModalStore.model"></like-button>
-                <share-button :model="commentModalStore.model" type="post"></share-button>
+                <like-button :auth="auth" :model="commentModalStore.model" :type="commentModalStore.type"></like-button>
+                <share-button :model="commentModalStore.model" :type="commentModalStore.type"></share-button>
             </div>
             <div class="mt-3" v-if="auth">
                 <comment-form :model="commentModalStore.model"

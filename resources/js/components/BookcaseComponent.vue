@@ -18,8 +18,8 @@ const props = defineProps({
                 <div>{{ props.bookcase.title }}</div>
                 <div class="text-sm text-gray-600">{{ props.bookcase.description }}</div>
                 <div class="mt-2 flex gap-3">
-                    <like-button :model="bookcase" :auth="auth"></like-button>
-                    <comment-button :model="bookcase"></comment-button>
+                    <like-button :model="bookcase" :auth="auth" type="bookcase"></like-button>
+                    <comment-button :model="bookcase" type="bookcase"></comment-button>
                     <share-button :model="bookcase" type="bookcase"></share-button>
                 </div>
             </div>

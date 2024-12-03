@@ -30,6 +30,10 @@ export default {
             type: Object,
             required: false,
         },
+        type: {
+            type: String,
+            required: true,
+        }
     },
     methods: {
         async toggleLike(model){
@@ -46,7 +50,7 @@ export default {
                 let data = {
                     'action': 'like',
                     'user_actionable_id': model.id,
-                    'user_actionable_type': 'post',
+                    'user_actionable_type': this.type,
                 }
                 let result = await sendRequest('post', `/api/users/${this.auth.username}/actions`, data);
                 model.like_id = result.data.id;
