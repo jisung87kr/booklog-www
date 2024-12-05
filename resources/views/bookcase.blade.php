@@ -8,5 +8,4 @@
     <suspense>
         <bookcase-component></bookcase-component>
     </suspense>
-    <x-footer></x-footer>
 </x-app-layout>

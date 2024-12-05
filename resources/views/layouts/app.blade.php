@@ -21,12 +21,13 @@
         <!-- Styles -->
     </head>
     <body id="app" class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 md:ps-[82px]">
+        <div class="min-h-screen bg-gray-100 md:ps-[82px] flex flex-col">
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-1">
                 {{ $slot }}
-            </main>
+             </main>
+            <x-footer></x-footer>
         </div>
         <suspense>
             <comment-modal-component></comment-modal-component>

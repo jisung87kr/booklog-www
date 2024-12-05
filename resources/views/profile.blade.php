@@ -7,5 +7,4 @@
     <suspense>
         <profile-component></profile-component>
     </suspense>
-    <x-footer></x-footer>
 </x-app-layout>
