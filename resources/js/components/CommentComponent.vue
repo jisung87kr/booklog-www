@@ -109,7 +109,7 @@
             required: false,
         },
         feed: {
-            type: Boolean,
+            type: Object,
             required: false,
             default: false,
         },

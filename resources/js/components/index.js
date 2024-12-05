@@ -15,6 +15,7 @@ import CommentListComponent from "./CommentListComponent.vue";
 import AvatarComponent from "./AvatarComponent.vue";
 import FollowerComponent from "./FollowerComponent.vue";
 import swiperComponent from "./SwiperComponent.vue";
+import HeaderComponent from "./headerComponent.vue";
 
 //버튼
 import LikeButton from "./buttons/LikeButton.vue";
@@ -47,6 +48,7 @@ export default {
     "avatar-component": AvatarComponent,
     "follower-component": FollowerComponent,
     "swiper-component": swiperComponent,
+    "header-component": HeaderComponent,
     //버튼
     "like-button": LikeButton,
     "comment-button": CommentButton,

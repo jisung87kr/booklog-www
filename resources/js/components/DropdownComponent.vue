@@ -3,7 +3,7 @@
         <div @click="toggleDropdown()">
             <slot name="mybutton"></slot>
         </div>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" v-if="show">
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" v-if="show" @click="show=false">
             <slot></slot>
         </div>
     </div>

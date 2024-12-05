@@ -145,7 +145,10 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-    <div class="container-fluid mx-auto w-full sm:pt-3">
+    <header-component>
+        <div class="font-bold">프로필</div>
+    </header-component>
+    <div class="container-fluid mx-auto w-full">
         <div class="flex justify-center mt-3 md:mt-0">
             <div class="bg-white shadow w-full rounded-2xl max-w-xl">
                 <div class="p-6">

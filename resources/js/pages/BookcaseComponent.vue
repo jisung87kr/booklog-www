@@ -7,6 +7,7 @@ import BookComponent from "../components/BookComponent.vue";
 import LikeButton from "../components/buttons/LikeButton.vue";
 import CommentButton from "../components/buttons/CommentButton.vue";
 import ShareButton from "../components//buttons/ShareButton.vue";
+import HeaderComponent from "../components/headerComponent.vue";
 
 const userStore = useUserStore();
 const auth = ref(userStore.user);
@@ -14,7 +15,10 @@ const bookcase = ref(window.__bookcase);
 const profileUser = ref(window.__profileUser);
 </script>
 <template>
-    <div class="container-fluid max-w-xl mx-auto w-full sm:pt-3">
+    <header-component>
+        <div class="font-bold">@{{profileUser.username}}님의 책장</div>
+    </header-component>
+    <div class="container-fluid max-w-xl mx-auto w-full">
         <div class="bg-white rounded-xl">
             <div class="p-6">
                 <div>{{ bookcase.title }}</div>

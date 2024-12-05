@@ -104,7 +104,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="container-fluid mx-auto w-full sm:pt-3">
+    <header-component>
+        <div class="font-bold">회원님을 위한 추천</div>
+    </header-component>
+    <div class="container-fluid mx-auto w-full">
         <div class="flex justify-center">
             <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
                 <feed-component :feed="feed"

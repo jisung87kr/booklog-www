@@ -1,7 +1,9 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import { useUserStore } from "../stores/user.js";
+import DropdownComponent from "../components/DropdownComponent.vue";
+import HeaderComponent from "../components/headerComponent.vue";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
@@ -131,24 +133,36 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="container-fluid mx-auto w-full sm:pt-3">
-        <div class="flex justify-center mt-3 md:mt-0">
-            <div class="overflow-x-auto">
-                <div class="flex flex-nowrap gap-3">
-                    <template v-for="(activityType, idx) in activityTypes"
-                              :key="idx"
-                    >
+    <header-component>
+        <div class="font-bold">활동</div>
+        <dropdown-component class="z-30">
+            <template #mybutton>
+                <button type="button" class="rounded-full border w-7 h-7 bg-gray-50 ms-3 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="inline-block"> <path d="M6 9l6 6l6 -6"></path> </svg>
+                </button>
+            </template>
+            <ul class="absolute left-1/2 -translate-x-1/2 bottom-[-210px] w-[200px] border rounded-xl bg-white px-2 py-3">
+                <template v-for="(activityType, idx) in activityTypes"
+                          :key="idx"
+                >
+                    <li>
                         <button type="button"
-                                class="shrink-0 px-3.5 py-2 border rounded-lg font-medium hover:bg-gray-200"
-                                :class="selectedActivityType == activityType.key ? 'bg-gray-200' : ''"
-                                @click="clickTab(activityType)"
-                        >{{activityType.value}}</button>
-                    </template>
-                </div>
-            </div>
-        </div>
-        <div class="flex justify-center mt-3">
-            <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6 shadow">
+                                class="px-4 py-2.5 hover:bg-gray-100 flex justify-between w-full"
+                                @click="clickTab(activityType);"
+                        >
+                            <div>{{activityType.value}}</div>
+                            <div v-if="selectedActivityType == activityType.key">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l5 5l10 -10"></path> </svg>
+                            </div>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </dropdown-component>
+    </header-component>
+    <div class="container-fluid mx-auto w-full">
+        <div class="flex justify-center">
+            <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full shadow">
                 <template v-if="list.data.length > 0">
                     <template v-if="selectedActivityType == 'follow'">
                         <follower-component v-for="follow in list.data"

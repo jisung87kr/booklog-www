@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user';
 import {sendRequest} from '../common.js';
 import throttle from 'lodash/throttle';
+import HeaderComponent from "../components/headerComponent.vue";
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
 //await userStore.checkUser();
@@ -104,9 +105,12 @@ onBeforeUnmount(() => {
 
 </script>
 <template>
-    <div class="container-fluid mx-auto w-full sm:pt-3">
+    <header-component>
+        <div class="font-bold">검색</div>
+    </header-component>
+    <div class="container-fluid mx-auto w-full">
         <div class="flex justify-center">
-            <div class="bg-white sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
+            <div class="bg-white sm:border sm:rounded-2xl flex-start max-w-xl w-full">
                 <form action="" class="p-6">
                     <div class="relative pl-6 border rounded-lg w-full">
                         <button type="button" class="absolute left-4 top-2.5 -translate-x-1/2 opacity-50">
