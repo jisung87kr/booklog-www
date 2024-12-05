@@ -18,7 +18,7 @@ const activityTypes = [
     { key: 'quotation', value: '리포스트' },
 ];
 
-const user = ref(window.userData);
+const user = ref(window.__profileUser);
 const showProfileModal = ref(true);
 
 const list = ref({

@@ -94,6 +94,9 @@ export function jsonToFormData(data, formData = new FormData(), parentKey = '') 
                 Array.from(value).forEach((file, index) => {
                     formData.append(`${fullKey}[${index}]`, file);
                 });
+            } else if (value instanceof File) {
+                // 단일 파일인 경우 처리
+                formData.append(fullKey, value);
             } else if (Array.isArray(value)) {
                 // 배열인 경우, 각 요소를 처리
                 value.forEach((item, index) => {

@@ -1,6 +1,8 @@
+@prepend('scripts')
 <script>
-    window.userData = @json($user);
+    window.__profileUser = @json($user);
 </script>
+@endprepend
 <x-app-layout>
     <suspense>
         <profile-component></profile-component>

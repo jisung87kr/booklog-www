@@ -11,12 +11,23 @@ import ShareButton from "../components//buttons/ShareButton.vue";
 const userStore = useUserStore();
 const auth = ref(userStore.user);
 const bookcase = ref(window.__bookcase);
-console.log(window.__bookcase);
-
+const profileUser = ref(window.__profileUser);
 </script>
 <template>
     <div class="container-fluid max-w-xl mx-auto w-full sm:pt-3">
-        <div class="grid grid-cols-3 gap-3">
+        <div class="bg-white rounded-xl">
+            <div class="p-6">
+                <div>{{ bookcase.title }}</div>
+                <div class="text-sm text-gray-600" v-if="bookcase.description">{{ bookcase.description }}</div>
+                <button type="button" class="rounded-xl px-3 py-2 border border-zinc-300 text-sm font-bold w-full my-6" v-if="auth.id == profileUser.id">책장 수정</button>
+                <div class="mt-2 flex gap-3">
+                    <like-button :model="bookcase" :auth="auth" :type="'bookcase'"></like-button>
+                    <comment-button :model="bookcase" :type="'bookcase'"></comment-button>
+                    <share-button :model="bookcase" :type="'bookcase'"></share-button>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-10">
             <template v-for="book in bookcase.books" :key="book.id">
                 <book-component :book="book">
                     <template #footer>
