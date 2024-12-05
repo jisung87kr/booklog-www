@@ -9,7 +9,7 @@ import HeaderComponent from "../components/headerComponent.vue";
 const userStore = useUserStore();
 //await userStore.checkUser();
 const auth = ref(userStore.user);
-
+const loaded = ref(false);
 const selectedActivityType = ref('follow');
 const activityTypes = [
     { key: 'follow', value: '팔로우' },
@@ -125,6 +125,7 @@ const getList = async (page) => {
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     await getList(1);
+    loaded.value = true;
 });
 
 onBeforeUnmount(() => {
@@ -133,76 +134,80 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <header-component>
-        <div class="font-bold">활동</div>
-        <dropdown-component class="z-30">
-            <template #mybutton>
-                <button type="button" class="rounded-full border w-7 h-7 bg-gray-50 ms-3 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="inline-block"> <path d="M6 9l6 6l6 -6"></path> </svg>
-                </button>
-            </template>
-            <ul class="absolute left-1/2 -translate-x-1/2 bottom-[-210px] w-[200px] border rounded-xl bg-white px-2 py-3">
-                <template v-for="(activityType, idx) in activityTypes"
-                          :key="idx"
-                >
-                    <li>
-                        <button type="button"
-                                class="px-4 py-2.5 hover:bg-gray-100 flex justify-between w-full"
-                                @click="clickTab(activityType);"
-                        >
-                            <div>{{activityType.value}}</div>
-                            <div v-if="selectedActivityType == activityType.key">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l5 5l10 -10"></path> </svg>
-                            </div>
+    <transition name="slide-fade">
+        <div v-if="loaded">
+            <header-component>
+                <div class="font-bold">활동</div>
+                <dropdown-component class="z-30">
+                    <template #mybutton>
+                        <button type="button" class="rounded-full border w-7 h-7 bg-gray-50 ms-3 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="inline-block"> <path d="M6 9l6 6l6 -6"></path> </svg>
                         </button>
-                    </li>
-                </template>
-            </ul>
-        </dropdown-component>
-    </header-component>
-    <div class="container-fluid mx-auto w-full">
-        <div class="flex justify-center">
-            <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full shadow">
-                <template v-if="list.data.length > 0">
-                    <template v-if="selectedActivityType == 'follow'">
-                        <follower-component v-for="follow in list.data"
-                                            :key="follow.id"
-                                            :follow="follow"
-                                            :auth="auth"
-                                            class="p-4"
-                        ></follower-component>
                     </template>
-                    <template v-else-if="selectedActivityType == 'reply'">
-                        <comment-component v-for="comment in list.data"
-                                           :key="comment.id"
-                                           :comment="comment"
-                                           :auth="auth"
-                                           :feed="comment.commentable"
-                                           class="p-4"
+                    <ul class="absolute left-1/2 -translate-x-1/2 bottom-[-210px] w-[200px] border rounded-xl bg-white px-2 py-3">
+                        <template v-for="(activityType, idx) in activityTypes"
+                                  :key="idx"
                         >
-                        </comment-component>
-                    </template>
-                    <template v-else-if="selectedActivityType == 'mention'">
-                        <feed-component v-for="mention in list.data"
-                                        :key="mention.id"
-                                        :auth="auth"
-                                        class="p-4"
-                                        :feed="mention.post"
-                        ></feed-component>
-                    </template>
-                    <template v-else-if="selectedActivityType == 'quotation'">
-                        <feed-component v-for="quotation in list.data"
-                                        :key="quotation.id"
-                                        :auth="auth"
-                                        class="p-4"
-                                        :feed="quotation"
-                        ></feed-component>
-                    </template>
-                </template>
-                <template v-else>
-                    <div class="p-6 text-gray-500 text-sm font-bold">데이터가 존재하지 않습니다.</div>
-                </template>
+                            <li>
+                                <button type="button"
+                                        class="px-4 py-2.5 hover:bg-gray-100 flex justify-between w-full"
+                                        @click="clickTab(activityType);"
+                                >
+                                    <div>{{activityType.value}}</div>
+                                    <div v-if="selectedActivityType == activityType.key">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l5 5l10 -10"></path> </svg>
+                                    </div>
+                                </button>
+                            </li>
+                        </template>
+                    </ul>
+                </dropdown-component>
+            </header-component>
+            <div class="container-fluid mx-auto w-full">
+                <div class="flex justify-center">
+                    <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full shadow">
+                        <template v-if="list.data.length > 0">
+                            <template v-if="selectedActivityType == 'follow'">
+                                <follower-component v-for="follow in list.data"
+                                                    :key="follow.id"
+                                                    :follow="follow"
+                                                    :auth="auth"
+                                                    class="p-4"
+                                ></follower-component>
+                            </template>
+                            <template v-else-if="selectedActivityType == 'reply'">
+                                <comment-component v-for="comment in list.data"
+                                                   :key="comment.id"
+                                                   :comment="comment"
+                                                   :auth="auth"
+                                                   :feed="comment.commentable"
+                                                   class="p-4"
+                                >
+                                </comment-component>
+                            </template>
+                            <template v-else-if="selectedActivityType == 'mention'">
+                                <feed-component v-for="mention in list.data"
+                                                :key="mention.id"
+                                                :auth="auth"
+                                                class="p-4"
+                                                :feed="mention.post"
+                                ></feed-component>
+                            </template>
+                            <template v-else-if="selectedActivityType == 'quotation'">
+                                <feed-component v-for="quotation in list.data"
+                                                :key="quotation.id"
+                                                :auth="auth"
+                                                class="p-4"
+                                                :feed="quotation"
+                                ></feed-component>
+                            </template>
+                        </template>
+                        <template v-else>
+                            <div class="p-6 text-gray-500 text-sm font-bold">데이터가 존재하지 않습니다.</div>
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </transition>
 </template>

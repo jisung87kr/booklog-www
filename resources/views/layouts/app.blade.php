@@ -10,6 +10,21 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <style>
+            .slide-fade-enter-active {
+                transition: all 0.3s ease-out;
+            }
+
+            .slide-fade-leave-active {
+                transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+            }
+
+            .slide-fade-enter-from,
+            .slide-fade-leave-to {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+        </style>
         @stack('scripts')
         <script>
             window.auth = @json(auth()->user());

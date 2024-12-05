@@ -8,7 +8,7 @@ import CommentModalComponent from "../components/CommentModalComponent.vue";
 const userStore = useUserStore();
 //await userStore.checkUser();
 const auth = ref(userStore.user);
-
+const loaded = ref(false);
 const postFormStore = usePostFormStore();
 postFormStore.$onAction(
     async ({
@@ -96,6 +96,7 @@ const scrollBottom = () => {
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     feeds.value = await fetchFeeds();
+    loaded.value = true;
 });
 
 onBeforeUnmount(() => {
@@ -104,29 +105,33 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <header-component>
-        <div class="font-bold">회원님을 위한 추천</div>
-    </header-component>
-    <div class="container-fluid mx-auto w-full">
-        <div class="flex justify-center">
-            <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
-                <feed-component :feed="feed"
-                                v-for="feed in feeds.data"
-                                :key="feed.id"
-                                :auth="auth"
-                                class="p-4"
-                ></feed-component>
-            </div>
-            <div class="max-w-lg w-full mx-6 hidden lg:block">
-                <div class="flex flex-col gap-6">
-                    <div class="bg-white border rounded-2xl p-6">
-                        <div>나를 위한 트랜드</div>
+    <Transition name="slide-fade">
+        <div v-if="loaded">
+            <header-component>
+                <div class="font-bold">회원님을 위한 추천</div>
+            </header-component>
+            <div class="container-fluid mx-auto w-full">
+                <div class="flex justify-center">
+                    <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
+                        <feed-component :feed="feed"
+                                        v-for="feed in feeds.data"
+                                        :key="feed.id"
+                                        :auth="auth"
+                                        class="p-4"
+                        ></feed-component>
                     </div>
-                    <div class="bg-white border rounded-2xl p-6">
-                        <div>팔로우 추천</div>
+                    <div class="max-w-lg w-full mx-6 hidden lg:block">
+                        <div class="flex flex-col gap-6">
+                            <div class="bg-white border rounded-2xl p-6">
+                                <div>나를 위한 트랜드</div>
+                            </div>
+                            <div class="bg-white border rounded-2xl p-6">
+                                <div>팔로우 추천</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </Transition>
 </template>
