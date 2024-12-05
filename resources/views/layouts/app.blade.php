@@ -12,17 +12,23 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <style>
             .slide-fade-enter-active {
-                transition: all 0.3s ease-out;
+                transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             }
 
             .slide-fade-leave-active {
-                transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+                transition: all 0.6s cubic-bezier(0.7, 0, 0.3, 1);
             }
 
             .slide-fade-enter-from,
             .slide-fade-leave-to {
                 transform: translateY(-20px);
                 opacity: 0;
+            }
+
+            .slide-fade-enter-to,
+            .slide-fade-leave-from {
+                transform: translateY(0);
+                opacity: 1;
             }
         </style>
         @stack('scripts')
