@@ -60,7 +60,7 @@ export default {
 
 .modal-body {
     max-height: 80%;
-    overflow: auto;
+    //overflow: auto;
 }
 
 button {

@@ -71,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::resource('/posts', PostApiController::class)->names('post')->except(['index']);
 
-    Route::get('/{type}/{id}/images', [ImageApiController::class, 'store'])->name('image.store');
+    Route::post('/{type}/{id}/images', [ImageApiController::class, 'store'])->name('image.store');
     Route::resource('/{type}/{id}/attachments', AttachmentApiController::class)->names('attachment');
 
     Route::post('follows', [UserApiController::class, 'follow'])->name('user.follow');

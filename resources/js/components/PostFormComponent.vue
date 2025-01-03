@@ -60,6 +60,7 @@ const storePost = async () => {
     showModal.value = false;
     content.value = '';
     emit('storePost', params);
+    window.location.href = '/home';
 };
 
 // 버튼 클릭 시 파일 input을 트리거하는 함수
