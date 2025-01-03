@@ -39,7 +39,13 @@ class UserBookcaseApiController extends Controller
                'is_default' => 'nullable|boolean',
             ]);
 
+            $booksValidated = $request->validate([
+                'books.*' => 'required|integer|exists:books,id',
+            ]);
+
             $bookcase = $user->bookcases()->create($validated);
+            $bookcase->books()->attach(request()->input('books'));
+            $bookcase->load('books');
             return ApiResponse::success('', $bookcase);
         } catch(\Exception $e) {
             return ApiResponse::error($e->getMessage());
@@ -72,8 +78,13 @@ class UserBookcaseApiController extends Controller
                 'is_default' => 'nullable|boolean',
             ]);
 
-            $bookcase->update($validated);
+            $booksValidated = $request->validate([
+                'books.*' => 'required|integer|exists:books,id',
+            ]);
 
+            $bookcase->update($validated);
+            $bookcase->books()->sync(request()->input('books'));
+            $bookcase->load('books');
             return ApiResponse::success('', $bookcase);
         } catch(\Exception $e) {
             return ApiResponse::error($e->getMessage());

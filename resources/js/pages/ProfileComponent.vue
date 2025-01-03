@@ -1,9 +1,12 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import {ref, onMounted, onBeforeUnmount, nextTick, watch, onUpdated} from 'vue';
 import axios from 'axios';
 import { useUserStore } from '../stores/user.js';
 import ProfileModalComponent from "../components/ProfileModalComponent.vue";
 import BookcaseComponent from "../components/BookcaseComponent.vue";
+import Sortable from "sortablejs";
+import cloneDeep from "lodash/cloneDeep";
+import {sendRequest} from "../common.js";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
@@ -21,6 +24,8 @@ const activityTypes = [
 
 const user = ref(window.__profileUser);
 const showProfileModal = ref(true);
+const sortableEl = ref(null);
+const sortableInstance = ref(null);
 
 const list = ref({
     current_page: 1,
@@ -102,9 +107,12 @@ const handleScroll = async () => {
     }
 };
 
-const clickTab = (activityType) => {
+const clickTab = async (activityType) => {
     selectedActivityType.value = activityType.key;
-    getList(1);
+    await getList(1);
+    await nextTick(i => {
+        initSortable();
+    });
 };
 
 const getList = async (page) => {
@@ -136,10 +144,42 @@ const getList = async (page) => {
     }
 };
 
+const updateBookcaseOrder = async () => {
+    let params = {
+        bookcases: list.value.data,
+    };
+    const response = await sendRequest('PUT', `/api/users/${auth.value.username}/bookcases/order`, params);
+    console.log(response);
+}
+
+const initSortable = () => {
+    if (selectedActivityType.value === 'bookcase') {
+        sortableInstance.value = new Sortable(sortableEl.value, {
+            animation: 150,
+            onEnd: (event) => {
+                let bookcase = [...list.value.data];
+                bookcase.splice(event.newIndex, 0, bookcase.splice(event.oldIndex, 1)[0]);
+
+                bookcase = bookcase.map((item, index) => {
+                    return {
+                        ...item,
+                        order: index,
+                    };
+                });
+
+                list.value.data = bookcase;
+                updateBookcaseOrder();
+            },
+        });
+    }
+};
+
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     await getList(1);
     loaded.value = true;
+    await nextTick();
+    initSortable();
 });
 
 onBeforeUnmount(() => {
@@ -148,7 +188,7 @@ onBeforeUnmount(() => {
 </script>
 <template>
     <Transition name="slide-fade">
-        <div v-if="loaded">
+        <div v-show="loaded">
             <header-component>
                 <div class="font-bold">프로필</div>
             </header-component>
@@ -258,7 +298,15 @@ onBeforeUnmount(() => {
                             </template>
                         </div>
                         <template v-if="list.data.length > 0">
-                            <div class="divide-y">
+                            <div class="mt-4 text-center" v-if="auth && user.id == auth.id && selectedActivityType == 'bookcase'">
+                                <a :href="'/@'+auth.username+'/bookcases/create'" class="rounded-xl px-3 py-2 border border-zinc-300 text-sm font-bold text-center inline-block">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="mr-1"> <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path> <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path> <path d="M16 5l3 3"></path> </svg>
+                                        <span>책장추가</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="divide-y" ref="sortableEl">
                                 <template v-if="selectedActivityType == 'bookcase'">
                                     <bookcase-component v-for="bookcase in list.data"
                                                         :key="bookcase.id"

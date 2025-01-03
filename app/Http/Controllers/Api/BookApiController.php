@@ -13,7 +13,10 @@ class BookApiController extends Controller
     public function index()
     {
         try {
-            $books = Book::simplePaginate(30);
+            $filters = [
+                'q' => request()->input('q'),
+            ];
+            $books = Book::filter($filters)->simplePaginate(30);
             return ApiResponse::success('책목록 조회 성공', $books);
         } catch (\Exception $e) {
             return ApiResponse::error('책목록 조회 실패', $e->getMessage());

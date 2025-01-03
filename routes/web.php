@@ -42,7 +42,9 @@ Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 // profile
 Route::get('/@{user}', [UserController::class, 'profile'])->name('profile');
 
+Route::get('/@{user}/bookcases/create', [UserBookcaseController::class, 'create'])->name('bookcase.create');
 Route::get('/@{user}/bookcases/{bookcase}', [UserBookcaseController::class, 'show'])->name('bookcase.show');
+Route::get('/@{user}/bookcases/{bookcase}/edit', [UserBookcaseController::class, 'edit'])->name('bookcase.edit');
 
 Route::middleware([
     'auth:sanctum',

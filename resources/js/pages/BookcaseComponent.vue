@@ -8,6 +8,7 @@ import LikeButton from "../components/buttons/LikeButton.vue";
 import CommentButton from "../components/buttons/CommentButton.vue";
 import ShareButton from "../components//buttons/ShareButton.vue";
 import HeaderComponent from "../components/headerComponent.vue";
+import {sendRequest} from "../common.js";
 
 const userStore = useUserStore();
 const loaded = ref(false);
@@ -15,6 +16,14 @@ const auth = ref(userStore.user);
 const bookcase = ref(window.__bookcase);
 const profileUser = ref(window.__profileUser);
 
+const deleteBookcase = () => {
+    if (confirm('정말 삭제하시겠습니까?')) {
+        sendRequest('delete', `/api/users/${auth.value.username}/bookcases/${bookcase.value.id}`)
+            .then(() => {
+                location.href = `/@${auth.value.username}`;
+            });
+    }
+};
 onMounted(async () => {
     loaded.value = true;
 });
@@ -27,10 +36,14 @@ onMounted(async () => {
             </header-component>
             <div class="container-fluid max-w-xl mx-auto w-full">
                 <div class="bg-white rounded-xl">
+
                     <div class="p-6">
                         <div>{{ bookcase.title }}</div>
                         <div class="text-sm text-gray-600" v-if="bookcase.description">{{ bookcase.description }}</div>
-                        <button type="button" class="rounded-xl px-3 py-2 border border-zinc-300 text-sm font-bold w-full my-6" v-if="auth.id == profileUser.id">책장 수정</button>
+                        <div class="grid grid-cols-2 gap-3" v-if="auth && auth.id == profileUser.id">
+                            <a :href="'/@'+auth.username+'/bookcases/'+bookcase.id+'/edit'" class="rounded-xl block text-center px-3 py-2 border border-zinc-300 text-sm font-bold w-full my-6">책장 수정</a>
+                            <button type="button" class="rounded-xl block text-center px-3 py-2 border border-red-300 text-sm font-bold w-full my-6 text-red-600" @click="deleteBookcase">삭제</button>
+                        </div>
                         <div class="mt-2 flex gap-3">
                             <like-button :model="bookcase" :auth="auth" :type="'bookcase'"></like-button>
                             <comment-button :model="bookcase" :type="'bookcase'"></comment-button>

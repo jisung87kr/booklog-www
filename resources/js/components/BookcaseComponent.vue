@@ -14,7 +14,21 @@ const props = defineProps({
 
 </script>
 <template>
-    <div>
+    <div class="bg-white">
+        <div class="text-center" v-if="auth && auth.id == bookcase.user.id">
+            <button type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16"
+                     height="16" stroke-width="2">
+                    <path d="M5 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                    <path d="M5 15m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                    <path d="M12 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                    <path d="M12 15m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                    <path d="M19 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                    <path d="M19 15m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                </svg>
+            </button>
+        </div>
         <div class="flex">
             <div class="w-full">
                 <div>{{ props.bookcase.title }}</div>

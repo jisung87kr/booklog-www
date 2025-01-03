@@ -4,6 +4,9 @@ import ActivityComponent from "../pages/ActivityComponent.vue";
 import ProfileComponent from "../pages/ProfileComponent.vue";
 import SearchComponent from "../pages/SearchComponent.vue";
 import BookcaseComponent from "../pages/BookcaseComponent.vue";
+import BookcaseCreateComponent from "../pages/BookcaseCreateComponent.vue";
+import BookcaseEditComponent from "../pages/BookcaseEditComponent.vue";
+import BookcaseFormComponent from "../pages/BookcaseFormComponent.vue";
 
 // 컴포넌트
 import PostFormComponent from "./PostFormComponent.vue";
@@ -37,6 +40,10 @@ export default {
     "profile-component": ProfileComponent,
     "search-component": SearchComponent,
     "bookcase-component": BookcaseComponent,
+    "bookcase-create-component": BookcaseCreateComponent,
+    "bookcase-edit-component": BookcaseEditComponent,
+    "bookcase-form-component": BookcaseFormComponent,
+
     // 컴포넌트
     "post-form-component": PostFormComponent,
     "feed-component": FeedComponent,
