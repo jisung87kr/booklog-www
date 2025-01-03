@@ -97,7 +97,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::PUT('/{user}', [UserApiController::class, 'update'])->name('user.update');
 
     Route::PUT('/users/{user}/bookcases/order', [UserBookcaseApiController::class, 'updateOrder'])->name('user.bookcase.updateOrder');
-    Route::resource('/users/{user}/bookcases', UserBookcaseApiController::class)->names('user.bookcase');
+    Route::resource('/users/{user}/bookcases', UserBookcaseApiController::class)->names('user.bookcase')->except(['index']);
 
     Route::PUT('/bookcases/{bookcase}/order', [BookUserBookcaseApiController::class, 'updateOrder'])->name('bookcase.updateOrder');
     Route::resource('/bookcases/{bookcase}/books', BookUserBookcaseApiController::class)->names('bookcase.book');
@@ -110,3 +110,4 @@ Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('r
 Route::get('/@{user}', [UserApiController::class, 'show'])->name('user.show');
 Route::get('/posts', [PostApiController::class, 'index'])->name('post.index');
 Route::post('/actions', [UserActionApiController::class, 'store'])->name('action.store');
+Route::get('/users/{user}/bookcases', [UserBookcaseApiController::class, 'index'])->name('user.bookcase.index');
