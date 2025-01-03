@@ -37,6 +37,11 @@ const searchBooks = debounce(async () => {
 const addBook = (id) => {
     const book = books.value.find(book => book.id === id);
     book.checked = true;
+    book.pivot = {
+        book_id: book.id,
+    };
+
+    console.log(book);
     bookcaseBooks.value.push(book);
 };
 const deleteBook = (id) => {
@@ -56,7 +61,7 @@ const saveBookStore = async () => {
                 title: bookcase.value.title,
                 description: bookcase.value.description,
                 privacy: bookcase.value.privacy,
-                books: bookcaseBooks.value.map(book => book.id),
+                books: bookcaseBooks.value.map(book => book.pivot.book_id),
             }
             await sendRequest('PUT', `/api/users/${auth.value.username}/bookcases/${bookcase.value.id}`, params);
         } else {
@@ -71,6 +76,7 @@ const saveBookStore = async () => {
                 window.location.href = `/@${auth.value.username}/bookcases/${response.data.id}`;
             }
         }
+        alert('저장되었습니다.');
     } catch (error) {
         console.error(error);
     }
@@ -78,10 +84,8 @@ const saveBookStore = async () => {
 
 const setChecked = () => {
     let newBooks = books.value.map(book => {
-        return {
-            ...book,
-            checked: bookcaseBooks.value.some(bookcaseBook => bookcaseBook.pivot.book_id === book.id),
-        };
+        book.checked = bookcaseBooks.value.some(bookcaseBook => bookcaseBook.pivot.book_id === book.id);
+        return book;
     });
 
     books.value = [...newBooks];
@@ -168,7 +172,7 @@ onMounted(async () => {
                                         </div>
                                     </li>
                                 </ul>
-                                <div class="absolute left-0 bottom-0 right-0 h-[70px] bg-gradient-to-t from-white"></div>
+                                <div class="absolute left-0 bottom-0 right-0 h-[30px] bg-gradient-to-t from-white"></div>
                             </div>
                         </template>
                         <template v-else>
