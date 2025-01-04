@@ -18,9 +18,9 @@ class TagApiController extends Controller
     {
         try {
             $tags = Tag::paginate(30);
-            return ApiResponse::success('', $tags);
+            return response()->success('', $tags);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -35,14 +35,14 @@ class TagApiController extends Controller
             ]);
 
             $tag = Tag::create($validated);
-            return ApiResponse::success('', $tag);
+            return response()->success('', $tag);
         } catch (QueryException $e) {
             if($e->getCode() == '23000'){
-                return ApiResponse::error('이미 존재하는 태그명입니다.', $e->getMessage());
+                return response()->error('이미 존재하는 태그명입니다.', $e->getMessage());
             }
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -52,9 +52,9 @@ class TagApiController extends Controller
     public function show(Tag $tag)
     {
         try {
-            return ApiResponse::success('', $tag);
+            return response()->success('', $tag);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -69,9 +69,9 @@ class TagApiController extends Controller
             ]);
 
             $tag->update($validated);
-            return ApiResponse::success('', $tag);
+            return response()->success('', $tag);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -82,9 +82,9 @@ class TagApiController extends Controller
     {
         try {
             $tag->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

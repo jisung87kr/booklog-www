@@ -27,9 +27,9 @@ class ImageApiController extends Model
         try {
             $model = $this->getCommentableModel($type, $id);
             $images = $model->images()->paginate(10);
-            return ApiResponse::success('', $images);
+            return response()->success('', $images);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -39,9 +39,9 @@ class ImageApiController extends Model
             $model = $this->getCommentableModel($type, $id);
             $images = $request->file('images');
             $uploadedImages = $this->imageService->storeImages($model, $images, $request->all());
-            return ApiResponse::success('', $uploadedImages);
+            return response()->success('', $uploadedImages);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -49,9 +49,9 @@ class ImageApiController extends Model
         try {
             Storage::delete($image->file_path);
             $image->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 

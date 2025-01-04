@@ -19,9 +19,9 @@ class UserApiController extends Controller
                 'q' => $request->query('q'),
             ];
             $users = User::filter($filter)->paginate(30);
-            return ApiResponse::success('', $users);
+            return response()->success('', $users);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -41,9 +41,9 @@ class UserApiController extends Controller
             }
 
             $user->update($validated);
-            return ApiResponse::success('', $user);
+            return response()->success('', $user);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
 
     }
@@ -52,9 +52,9 @@ class UserApiController extends Controller
     {
         try {
             $recommendedUsers = User::inRandomOrder()->limit(20)->get();
-            return ApiResponse::success('', $recommendedUsers);
+            return response()->success('', $recommendedUsers);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -65,9 +65,9 @@ class UserApiController extends Controller
                 'follow_id' => $request->user()->id,
                 'following_id' => $request->input('user_id')
             ]);
-            return ApiResponse::success('', $result);
+            return response()->success('', $result);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -75,9 +75,9 @@ class UserApiController extends Controller
     {
         try {
             $result = Follow::where('follow_id', request()->user()->id)->where('following_id', $user->id)->delete();
-            return ApiResponse::success('', $result);
+            return response()->success('', $result);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

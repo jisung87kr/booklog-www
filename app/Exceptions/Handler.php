@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (NotFoundHttpException $e, $request) {
             if ($request->is('api/*')) { // <- Add your condition here
-                return ApiResponse::error('record not found.', null, 404);
+                return response()->error('record not found.', null, 404);
             }
         });
     }

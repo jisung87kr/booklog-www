@@ -15,9 +15,9 @@ class UserBookApiController extends Controller
     {
         try {
             $books = $user->books()->orderBy('idx')->latest()->paginate(5);
-            return ApiResponse::success('', $books);
+            return response()->success('', $books);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -29,15 +29,15 @@ class UserBookApiController extends Controller
             ]);
 
             $user->books()->attach($request->input('book_id'));
-            return ApiResponse::success('', $user->books);
+            return response()->success('', $user->books);
         } catch (QueryException $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::error('이미 등록된 책입니다.');
+                return response()->error('이미 등록된 책입니다.');
             }
 
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -55,15 +55,15 @@ class UserBookApiController extends Controller
                 }
             }
 
-            return ApiResponse::success('', $user->books);
+            return response()->success('', $user->books);
         } catch (QueryException $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::error('이미 등록된 책입니다.');
+                return response()->error('이미 등록된 책입니다.');
             }
 
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -71,9 +71,9 @@ class UserBookApiController extends Controller
     {
         try {
             $user->books()->detach($book->id);
-            return ApiResponse::success('', $user->books);
+            return response()->success('', $user->books);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

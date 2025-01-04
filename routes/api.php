@@ -40,9 +40,9 @@ use App\Http\Responses\ApiResponse;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     try {
-        return ApiResponse::success('', $request->user());
+        return response()->success('', $request->user());
     } catch (\Exception $e) {
-        return ApiResponse::error('', $e->getMessage());
+        return response()->error('', $e->getMessage());
     }
 });
 

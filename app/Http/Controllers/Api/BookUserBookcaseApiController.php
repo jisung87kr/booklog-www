@@ -17,9 +17,9 @@ class BookUserBookcaseApiController extends Controller
     {
         try {
             $books = $bookcase->books()->paginate(20);
-            return ApiResponse::success('', $books);
+            return response()->success('', $books);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -32,9 +32,9 @@ class BookUserBookcaseApiController extends Controller
             $bookcase->books()->attach($request->book_id, [
                 'order' => $request->order,
             ]);
-            return ApiResponse::success('', $bookcase->books);
+            return response()->success('', $bookcase->books);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -49,9 +49,9 @@ class BookUserBookcaseApiController extends Controller
                 'order' => $request->order,
             ]);
 
-            return ApiResponse::success('', $bookcase->books);
+            return response()->success('', $bookcase->books);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -62,9 +62,9 @@ class BookUserBookcaseApiController extends Controller
     {
         try {
             $result = $bookcase->books()->detach($book);
-            return ApiResponse::success('', $result);
+            return response()->success('', $result);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -85,9 +85,9 @@ class BookUserBookcaseApiController extends Controller
                 ]);
             }
 
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

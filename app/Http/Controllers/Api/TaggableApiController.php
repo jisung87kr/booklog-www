@@ -30,9 +30,9 @@ class TaggableApiController extends Controller
             $tagIds = Tag::whereIn('name', collect($validated['tag'])->pluck('name'))->pluck('id');
             $model = $this->morphService->getMorphModel($type, $id);
             $model->tags()->sync($tagIds);
-            return ApiResponse::success('', $tagIds);
+            return response()->success('', $tagIds);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

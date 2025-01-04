@@ -28,9 +28,9 @@ class UserActionApiController extends Controller
     {
         try {
             $actions = request()->user()->actions()->orderBy('id', 'desc')->paginate(30);
-            return ApiResponse::success('', $actions);
+            return response()->success('', $actions);
         } catch (\Exception $e){
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -59,10 +59,10 @@ class UserActionApiController extends Controller
                 }
             }
 
-            return ApiResponse::success('', $action);
+            return response()->success('', $action);
         } catch (\Exception $e){
             Log::error($e->getMessage(), $e->getTrace());
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -72,9 +72,9 @@ class UserActionApiController extends Controller
     public function show(User $user, UserAction $action)
     {
         try {
-            return ApiResponse::success('', $action);
+            return response()->success('', $action);
         } catch (\Exception $e){
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -94,9 +94,9 @@ class UserActionApiController extends Controller
             $model = $this->morphService->getMorphModel($validated['user_actionable_type'], $validated['user_actionable_id']);
             $validated['user_actionable_type'] = $model::class;
             $action->update($validated);
-            return ApiResponse::success('', $action);
+            return response()->success('', $action);
         } catch (\Exception $e){
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -107,9 +107,9 @@ class UserActionApiController extends Controller
     {
         try {
             $action->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e){
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

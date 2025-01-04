@@ -17,9 +17,9 @@ class UserBadgeApiController extends Controller
     {
         try {
             $badges = $user->badges()->paginate(30);
-            return ApiResponse::success('', $badges);
+            return response()->success('', $badges);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -34,9 +34,9 @@ class UserBadgeApiController extends Controller
             ]);
 
             $user->badges()->attach($validated);
-            return ApiResponse::success('', $user->badges);
+            return response()->success('', $user->badges);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -47,9 +47,9 @@ class UserBadgeApiController extends Controller
     {
         try {
             $user->badges()->detach($badge->id);
-            return ApiResponse::success('');
+            return response()->success('');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

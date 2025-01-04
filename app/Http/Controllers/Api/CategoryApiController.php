@@ -19,9 +19,9 @@ class CategoryApiController extends Controller
     {
         try {
             $categories = Category::where('parent_id', null)->get();
-            return ApiResponse::success('', $categories);
+            return response()->success('', $categories);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -38,14 +38,14 @@ class CategoryApiController extends Controller
             ]);
 
             $category = Category::create($validated);
-            return ApiResponse::success('', $category);
+            return response()->success('', $category);
         } catch (QueryException $e) {
             if($e->getCode() == '23000'){
-                return ApiResponse::error('이미 존재하는 카테고리입니다.', $e->getMessage());
+                return response()->error('이미 존재하는 카테고리입니다.', $e->getMessage());
             }
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -55,9 +55,9 @@ class CategoryApiController extends Controller
     public function show(Category $category)
     {
         try {
-            return ApiResponse::success('', $category);
+            return response()->success('', $category);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -74,9 +74,9 @@ class CategoryApiController extends Controller
             ]);
 
             $category->update($validated);
-            return ApiResponse::success('', $category);
+            return response()->success('', $category);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -87,9 +87,9 @@ class CategoryApiController extends Controller
     {
         try {
             $category->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

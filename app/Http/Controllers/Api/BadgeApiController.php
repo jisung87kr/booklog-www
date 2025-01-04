@@ -16,9 +16,9 @@ class BadgeApiController extends Controller
     {
         try {
             $badges = Badge::paginate(30);
-            return ApiResponse::success('', $badges);
+            return response()->success('', $badges);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -35,9 +35,9 @@ class BadgeApiController extends Controller
 
             $badge = Badge::create($validated);
 
-            return ApiResponse::success('', $badge);
+            return response()->success('', $badge);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -47,9 +47,9 @@ class BadgeApiController extends Controller
     public function show(Badge $badge)
     {
         try {
-            return ApiResponse::success('', $badge);
+            return response()->success('', $badge);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -65,9 +65,9 @@ class BadgeApiController extends Controller
                 'description' => 'nullable',
             ]);
             $badge->update($validated);
-            return ApiResponse::success('', $badge);
+            return response()->success('', $badge);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -78,9 +78,9 @@ class BadgeApiController extends Controller
     {
         try {
             $badge->delete();
-            return ApiResponse::success('');
+            return response()->success('');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

@@ -19,9 +19,9 @@ class AuthorApiController extends Controller
     {
         try {
             $autho = Author::paginate(30);
-            return ApiResponse::success('', $autho);
+            return response()->success('', $autho);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -51,9 +51,9 @@ class AuthorApiController extends Controller
                 ]);
             }
 
-            return ApiResponse::success('', $author);
+            return response()->success('', $author);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -63,9 +63,9 @@ class AuthorApiController extends Controller
     public function show(Author $author)
     {
         try {
-            return ApiResponse::success('', $author);
+            return response()->success('', $author);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -97,9 +97,9 @@ class AuthorApiController extends Controller
 
                 Storage::delete($oldFilePath);
             }
-            return ApiResponse::success('', $author);
+            return response()->success('', $author);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -110,9 +110,9 @@ class AuthorApiController extends Controller
     {
         try {
             $author->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

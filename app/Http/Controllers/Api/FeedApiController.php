@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 
 class FeedApiController extends Controller
 {
@@ -25,9 +27,10 @@ class FeedApiController extends Controller
             } else {
                 $feeds = Post::published()->filter($filters)->orderBy('id', 'desc')->paginate(40);
             }
-            return ApiResponse::success('', $feeds);
+            return response()->success('', $feeds);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            Log::error($e->getMessage());
+            return response()->error('', $e->getMessage());
         }
 
     }

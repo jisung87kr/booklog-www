@@ -17,20 +17,20 @@ class BookApiController extends Controller
                 'q' => request()->input('q'),
             ];
             $books = Book::filter($filters)->simplePaginate(30);
-            return ApiResponse::success('책목록 조회 성공', $books);
+            return response()->success('책목록 조회 성공', $books);
         } catch (\Exception $e) {
-            return ApiResponse::error('책목록 조회 실패', $e->getMessage());
+            return response()->error('책목록 조회 실패', $e->getMessage());
         }
     }
 
     public function show(Book $book)
     {
         try {
-            return ApiResponse::success('책조회 성공', $book);
+            return response()->success('책조회 성공', $book);
         } catch (ModelNotFoundException $e) {
-            return ApiResponse::error('책 조회 실패', '해당 책을 찾을 수 없습니다.', 404);
+            return response()->error('책 조회 실패', '해당 책을 찾을 수 없습니다.', 404);
         } catch (\Exception $e) {
-            return ApiResponse::error('책조회 실패', $e->getMessage());
+            return response()->error('책조회 실패', $e->getMessage());
         }
     }
 
@@ -48,9 +48,9 @@ class BookApiController extends Controller
                 'total_pages'    => ['int'],
             ]);
             $book = Book::create($validated);
-            return ApiResponse::success('', $book);
+            return response()->success('', $book);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -68,9 +68,9 @@ class BookApiController extends Controller
                 'total_pages'    => ['nullable', 'int'],
             ]);
             $book->update($validated);
-            return ApiResponse::success('', $book);
+            return response()->success('', $book);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -78,9 +78,9 @@ class BookApiController extends Controller
     {
         try {
             $book->delete();
-            return ApiResponse::success('책 삭제 성공');
+            return response()->success('책 삭제 성공');
         } catch (\Exception $e) {
-            return ApiResponse::error('책 삭제 실패');
+            return response()->error('책 삭제 실패');
         }
     }
 }

@@ -23,9 +23,9 @@ class CommentApiController extends Controller
     {
         try {
             $model = $this->morphService->getMorphModel($type, $id);
-            return ApiResponse::success('', $model->comments()->paginate(10));
+            return response()->success('', $model->comments()->paginate(10));
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
 
     }
@@ -46,9 +46,9 @@ class CommentApiController extends Controller
             }
 
             $comment = $model->comments()->create($validated);
-            return ApiResponse::success('', $comment);
+            return response()->success('', $comment);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -58,9 +58,9 @@ class CommentApiController extends Controller
     public function show(Comment $comment)
     {
         try {
-            return ApiResponse::success('', $comment);
+            return response()->success('', $comment);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -74,9 +74,9 @@ class CommentApiController extends Controller
                'body' => 'required'
             ]);
             $comment->update($validated);
-            return ApiResponse::success('', $comment);
+            return response()->success('', $comment);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -87,9 +87,9 @@ class CommentApiController extends Controller
     {
         try {
             $comment->delete();
-            return ApiResponse::success('', '');
+            return response()->success('', '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

@@ -16,9 +16,9 @@ class ActivityApiController extends Controller
     {
         try {
             $followers = $user->followers()->orderBy('id', 'desc')->paginate(10);
-            return ApiResponse::success('', $followers);
+            return response()->success('', $followers);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -39,9 +39,9 @@ class ActivityApiController extends Controller
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(10);
-            return ApiResponse::success('', $replies);
+            return response()->success('', $replies);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -49,9 +49,9 @@ class ActivityApiController extends Controller
     {
         try {
             $mentions = $user->mentions()->with('Post')->orderBy('id', 'desc')->paginate(10);
-            return ApiResponse::success('', $mentions);
+            return response()->success('', $mentions);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -64,9 +64,9 @@ class ActivityApiController extends Controller
                     ->where('user_id', $user->id);
             })->orderBy('id', 'desc')->paginate(10);
 
-            return ApiResponse::success('', $quotations);
+            return response()->success('', $quotations);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

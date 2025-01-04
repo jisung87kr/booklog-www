@@ -18,9 +18,9 @@ class UserBookcaseApiController extends Controller
     {
         try {
             $bookcases = $user->bookcases()->with(['books', 'user'])->where('privacy', false)->paginate(20);
-            return ApiResponse::success('', $bookcases);
+            return response()->success('', $bookcases);
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 
@@ -46,9 +46,9 @@ class UserBookcaseApiController extends Controller
             $bookcase = $user->bookcases()->create($validated);
             $bookcase->books()->attach(request()->input('books'));
             $bookcase->load('books');
-            return ApiResponse::success('', $bookcase);
+            return response()->success('', $bookcase);
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 
@@ -58,9 +58,9 @@ class UserBookcaseApiController extends Controller
     public function show(User $user, UserBookcase $bookcase)
     {
         try {
-            return ApiResponse::success('', $bookcase);
+            return response()->success('', $bookcase);
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 
@@ -81,9 +81,9 @@ class UserBookcaseApiController extends Controller
             $bookcase->update($validated);
             $bookcase->books()->sync(request()->input('books'));
             $bookcase->load('books');
-            return ApiResponse::success('', $bookcase);
+            return response()->success('', $bookcase);
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 
@@ -94,9 +94,9 @@ class UserBookcaseApiController extends Controller
     {
         try {
             $result = $bookcase->delete();
-            return ApiResponse::success('', $result);
+            return response()->success('', $result);
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 
@@ -116,9 +116,9 @@ class UserBookcaseApiController extends Controller
                 $bookcase->update(['order' => $value['order']]);
             }
 
-            return ApiResponse::success();
+            return response()->success();
         } catch(\Exception $e) {
-            return ApiResponse::error($e->getMessage());
+            return response()->error($e->getMessage());
         }
     }
 }

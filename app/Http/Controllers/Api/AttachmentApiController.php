@@ -28,9 +28,9 @@ class AttachmentApiController extends Controller
     {
         try {
             $model = $this->morphService->getMorphModel($type, $id);
-            return ApiResponse::success('', $model->attachments);
+            return response()->success('', $model->attachments);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ class AttachmentApiController extends Controller
                     }
                 }
             }
-            return ApiResponse::success('wqe', $uploadedFiles);
+            return response()->success('wqe', $uploadedFiles);
         } catch (\Exception $e) {
             Log::error($e->getMessage(), $e->getTrace());
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -76,9 +76,9 @@ class AttachmentApiController extends Controller
     {
         try {
             $model = $this->morphService->getMorphModel($type, $id);
-            return ApiResponse::success();
+            return response()->success();
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }

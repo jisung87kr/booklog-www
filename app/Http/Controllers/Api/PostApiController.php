@@ -19,9 +19,9 @@ class PostApiController extends Controller
         try {
             $filters = request()->all();
             $posts = Post::published()->filter($filters)->paginate(10);
-            return ApiResponse::success("", $posts);
+            return response()->success("", $posts);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -41,9 +41,9 @@ class PostApiController extends Controller
             $validated['status'] = PostStatusEnum::PUBLISHED;
 
             $post = $request->user()->posts()->create($validated);
-            return ApiResponse::success("", $post);
+            return response()->success("", $post);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -53,9 +53,9 @@ class PostApiController extends Controller
     public function show(Post $post)
     {
         try {
-            return ApiResponse::success("", $post);
+            return response()->success("", $post);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -73,9 +73,9 @@ class PostApiController extends Controller
                 'status' => ['nullable', Rule::enum(PostStatusEnum::class)]
             ]);
             $post->update($validated);
-            return ApiResponse::success("", $post);
+            return response()->success("", $post);
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 
@@ -86,9 +86,9 @@ class PostApiController extends Controller
     {
         try {
             $post->delete();
-            return ApiResponse::success("", '');
+            return response()->success("", '');
         } catch (\Exception $e) {
-            return ApiResponse::error('', $e->getMessage());
+            return response()->error('', $e->getMessage());
         }
     }
 }
