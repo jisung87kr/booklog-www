@@ -2,8 +2,9 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user';
 import {sendRequest} from '../common.js';
-import throttle from 'lodash/throttle';
+import debounce from 'lodash/throttle';
 import HeaderComponent from "../components/headerComponent.vue";
+import AvatarComponent from "../components/AvatarComponent.vue";
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
 //await userStore.checkUser();
@@ -19,19 +20,10 @@ const feeds = ref({
 const loading = ref(false);
 const modalOpen = ref(false);
 const contentModalOpen = ref(false);
-const selectedFeed = ref({
-    id: null,
-    user: {
-        name: null,
-        profile_photo_url: null,
-    },
-    note: null,
-    images: [],
-});
-
 const q = ref(new URLSearchParams(window.location.search).get('q') || '');
 const qsearch_type = ref(new URLSearchParams(window.location.search).get('qsearch_type') || '');
 const recommendedUsers = ref([]);
+const searchData = ref([]);
 
 const fetchFeeds = async (page = 1) => {
     try {
@@ -79,20 +71,26 @@ const fetchRecommendedUsers = async () => {
     loading.value = false;
 };
 
-const throttleEvent = throttle(async (callback) => {
+const throttleEvent = debounce(async (callback) => {
     await callback();
 }, 1000);
 
 
 const search = async () => {
     throttleEvent(async () => {
-        const feedsResponse = await fetchFeeds();
-        feeds.value = feedsResponse;
+        // feeds.value = await fetchFeeds();
+        // feeds.value = feedsResponse;
+        searchData.value = await fetchSearchData();
     });
 };
 
+const fetchSearchData = async () => {
+    return await sendRequest('GET', 'api/search', {q: q.value, qsearch_type: qsearch_type.value});
+}
+
 onMounted(async () => {
     await fetchRecommendedUsers();
+    await fetchSearchData();
     window.addEventListener("scroll", handleScroll);
     if (q.value) {
         const feedsResponse = await fetchFeeds();
@@ -117,9 +115,9 @@ onBeforeUnmount(() => {
                 <div class="flex justify-center">
                     <div class="bg-white sm:border sm:rounded-2xl flex-start max-w-xl w-full">
                         <form action="" class="p-6">
-                            <div class="relative pl-6 border rounded-lg w-full">
-                                <button type="button" class="absolute left-4 top-2.5 -translate-x-1/2 opacity-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <div class="relative pl-7 border rounded-2xl w-full overflow-hidden">
+                                <button type="button" class="absolute left-6 top-2.5 -translate-x-1/2 opacity-50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="18" height="18" viewBox="0 0 24 24" stroke-width="1" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
                                         <path d="M21 21l-6 -6" />
@@ -129,18 +127,55 @@ onBeforeUnmount(() => {
                                 <input type="hidden" name="qsearch_type" class="border-none w-full focus:border-none" placeholder="검색" v-model="qsearch_type">
                             </div>
                         </form>
-                        <template v-if="q == ''">
-                            <div class="opacity-60 font-medium px-6">팔로우 추천</div>
-                            <div class="divide-y">
+                        <!-- 팔로우 추천 리스트 -->
+                        <template v-if="qsearch_type == ''">
+                            <template v-if="q == ''">
+                                <div class="opacity-60 font-medium px-6">팔로우 추천</div>
                                 <template v-for="user in recommendedUsers.data" :key="user.id">
-                                    <avatar-component :user="user" class="p-4">
-                                        <template v-slot:follower-count>
-                                            <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
-                                        </template>
-                                    </avatar-component>
+                                    <div class="px-6">
+                                        <avatar-component :user="user" class="border-b py-4">
+                                            <template v-slot:follower-count>
+                                                <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
+                                            </template>
+                                        </avatar-component>
+                                    </div>
                                 </template>
-                            </div>
+                            </template>
+                            <!-- 검색어 결과 리스트 -->
+                            <template v-else>
+                                <template v-if="searchData.data.relatedKeywords.length > 0">
+                                    <template v-for="(keyword, idx) in searchData.data.relatedKeywords" :key="idx">
+                                        <div class="px-6">
+                                            <a :href="'/search?q='+keyword+'&qsearch_type=default'" class="block relative px-8 border-b py-4 line-clamp-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search absolute left-0 top-1/2 -translate-y-1/2 opacity-50"
+                                                     width="18" height="18" viewBox="0 0 24 24" stroke-width="1" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                                                    <path d="M21 21l-6 -6" />
+                                                </svg>
+                                                <div class="text-lg font-bold line-clamp-1" v-html="keyword"></div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor" stroke-linecap="round"
+                                                     stroke-linejoin="round" width="18" height="18" stroke-width="1"
+                                                     class="opacity-50 absolute right-0 top-1/2 -translate-y-1/2">
+                                                    <path d="M9 6l6 6l-6 6"></path>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template v-if="searchData.data.users.length > 0">
+                                    <template v-for="user in searchData.data.users" :key="user.id">
+                                        <div class="px-6">
+                                            <div class="border-b py-4">
+                                                <avatar-component :user="user"></avatar-component>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
                         </template>
+                        <!-- 검색 결과 리스트 -->
                         <template v-else>
                             <template v-if="feeds.data.length > 0">
                                 <feed-component v-for="feed in feeds.data"

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('type')->default(\App\Enums\PostTypeEnum::POST);
             $table->foreignId('user_id')->nullable();
             $table->string('title')->nullable();
-            $table->text('content');
+            $table->text('content')->fulltext();
             $table->string('status')->default(\App\Enums\PostStatusEnum::DRAFT);
             $table->foreignId('parent_id')->nullable();
             $table->foreignId('original_parent_id')->nullable();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PostTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Post;
@@ -18,7 +19,7 @@ class FeedApiController extends Controller
     {
         try {
             $filters = [
-                'type' => 'post',
+                'type' => PostTypeEnum::POST->value,
                 'q' => $request->input('q'),
             ];
 

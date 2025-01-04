@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\CategoryApiController;
 use App\Http\Controllers\Api\CommentApiController;
 use App\Http\Controllers\Api\FeedApiController;
 use App\Http\Controllers\Api\PostApiController;
+use App\Http\Controllers\Api\SearchApiController;
 use App\Http\Controllers\Api\TagApiController;
 use App\Http\Controllers\api\TaggableApiController;
 use App\Http\Controllers\Api\UserApiController;
@@ -104,6 +105,7 @@ Route::middleware('auth:sanctum')->group(function(){
 });
 
 Route::get('/feeds', [FeedApiController::class, 'index'])->name('feed.index');
+Route::get('/search', [SearchApiController::class, 'index'])->name('search.index');
 Route::get('/{type}/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
 Route::get('/comments/{comment}', [CommentApiController::class, 'show'])->name('comments.show');
 Route::get('/recommend/users', [UserApiController::class, 'recommend'])->name('recommend.users');
@@ -111,3 +113,15 @@ Route::get('/@{user}', [UserApiController::class, 'show'])->name('user.show');
 Route::get('/posts', [PostApiController::class, 'index'])->name('post.index');
 Route::post('/actions', [UserActionApiController::class, 'store'])->name('action.store');
 Route::get('/users/{user}/bookcases', [UserBookcaseApiController::class, 'index'])->name('user.bookcase.index');
+
+Route::get('test', function(){
+   $service = new \App\Services\SearchService();
+   $result = $service->relatedKeywords('aut');
+   $mergedKeywords = [];
+   $mergedKeywords[] = $result['keyword'];
+   array_map(function($keyword) use ($result, &$mergedKeywords){
+       $mergedKeywords[] = "{$result['keyword']} {$keyword}";
+   }, array_keys($result['related_keywords']));
+
+   dd($mergedKeywords);
+});

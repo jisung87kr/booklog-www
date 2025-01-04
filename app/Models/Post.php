@@ -112,6 +112,12 @@ class Post extends Model
             $query->where('user_id', $userId);
         });
 
+        $query->when($filters['username'] ?? null, function ($query, $username) {
+            $query->orWhereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
+            });
+        });
+
         $query->when($filters['q'] ?? null, function ($query, $q) {
             $query->where('content', 'like', "%{$q}%");
         });
