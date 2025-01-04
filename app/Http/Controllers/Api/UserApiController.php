@@ -51,7 +51,11 @@ class UserApiController extends Controller
     public function recommend()
     {
         try {
-            $recommendedUsers = User::inRandomOrder()->limit(20)->get();
+            $query = User::inRandomOrder();
+            if(request()->user()){
+                $query->where('id', '!=', request()->user()->id);
+            }
+            $recommendedUsers = $query->limit(20)->get();
             return response()->success('', $recommendedUsers);
         } catch (\Exception $e) {
             return response()->error('', $e->getMessage());

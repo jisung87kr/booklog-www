@@ -4,12 +4,15 @@ import axios from 'axios';
 import {useUserStore} from "../stores/user.js";
 import {usePostFormStore} from "../stores/postForm.js";
 import CommentModalComponent from "../components/CommentModalComponent.vue";
+import {sendRequest} from '../common.js';
+import AvatarComponent from "../components/AvatarComponent.vue";
 
 const userStore = useUserStore();
 //await userStore.checkUser();
 const auth = ref(userStore.user);
 const loaded = ref(false);
 const postFormStore = usePostFormStore();
+const recommendedUsers = ref(null);
 postFormStore.$onAction(
     async ({
          name, // action 이름.
@@ -67,6 +70,10 @@ const fetchFeeds = async (page = 1) => {
     }
 };
 
+const fetchRecommendedUsers = async () => {
+    return await sendRequest('GET', '/api/recommend/users');
+};
+
 const handleScroll = async () => {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
@@ -96,6 +103,8 @@ const scrollBottom = () => {
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     feeds.value = await fetchFeeds();
+    const response = await fetchRecommendedUsers();
+    recommendedUsers.value = response.data;
     loaded.value = true;
 });
 
@@ -125,8 +134,13 @@ onBeforeUnmount(() => {
                             <div class="bg-white border rounded-2xl p-6">
                                 <div>나를 위한 트랜드</div>
                             </div>
-                            <div class="bg-white border rounded-2xl p-6">
+                            <div class="bg-white border rounded-2xl p-6 pb-0" v-if="recommendedUsers.length > 0">
                                 <div>팔로우 추천</div>
+                                <div class="divide-y">
+                                    <template v-for="user in recommendedUsers" :key="user.id">
+                                        <avatar-component :user="user" class="py-4"></avatar-component>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
