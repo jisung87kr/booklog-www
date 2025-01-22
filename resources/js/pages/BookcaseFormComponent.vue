@@ -115,9 +115,7 @@ onMounted(async () => {
         <div v-show="loaded">
             <header-component>
                 <div class="flex justify-between w-full">
-                    <button type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l14 0"></path> <path d="M5 12l4 4"></path> <path d="M5 12l4 -4"></path> </svg>
-                    </button>
+                    <history-back-button></history-back-button>
                     <div class="font-bold">책장관리</div>
                     <button type="button" class="px-3 py-1.5 bg-gray-700 text-white rounded-lg text-sm font-bold" @click="saveBookStore">저장</button>
                 </div>

@@ -137,31 +137,37 @@ onBeforeUnmount(() => {
     <transition name="slide-fade">
         <div v-if="loaded">
             <header-component>
-                <div class="font-bold">활동</div>
-                <dropdown-component class="z-30">
-                    <template #mybutton>
-                        <button type="button" class="rounded-full border w-7 h-7 bg-gray-50 ms-3 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="inline-block"> <path d="M6 9l6 6l6 -6"></path> </svg>
-                        </button>
-                    </template>
-                    <ul class="absolute left-1/2 -translate-x-1/2 bottom-[-210px] w-[200px] border rounded-xl bg-white px-2 py-3">
-                        <template v-for="(activityType, idx) in activityTypes"
-                                  :key="idx"
-                        >
-                            <li>
-                                <button type="button"
-                                        class="px-4 py-2.5 hover:bg-gray-100 flex justify-between w-full"
-                                        @click="clickTab(activityType);"
-                                >
-                                    <div>{{activityType.value}}</div>
-                                    <div v-if="selectedActivityType == activityType.key">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l5 5l10 -10"></path> </svg>
-                                    </div>
+                <div class="flex justify-between w-full">
+                    <history-back-button></history-back-button>
+                    <div class="flex items-center">
+                        <div class="font-bold">활동</div>
+                        <dropdown-component class="z-30">
+                            <template #mybutton>
+                                <button type="button" class="rounded-full border w-7 h-7 bg-gray-50 ms-3 text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="inline-block"> <path d="M6 9l6 6l6 -6"></path> </svg>
                                 </button>
-                            </li>
-                        </template>
-                    </ul>
-                </dropdown-component>
+                            </template>
+                            <ul class="absolute left-1/2 -translate-x-1/2 bottom-[-210px] w-[200px] border rounded-xl bg-white px-2 py-3">
+                                <template v-for="(activityType, idx) in activityTypes"
+                                          :key="idx"
+                                >
+                                    <li>
+                                        <button type="button"
+                                                class="px-4 py-2.5 hover:bg-gray-100 flex justify-between w-full"
+                                                @click="clickTab(activityType);"
+                                        >
+                                            <div>{{activityType.value}}</div>
+                                            <div v-if="selectedActivityType == activityType.key">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M5 12l5 5l10 -10"></path> </svg>
+                                            </div>
+                                        </button>
+                                    </li>
+                                </template>
+                            </ul>
+                        </dropdown-component>
+                    </div>
+                    <div></div>
+                </div>
             </header-component>
             <div class="container-fluid mx-auto w-full">
                 <div class="flex justify-center">

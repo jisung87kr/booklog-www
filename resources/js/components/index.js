@@ -27,6 +27,8 @@ import ShareButton from "./buttons/ShareButton.vue";
 import followToggleButton from "./buttons/FollowToggleButton.vue";
 import dropdownComponent from "./DropdownComponent.vue";
 import UserActionButton from "./buttons/UserActionButton.vue";
+import HistoryBackButton from "./buttons/HistoryBackButton.vue";
+
 
 //모달
 import CommentModalComponent from "./CommentModalComponent.vue";
@@ -63,6 +65,7 @@ export default {
     "follow-toggle-button": followToggleButton,
     "dropdown-component": dropdownComponent,
     "user-action-button": UserActionButton,
+    "history-back-button": HistoryBackButton,
     // 모달
     "comment-modal-component": CommentModalComponent,
     "profile-modal-component": ProfileModalComponent,

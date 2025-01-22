@@ -32,7 +32,11 @@ onMounted(async () => {
     <transition name="slide-fade">
         <div v-if="loaded">
             <header-component>
-                <div class="font-bold">@{{profileUser.username}}님의 책장</div>
+                <div class="flex justify-between w-full">
+                    <history-back-button></history-back-button>
+                    <div class="font-bold">@{{profileUser.username}}님의 책장</div>
+                    <div></div>
+                </div>
             </header-component>
             <div class="container-fluid max-w-xl mx-auto w-full">
                 <div class="bg-white rounded-xl">

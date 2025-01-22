@@ -190,7 +190,11 @@ onBeforeUnmount(() => {
     <Transition name="slide-fade">
         <div v-show="loaded">
             <header-component>
-                <div class="font-bold">프로필</div>
+                <div class="flex justify-between w-full">
+                    <history-back-button></history-back-button>
+                    <div class="font-bold">프로필</div>
+                    <div></div>
+                </div>
             </header-component>
             <div class="container-fluid mx-auto w-full">
                 <div class="flex justify-center mt-3 md:mt-0">
