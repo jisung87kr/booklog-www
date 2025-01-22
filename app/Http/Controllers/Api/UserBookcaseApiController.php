@@ -116,7 +116,7 @@ class UserBookcaseApiController extends Controller
                 $bookcase->update(['order' => $value['order']]);
             }
 
-            return response()->success();
+            return response()->success('', []);
         } catch(\Exception $e) {
             return response()->error($e->getMessage());
         }

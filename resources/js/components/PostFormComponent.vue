@@ -127,7 +127,7 @@ watch(() => props.open, (newVal) => {
                      @close="closeModal()">
         <template v-slot:modal-header>
             <div class="px-4 py-4 relative">
-                <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 text-sm">취소</button>
+                <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 text-sm" @click="closeModal()">취소</button>
                 <div class="text-center text-bold">새로운 포스팅</div>
             </div>
         </template>

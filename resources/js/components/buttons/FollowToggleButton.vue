@@ -42,8 +42,15 @@ export default {
             }
         },
         async _follow() {
-            const response = await sendRequest('post', '/api/follows', { user_id: this.user.id });
-            this.isFollowing = true;
+            try {
+                const response = await axios.post( '/api/follows', { user_id: this.user.id });
+                this.isFollowing = true;
+            } catch (e) {
+                if(e.response.status == 401){
+                    alert('로그인이 필요합니다.');
+                    location.href = '/login';
+                }
+            }
         },
         async _unFollow() {
             const response = await sendRequest('delete', '/api/follows/' + this.user.username);
