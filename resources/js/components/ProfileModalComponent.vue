@@ -64,7 +64,17 @@ const handleFile = () => {
 <template>
     <div>
         <slot>
-            <button type="button" class="rounded-xl px-3 py-2 border border-zinc-300 text-sm font-bold w-full mt-6" @click="showModal = true">프로필 수정</button>
+            <div class="grid grid-cols-2 gap-3 mt-3">
+                <button type="button" class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold w-full" @click="showModal = true">프로필 수정</button>
+                <div class="" v-if="auth && user.id == auth.id">
+                    <a :href="'/@'+auth.username+'/bookcases/create'" class="rounded-lg px-3 py-2 border border-zinc-300 text-sm font-bold flex w-full items-center">
+                        <div class="flex mx-auto items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="mr-1"> <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path> <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path> <path d="M16 5l3 3"></path> </svg>
+                            <span>책장추가</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </slot>
         <modal-component :is-visible="showModal"
                          @close="showModal = false">

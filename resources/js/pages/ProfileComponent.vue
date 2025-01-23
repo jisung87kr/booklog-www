@@ -156,6 +156,7 @@ const initSortable = () => {
     if (selectedActivityType.value === 'bookcase') {
         sortableInstance.value = new Sortable(sortableEl.value, {
             animation: 150,
+            handle: '.handle',
             onEnd: (event) => {
                 let bookcase = [...list.value.data];
                 bookcase.splice(event.newIndex, 0, bookcase.splice(event.oldIndex, 1)[0]);
@@ -302,14 +303,6 @@ onBeforeUnmount(() => {
                             </template>
                         </div>
                         <template v-if="list.data.length > 0">
-                            <div class="mt-4 text-center" v-if="auth && user.id == auth.id && selectedActivityType == 'bookcase'">
-                                <a :href="'/@'+auth.username+'/bookcases/create'" class="rounded-xl px-3 py-2 border border-zinc-300 text-sm font-bold text-center inline-block">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2" class="mr-1"> <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path> <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path> <path d="M16 5l3 3"></path> </svg>
-                                        <span>책장추가</span>
-                                    </div>
-                                </a>
-                            </div>
                             <div class="divide-y" ref="sortableEl">
                                 <template v-if="selectedActivityType == 'bookcase'">
                                     <bookcase-component v-for="bookcase in list.data"

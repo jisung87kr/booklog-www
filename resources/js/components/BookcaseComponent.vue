@@ -15,8 +15,8 @@ const props = defineProps({
 </script>
 <template>
     <div class="bg-white">
-        <div class="text-center" v-if="auth && auth.id == bookcase.user.id">
-            <button type="button">
+        <div class="text-center relative" v-if="auth && auth.id == bookcase.user.id">
+            <button type="button" class="handle text-gray-400 relative -top-[16px]">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16"
                      height="16" stroke-width="2">
@@ -33,19 +33,11 @@ const props = defineProps({
             <div class="w-full">
                 <div>{{ props.bookcase.title }}</div>
                 <div class="text-sm text-gray-600">{{ props.bookcase.description }}</div>
-                <div class="mt-2 flex gap-3">
-                    <like-button :model="bookcase" :auth="auth" :type="type"></like-button>
-                    <comment-button :model="bookcase" :type="type"></comment-button>
-                    <share-button :model="bookcase" :type="type"></share-button>
-                </div>
             </div>
             <div class="shrink-0 w-30 flex gap-1">
-                <div>
-                    <a :href="'/@'+bookcase.user.username+'/bookcases/'+bookcase.id" class="border rounded-lg px-3 py-2 text-xs font-bold text-gray-900 block">책장보기</a>
-                </div>
                 <dropdown-component v-if="auth">
                     <template v-slot:mybutton>
-                        <button type="button" class="border rounded-lg px-2 py-2 text-sm font-bold text-gray-900">
+                        <button type="button" class="px-2 py-2 text-sm font-bold text-gray-900">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots" width="16"
                                  height="16"
                                  viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
@@ -88,13 +80,21 @@ const props = defineProps({
                 </dropdown-component>
             </div>
         </div>
-        <div class="text-xs text-gray-600 mt-3">{{ props.bookcase.books.length}}개 의 도서</div>
+        <div class="text-xs text-gray-600 mt-3 flex justify-between items-center mb-2">
+            <span>{{ props.bookcase.books.length}}개 의 도서</span>
+            <a :href="'/@'+bookcase.user.username+'/bookcases/'+bookcase.id" class="text-xs font-bold text-gray-900 block">더보기</a>
+        </div>
         <div class="overflow-x-auto mt-1">
             <div class="flex gap-3" v-if="props.bookcase.books.length > 0">
                 <template v-for="book in props.bookcase.books" :key="book.id">
                     <book-component :book="book" class="shrink-0 w-[170px]"></book-component>
                 </template>
             </div>
+        </div>
+        <div class="mt-4 flex gap-3">
+            <like-button :model="bookcase" :auth="auth" :type="type"></like-button>
+            <comment-button :model="bookcase" :type="type"></comment-button>
+            <share-button :model="bookcase" :type="type"></share-button>
         </div>
     </div>
 </template>
