@@ -46,6 +46,23 @@ Route::get('/@{user}/bookcases/create', [UserBookcaseController::class, 'create'
 Route::get('/@{user}/bookcases/{bookcase}', [UserBookcaseController::class, 'show'])->name('bookcase.show');
 Route::get('/@{user}/bookcases/{bookcase}/edit', [UserBookcaseController::class, 'edit'])->name('bookcase.edit');
 
+// page
+Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
+Route::get('/cookie-policy', function () {
+    return view('cookie-policy');
+})->name('cookie-policy');
+
+Route::get('/report-issue', function () {
+    abort(404, '준비중입니다');
+})->name('report-issue');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
