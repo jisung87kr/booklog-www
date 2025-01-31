@@ -26,7 +26,7 @@ const editorRef = ref(null);
 
 const storeComment = async () => {
     if(!auth.value){
-        alert('로그인 후 이용해주세요');
+        //alert('로그인 후 이용해주세요');
         return false;
     }
 

@@ -29,7 +29,7 @@ const selectedFiles = ref([]); // 파일들을 추적하기 위한 변수
 
 const openModal = () => {
     if(!auth.value){
-        alert('로그인후 이용해주세요');
+        //alert('로그인후 이용해주세요');
         window.location.href='/login';
         return false;
     }
