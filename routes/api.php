@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use App\Http\Controllers\Api\UserBookcaseApiController;
 use App\Http\Controllers\Api\UserPostApiController;
+use App\Models\Book;
 use App\Models\BookUserBookcase;
 use App\Models\UserBookcase;
 use Illuminate\Http\Request;
@@ -102,6 +103,34 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::PUT('/bookcases/{bookcase}/order', [BookUserBookcaseApiController::class, 'updateOrder'])->name('bookcase.updateOrder');
     Route::resource('/bookcases/{bookcase}/books', BookUserBookcaseApiController::class)->names('bookcase.book');
+
+    // 알라딘 도서 검색
+    Route::get('/service/books', function(\App\Services\Crawler\AladinService $aladinService){
+        try {
+            if(!request()->input('q')){
+                return response()->success('', '');
+            }
+            $result = $aladinService->itemSearch(request()->input('q'));
+            collect($result['item'])->map(function($item){
+                Book::insertOrIgnore([
+                    'title' => $item['title'],
+                    'author' => $item['author'],
+                    'description' => $item['description'],
+                    'publisher' => $item['publisher'],
+                    'published_date' => $item['pubDate'],
+                    'isbn' => $item['isbn13'],
+                    'cover_image' => $item['cover'],
+                    'link' => $item['link'],
+                    'product_id' => $item['itemId'],
+                ]);
+            });
+
+            $books = Book::whereIn('isbn', collect($result['item'])->pluck('isbn13'))->paginate(30);
+            return response()->success('', $books);
+        } catch (\Exception $e) {
+            return response()->error('', $e->getMessage());
+        }
+    });
 });
 
 Route::get('/feeds', [FeedApiController::class, 'index'])->name('feed.index');

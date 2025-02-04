@@ -47,9 +47,10 @@ export default {
                 model.like_id = null;
                 model.like_count--;
             } else {
+                console.log(model);
                 let modelId = model.id;
                 if(this.type === 'book'){
-                   modelId = model.book_id;
+                   modelId = model.pivot.book_id;
                 }
 
                 let data = {

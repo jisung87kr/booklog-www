@@ -42,7 +42,7 @@ export default{
         async handelClick(model){
             let modelId = model.id;
             if(this.type === 'book'){
-                modelId = model.book_id;
+                modelId = model.pivot.book_id;
             }
 
             this.$emit('click');
@@ -65,7 +65,8 @@ export default{
                     url = window.location.origin + '/feeds/' + model.id;
                     break;
                 case 'book':
-                    url = window.location.origin + '/books/' + model.book_id;
+                    //url = window.location.origin + '/books/' + model.book_id;
+                    url = model.link;
                     break;
             }
 

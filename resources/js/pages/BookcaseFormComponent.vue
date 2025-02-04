@@ -17,13 +17,12 @@ const books = ref([]);
 const bookcaseBooks = ref([]);
 const bookcaseBooksEl = ref(null);
 
-
 const fetchBooks = async () => {
     try {
         let params = {
             q: q.value,
         }
-        return sendRequest('GET', '/api/books', params);
+        return sendRequest('GET', '/api/service/books', params);
     } catch (error) {
         console.error(error);
     }
@@ -32,6 +31,7 @@ const fetchBooks = async () => {
 const searchBooks = debounce(async () => {
     const response = await fetchBooks();
     books.value = response.data.data;
+    setChecked();
 }, 300);
 
 const addBook = (id) => {
@@ -41,7 +41,6 @@ const addBook = (id) => {
         book_id: book.id,
     };
 
-    console.log(book);
     bookcaseBooks.value.push(book);
 };
 const deleteBook = (id) => {
@@ -94,11 +93,11 @@ const setChecked = () => {
 onMounted(async () => {
     loaded.value = true;
 
-    const response = await fetchBooks();
-    books.value = response.data.data;
+    //const response = await fetchBooks();
+    //books.value = response.data.data;
     bookcaseBooks.value = bookcase.value.books ?? [];
 
-    setChecked();
+    // setChecked();
 
     new Sortable(bookcaseBooksEl.value, {
         animation: 150,
@@ -148,8 +147,8 @@ onMounted(async () => {
                                 <ul class="max-h-[300px] overflow-y-auto p-3 divide-y bg-white">
                                     <li class="py-2" v-for="book in books" :key="book.id">
                                         <div class="flex gap-3">
-                                            <div class="w-20 h-20 bg-gray-300 rounded-lg border shrink-0">
-                                                <img src="https://placehold.co/400" alt="">
+                                            <div class="w-20 h-20 bg-gray-300 rounded-lg border shrink-0 overflow-hidden">
+                                                <img :src="book.cover_image" alt="">
                                             </div>
                                             <div class="flex justify-between w-full items-center">
                                                 <div class="text-start w-full mr-3">
@@ -188,8 +187,8 @@ onMounted(async () => {
                                     <button type="button" class="handle">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" stroke-width="2"> <path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> <path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path> </svg>
                                     </button>
-                                    <div class="w-20 h-20 bg-gray-300 rounded-lg border shrink-0">
-                                        <img src="https://placehold.co/400" alt="">
+                                    <div class="w-20 h-20 bg-gray-300 rounded-lg border shrink-0 overflow-hidden">
+                                        <img :src="book.cover_image" alt="">
                                     </div>
                                     <div class="flex justify-between w-full items-center">
                                         <div class="text-start w-full mr-3">

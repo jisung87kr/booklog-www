@@ -18,6 +18,12 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('test', function(\App\Services\Crawler\AladinService $aladinService){
+    $result = $aladinService->itemSearch('슬램덩크');
+    dd($result);
+//    $result = $kyoboBook->getAllBooksByCategory('010101');
+//    dd($result);
+});
 
 Route::get('/', function () {
     return redirect()->route('home');

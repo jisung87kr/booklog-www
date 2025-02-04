@@ -62,7 +62,7 @@ const fetchComments = async(page) => {
 
     let modelId = props.model.id;
     if(commentModalStore.type === 'book'){
-        modelId = props.model.book_id;
+        modelId = props.model.pivot.book_id;
     }
 
     const response = await sendRequest("GET", `/api/${commentModalStore.type}/${modelId}/comments`, params);

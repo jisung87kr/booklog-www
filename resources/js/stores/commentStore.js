@@ -21,7 +21,7 @@ export const useCommentModalStore = defineStore('commentModal', {
         async fetchComments() {
             let modelId = this.model.id;
             if(this.type === 'book'){
-                modelId = this.model.book_id;
+                modelId = this.model.pivot.book_id;
             }
             const response = await sendRequest( `/api/${this.type}/${modelId}/comments`);
             this.comments = response.data;
@@ -29,7 +29,7 @@ export const useCommentModalStore = defineStore('commentModal', {
         async storeComment(params) {
             let modelId = this.model.id;
             if(this.type === 'book'){
-                modelId = this.model.book_id;
+                modelId = this.model.pivot.book_id;
             }
 
             const response = await sendRequest('post', `/api/${this.type}/${modelId}/comments`, params);
