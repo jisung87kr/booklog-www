@@ -42,7 +42,7 @@
         <!-- Styles -->
     </head>
     <body id="app" class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 md:ps-[82px] flex flex-col">
+        <div class="min-h-screen bg-gray-50 md:ps-[82px] flex flex-col">
 
             <!-- Page Content -->
             <main class="flex-1">

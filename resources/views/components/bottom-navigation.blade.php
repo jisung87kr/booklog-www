@@ -1,6 +1,8 @@
 <div>
     <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 flex md:top-0 md:h-full md:w-auto md:items-center md:border-r place-content-between md:flex-col items-center">
-        <div class="hidden md:block p-5 font-extrabold">북로그</div>
+        <div class="hidden md:block p-5 font-extrabold">
+            <a href="{{ route('home') }}">북로그</a>
+        </div>
         <div class="flex max-w-2xl mx-auto font-medium md:block items-center align-items-center">
             <a href="{{ route('home') }}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('home') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -41,7 +43,7 @@
                 </svg>
             </a>
         </div>
-        <div class="p-5">
+        <div class="h-10 md:mb-6">
             @if(Auth::user())
             <dropdown-component>
                 <template v-slot:mybutton>

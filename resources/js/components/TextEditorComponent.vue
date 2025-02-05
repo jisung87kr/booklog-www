@@ -113,6 +113,10 @@ const initEditor = () => {
     });
 
     quill.value.root.innerHTML = content.value;
+
+    nextTick(() => {
+        quill.value.focus();
+    });
 };
 
 const clearEditor = () => {
@@ -134,7 +138,7 @@ watch(content, (newContent) => {
 
 </script>
 <template>
-    <div id="editor" class="!outline-none !h-auto p-0 !mt-3" ref="editor"></div>
+    <div id="editor" class="!outline-none !h-auto p-0 !mt-3 text-base" ref="editor"></div>
 </template>
 <style>
 .ql-editor{

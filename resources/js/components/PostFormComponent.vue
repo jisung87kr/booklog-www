@@ -120,9 +120,9 @@ watch(() => props.open, (newVal) => {
 });
 </script>
 <template>
-    <button type="button" @click="openModal">
+    <div @click="openModal">
         <slot></slot>
-    </button>
+    </div>
     <modal-component :is-visible="showModal"
                      @close="closeModal()">
         <template v-slot:modal-header>

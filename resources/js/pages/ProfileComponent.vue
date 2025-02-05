@@ -207,7 +207,7 @@ onBeforeUnmount(() => {
             </header-component>
             <div class="container-fluid mx-auto w-full">
                 <div class="flex justify-center mt-3 md:mt-0">
-                    <div class="bg-white shadow w-full rounded-2xl max-w-xl">
+                    <div class="bg-white shadow w-full rounded-2xl max-w-xl overflow-hidden">
                         <div class="p-6">
                             <div class="flex justify-between">
                                 <div class="mr-3">
