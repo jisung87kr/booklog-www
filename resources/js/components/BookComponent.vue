@@ -18,7 +18,7 @@ const props = defineProps({
         </slot>
         <slot name="body">
             <a :href="props.book.link" target="_blank">
-                <div class="line-clamp-1 font-bold">{{props.book.title}}</div>
+                <div class="line-clamp-2 font-bold">{{props.book.title}}</div>
                 <div class="line-clamp-1 text-sm text-gray-600">{{props.book.author}}</div>
             </a>
         </slot>

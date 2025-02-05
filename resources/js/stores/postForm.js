@@ -44,5 +44,9 @@ export const usePostFormStore = defineStore('postForm', {
                 return this.post;
             }
         },
+        updateContent(content) {
+            console.log("@@@@@@@@@@@@@");
+            console.log(content);
+        }
     },
 });

@@ -39,8 +39,7 @@ onMounted(async () => {
                 </div>
             </header-component>
             <div class="container-fluid max-w-xl mx-auto w-full">
-                <div class="bg-white rounded-xl">
-
+                <div class="bg-white rounded-xl shadow">
                     <div class="p-6">
                         <div>{{ bookcase.title }}</div>
                         <div class="text-sm text-gray-600" v-if="bookcase.description">{{ bookcase.description }}</div>
@@ -53,20 +52,22 @@ onMounted(async () => {
                             <comment-button :model="bookcase" :type="'bookcase'"></comment-button>
                             <share-button :model="bookcase" :type="'bookcase'"></share-button>
                         </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3 mt-10">
-                    <template v-for="book in bookcase.books" :key="book.id">
-                        <book-component :book="book">
-                            <template #footer>
-                                <div class="flex gap-2 mt-2">
-                                    <like-button :auth="auth" :model="book" :type="'book'"></like-button>
-                                    <comment-button :auth="auth" :model="book" :type="'book'"></comment-button>
-                                    <share-button :auth="auth" :model="book" :type="'book'"></share-button>
-                                </div>
+                        <hr class="my-6">
+                        <div class="font-bold mb-3">도서 목록</div>
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-6">
+                            <template v-for="book in bookcase.books" :key="book.id">
+                                <book-component :book="book">
+                                    <template #footer>
+                                        <div class="flex gap-2 mt-2">
+                                            <like-button :auth="auth" :model="book" :type="'book'"></like-button>
+                                            <comment-button :auth="auth" :model="book" :type="'book'"></comment-button>
+                                            <share-button :auth="auth" :model="book" :type="'book'"></share-button>
+                                        </div>
+                                    </template>
+                                </book-component>
                             </template>
-                        </book-component>
-                    </template>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -145,7 +145,7 @@ onMounted(async () => {
                 <div class="mt-3">
                     <div class="text-center">
                         <input type="text" placeholder="추가할 도서를 검색하세요" class="w-full rounded-t-xl border border-gray-400" @keyup="searchBooks" v-model="q">
-                        <template v-if="books.length > 0">
+                        <template v-if="books">
                             <div class="relative overflow-hidden border border-gray-400 border-t-0 rounded-b-xl">
                                 <ul class="max-h-[300px] overflow-y-auto p-3 divide-y bg-white">
                                     <li class="py-2" v-for="book in books" :key="book.id">

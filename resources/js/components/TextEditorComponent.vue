@@ -1,9 +1,11 @@
 <script setup>
 import Quill from 'quill';
-import {nextTick, onMounted, ref, watch, defineProps, defineEmits} from "vue";
+import {nextTick, onMounted, ref, watch, defineProps, defineEmits, onUpdated} from "vue";
 import { sendRequest } from "../common.js";
 import {useCommentModalStore} from "../stores/commentStore.js";
+import {usePostFormStore} from "../stores/postForm.js";
 
+const postFormStore = usePostFormStore();
 const commentModalStore = useCommentModalStore();
 commentModalStore.$onAction(
     async ({
@@ -16,11 +18,24 @@ commentModalStore.$onAction(
         if(name === 'storeComment'){
             after(async () => {
                 clearEditor();
-
             });
         }
     }
 )
+
+postFormStore.$onAction(
+    async ({
+               name, // action 이름.
+               store, // Store 인스턴스, `someStore`와 같음.
+               args, // action으로 전달된 매개변수로 이루어진 배열.
+               after, // action에서 return 또는 resolve 이후의 훅.
+               onError, // action에서 throw 또는 reject 될 경우의 훅.
+           }) => {
+        if (name === 'updateContent') {
+            console.log(args);
+            content.value = args[0];
+        }
+    });
 
 const props = defineProps({
     content: {
@@ -79,7 +94,8 @@ const initEditor = () => {
         },
         modules: {
             mention: {
-                allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+                //allowedChars: /^[A-Za-z가-힣0-9\sÅÄÖåäö\-.\(\)]*$/,
+                allowedChars: /^[\w가-힣\s\-\.\d]+$/,
                 mentionDenotationChars: ["@", "#", "$"],
                 source: async (searchTerm, renderList, mentionChar) => {
                     let values;
@@ -161,6 +177,8 @@ watch(content, (newContent) => {
     border: 1px solid #ccc;
     z-index: 10;
     border-radius: 10px;
+    max-height: 200px;
+    overflow: auto;
 }
 
 .ql-mention-list-item{

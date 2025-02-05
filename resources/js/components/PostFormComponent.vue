@@ -7,6 +7,7 @@ import {useUserStore} from "../stores/user.js";
 import {usePostFormStore} from "../stores/postForm.js";
 import AttachedImageComponent from "../components/AttachedImageComponent.vue";
 import TextEditorComponent from "./TextEditorComponent.vue";
+import debounce from "lodash/debounce.js";
 
 const userStore = useUserStore();
 //await userStore.checkUser();
@@ -21,11 +22,14 @@ const props = defineProps({
 });
 
 const showModal = ref(props.open);
-const content = ref(null);
+const showSearchBookModal = ref(false);
+const content = ref('');
 const emit = defineEmits(['storePost']);
 const fileInput = ref(null);
 const images = ref([]);
 const selectedFiles = ref([]); // 파일들을 추적하기 위한 변수
+const q = ref(null);
+const books = ref([]);
 
 const openModal = () => {
     if(!auth.value){
@@ -111,6 +115,33 @@ const changeContent = (newContent) => {
     content.value = newContent;
 }
 
+const openSearchBookModal = () => {
+    showSearchBookModal.value = true;
+}
+
+const searchBooks = debounce(async () => {
+    const response = await fetchBooks();
+    books.value = response.data.data;
+}, 300);
+
+const fetchBooks = async () => {
+    try {
+        let params = {
+            q: q.value,
+        }
+        return sendRequest('GET', '/api/service/books', params);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+//TODO : 책 선택시 content에 추가
+const selectBook = (book) => {
+    content.value = `$${book.title}`;
+    showSearchBookModal.value = false;
+    postFormStore.updateContent(content.value);
+}
+
 onMounted(() => {
 
 });
@@ -133,7 +164,10 @@ watch(() => props.open, (newVal) => {
         </template>
         <div class="border-t border-b p-4 pt-3 relative">
             <avatar-component :user="auth" :follow-button="false" :user-name="false"></avatar-component>
-            <text-editor-component :content="content" @update-content="changeContent" placeholder="새로운 감상이 있나요?"></text-editor-component>
+            <text-editor-component :content="content"
+                                   @update-content="changeContent"
+                                   placeholder="새로운 감상이 있나요?"
+            ></text-editor-component>
             <div id="previewContainer">
                 <attached-image-component :images="images" @delete-image="deleteImage(idx)"></attached-image-component>
             </div>
@@ -148,12 +182,12 @@ watch(() => props.open, (newVal) => {
                     </svg>
                     <span class="text-sm ms-1" v-if="images.length > 0">추가</span>
                 </button>
-                <button type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">
-                        <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-                        <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-                    </svg>
-                </button>
+<!--                <button type="button">-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">-->
+<!--                        <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>-->
+<!--                        <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>-->
+<!--                    </svg>-->
+<!--                </button>-->
 <!--                <button type="button">-->
 <!--                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">-->
 <!--                        <path d="M5 9l14 0"></path>-->
@@ -162,13 +196,54 @@ watch(() => props.open, (newVal) => {
 <!--                        <path d="M17 4l-4 16"></path>-->
 <!--                    </svg>-->
 <!--                </button>-->
-                <button type="button">
+                <button type="button" @click="openSearchBookModal">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">
                         <path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z"></path>
                         <path d="M19 16h-12a2 2 0 0 0 -2 2"></path>
                         <path d="M9 8h6"></path>
                     </svg>
                 </button>
+                <modal-component :is-visible="showSearchBookModal" width="80%">
+                    <template v-slot:modal-header>
+                        <div class="px-4 py-4 relative">
+                            <button type="button" class="absolute left-6 top-1/2 -translate-y-1/2 text-sm" @click="closeModal()">취소</button>
+                            <div class="text-center text-bold">도서 검색</div>
+                        </div>
+                    </template>
+                    <div class="border-t border-b p-4 pt-3 relative">
+                        <input type="text"
+                               name="book_title"
+                               class="w-full border border-gray-300"
+                               placeholder="도서명을 검색하세요"
+                               v-model="q"
+                               @keyup="searchBooks"
+                        >
+                        <template v-if="books.length > 0">
+                            <div class="mt-3 max-h-[60vh] overflow-y-auto">
+                                <button v-for="book in books" :key="book.id"
+                                        type="button"
+                                        class="w-full flex py-2 border-b text-left"
+                                        @click="selectBook(book)"
+                                >
+                                    <div class="shrink-0 mr-3 overflow-hidden border rounded-xl aspect-square w-[70px]">
+                                        <img :src="book.cover_image" alt="" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="w-full">
+                                        <div class="font-bold line-clamp-2">{{book.title}}</div>
+                                        <div class="text-gray-600 text-xs line-clamp-1 mb-1">{{book.publisher}} / {{book.author}}</div>
+                                        <div class="text-gray-600 text-xs line-clamp-1">{{book.contents}}</div>
+                                    </div>
+                                </button>
+                                <div class="text-center mt-3">
+                                    <button type="button" class="border rounded-xl px-3 py-2">더보기</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="py-2 text-sm">검색된 내용이 없습니다.</div>
+                        </template>
+                    </div>
+                </modal-component>
             </div>
         </div>
         <template v-slot:modal-footer>
