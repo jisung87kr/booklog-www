@@ -111,22 +111,24 @@ Route::middleware('auth:sanctum')->group(function(){
                 return response()->success('', '');
             }
             $result = $aladinService->itemSearch(request()->input('q'));
-            collect($result['item'])->map(function($item){
-                Book::insertOrIgnore([
-                    'title' => $item['title'],
-                    'author' => $item['author'],
-                    'description' => $item['description'],
-                    'publisher' => $item['publisher'],
-                    'published_date' => $item['pubDate'],
-                    'isbn' => $item['isbn13'],
-                    'cover_image' => $item['cover'],
-                    'link' => $item['link'],
-                    'product_id' => $item['itemId'],
-                ]);
-            });
+            if($result['item']){
+                collect($result['item'])->map(function($item){
+                    Book::insertOrIgnore([
+                        'title' => $item['title'],
+                        'author' => $item['author'],
+                        'description' => $item['description'],
+                        'publisher' => $item['publisher'],
+                        'published_date' => $item['pubDate'],
+                        'isbn' => $item['isbn13'],
+                        'cover_image' => $item['cover'],
+                        'link' => $item['link'],
+                        'product_id' => $item['itemId'],
+                    ]);
+                });
 
-            $books = Book::whereIn('isbn', collect($result['item'])->pluck('isbn13'))->paginate(30);
-            return response()->success('', $books);
+                $books = Book::whereIn('isbn', collect($result['item'])->pluck('isbn13'))->paginate(30);
+                return response()->success('', $books);
+            }
         } catch (\Exception $e) {
             return response()->error('', $e->getMessage());
         }

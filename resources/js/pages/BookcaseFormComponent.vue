@@ -104,6 +104,9 @@ onMounted(async () => {
         handle: '.handle',
         onEnd: (event) => {
             bookcaseBooks.value.splice(event.newIndex, 0, bookcaseBooks.value.splice(event.oldIndex, 1)[0]);
+            bookcaseBooks.value.map((book, index) => {
+                book.pivot.order = index;
+            });
         }
     });
 });

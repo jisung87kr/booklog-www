@@ -39,12 +39,12 @@ class UserBookcaseApiController extends Controller
                'is_default' => 'nullable|boolean',
             ]);
 
-            $booksValidated = $request->validate([
-                'books.*' => 'required|integer|exists:books,id',
-            ]);
-
             $bookcase = $user->bookcases()->create($validated);
-            $bookcase->books()->attach(request()->input('books'));
+            $books = request()->input('books');
+            $books = collect($books)->mapWithKeys(function($book, $key){
+                return [$book => ['order' => $key]];
+            });
+            $bookcase->books()->attach($books);
             $bookcase->load('books');
             return response()->success('', $bookcase);
         } catch(\Exception $e) {
@@ -79,7 +79,12 @@ class UserBookcaseApiController extends Controller
             ]);
 
             $bookcase->update($validated);
-            $bookcase->books()->sync(request()->input('books'));
+
+            $books = request()->input('books');
+            $books = collect($books)->mapWithKeys(function($book, $key){
+                return [$book => ['order' => $key]];
+            });
+            $bookcase->books()->sync($books);
             $bookcase->load('books');
             return response()->success('', $bookcase);
         } catch(\Exception $e) {
