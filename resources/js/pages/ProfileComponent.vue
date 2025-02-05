@@ -175,6 +175,14 @@ const initSortable = () => {
     }
 };
 
+const logout = async () => {
+    axios.post('/logout').then(res => {
+        location.href = '/';
+    }).catch(err => {
+        console.error(err);
+    });
+};
+
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     await getList(1);

@@ -5,8 +5,8 @@
                  class="icon icon-tabler icon-tabler-heart"
                  width="20"
                  height="20"
-                 viewBox="0 0 24 24" stroke-width="1.5" :stroke="model.like_id ? 'red' : '#000000'"
-                 :fill="model.like_id ? 'red' : 'none' " stroke-linecap="round"
+                 viewBox="0 0 24 24" stroke-width="1.5" :stroke="model.like_id ? '#ff2157' : '#000000'"
+                 :fill="model.like_id ? '#ff2157' : 'none' " stroke-linecap="round"
                  stroke-linejoin="round"
             >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

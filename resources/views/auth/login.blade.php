@@ -44,5 +44,10 @@
                 </x-button>
             </div>
         </form>
+        <div class="border-t pt-3 mt-4">
+            <div class="text-center">
+                <a href="{{ route('register') }}" class="text-sm font-bold">회원가입</a>
+            </div>
+        </div>
     </x-authentication-card>
 </x-guest-layout>
