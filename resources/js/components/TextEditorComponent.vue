@@ -4,6 +4,7 @@ import {nextTick, onMounted, ref, watch, defineProps, defineEmits, onUpdated} fr
 import { sendRequest } from "../common.js";
 import {useCommentModalStore} from "../stores/commentStore.js";
 import {usePostFormStore} from "../stores/postForm.js";
+import debounce from 'lodash/debounce';
 
 const postFormStore = usePostFormStore();
 const commentModalStore = useCommentModalStore();
@@ -54,7 +55,7 @@ const content = ref(props.content);
 const quill = ref(null);
 const editor = ref(null);
 
-const fetchTags = async (searchTerm) => {
+const fetchTags = debounce(async (searchTerm) => {
     const response = await sendRequest('GET', `/api/tags?q=${searchTerm}`);
 
     const result = response.data.data.map(tag => {
@@ -63,9 +64,9 @@ const fetchTags = async (searchTerm) => {
     });
 
     return result;
-};
+}, 300);
 
-const fetchBooks = async (searchTerm) => {
+const fetchBooks = debounce(async (searchTerm) => {
     const response = await sendRequest('GET', `/api/books?q=${searchTerm}`);
 
     const result = response.data.data.map(tag => {
@@ -74,9 +75,9 @@ const fetchBooks = async (searchTerm) => {
     });
 
     return result;
-};
+}, 300);
 
-const fetchMentions = async (searchTerm) => {
+const fetchMentions = debounce(async (searchTerm) => {
     const response = await sendRequest('GET', `/api/users?q=${searchTerm}`);
 
     const result = response.data.data.map(tag => {
@@ -85,7 +86,7 @@ const fetchMentions = async (searchTerm) => {
     });
 
     return result;
-};
+}, 300);
 const initEditor = () => {
     quill.value = new Quill(editor.value, {
         placeholder: props.placeholder,

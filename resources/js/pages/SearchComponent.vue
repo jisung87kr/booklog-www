@@ -21,9 +21,10 @@ const loading = ref(false);
 const modalOpen = ref(false);
 const contentModalOpen = ref(false);
 const q = ref(new URLSearchParams(window.location.search).get('q') || '');
-const qsearch_type = ref(new URLSearchParams(window.location.search).get('qsearch_type') || '');
+const qsearch_type = ref(new URLSearchParams(window.location.search).get('qsearch_type') || null);
 const recommendedUsers = ref([]);
 const searchData = ref([]);
+const bookData = ref([]);
 
 const fetchFeeds = async (page = 1) => {
     try {
@@ -38,6 +39,11 @@ const fetchFeeds = async (page = 1) => {
 
         if (response.status !== true) {
             throw new Error(response.message);
+        }
+
+        if(qsearch_type.value === 'book'){
+            bookData.value = response.data.book;
+            return response.data.feeds;
         }
 
         return response.data;
@@ -132,7 +138,7 @@ onBeforeUnmount(() => {
                             </div>
                         </form>
                         <!-- 팔로우 추천 리스트 -->
-                        <template v-if="qsearch_type == ''">
+                        <template v-if="qsearch_type == null">
                             <template v-if="q == ''">
                                 <div class="opacity-60 font-medium px-6">팔로우 추천</div>
                                 <template v-for="user in recommendedUsers.data" :key="user.id">
@@ -181,6 +187,21 @@ onBeforeUnmount(() => {
                         </template>
                         <!-- 검색 결과 리스트 -->
                         <template v-else>
+                            <div v-if="bookData.id"
+                                 class="flex items-start p-6">
+                                <div class="shrink-0 mr-3">
+                                    <a :href="bookData.link" target="_blank" class="border rounded-xl block w-[130px] overflow-hidden">
+                                        <img :src="bookData.cover_image" alt="" class="">
+                                    </a>
+                                </div>
+                                <div>
+                                    <a :href="bookData.link" target="_blank">
+                                        <div class="font-bold line-clamp-2 break-keep">{{bookData.title}}</div>
+                                        <div class="text-gray-500 text-xs break-keep">{{bookData.publisher}} / {{bookData.author}}</div>
+                                        <div class="mt-1 break-keep text-gray-700" v-html="bookData.description"></div>
+                                    </a>
+                                </div>
+                            </div>
                             <template v-if="feeds.data.length > 0">
                                 <feed-component v-for="feed in feeds.data"
                                                 :feed="feed"

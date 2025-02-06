@@ -41,6 +41,17 @@ class PostApiController extends Controller
             $validated['status'] = PostStatusEnum::PUBLISHED;
 
             $post = $request->user()->posts()->create($validated);
+
+            if($request->input('mentions')){
+                $userIds = array_map(function($mention){
+                    return substr($mention, 1);
+                }, $request->input('mentions'));
+
+                $users = \App\Models\User::whereIn('username', $userIds)->get();
+
+                $post->mentions()->sync($users->pluck('id'));
+            }
+
             return response()->success("", $post);
         } catch (\Exception $e) {
             return response()->error('', $e->getMessage());

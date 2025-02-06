@@ -65,14 +65,14 @@ export function getMentions(text){
 export function wrapWithSpan(text){
 
     // 정규식 패턴 정의
-    const hashTagPattern = /#[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/]+/g;
-    const bookPattern = /\$[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/]+/g;
-    const mentionPattern = /@[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/]+/g;
+    const hashTagPattern = /#[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/()\[\]\~\:]+/g;
+    const bookPattern = /\$[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/()\[\]\~\:]+/g;
+    const mentionPattern = /@[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/()\[\]\~\:]+/g;
 
     // 탐색하고 감싸기
     const wrappedText = text
         .replace(hashTagPattern, match => `<a href="/search?q=${match.replace('#', '')}&qsearch_type=default" class="tagbox hashtag">${match}</a>`)
-        .replace(bookPattern, match => `<a href="/search?q=${match.replace('$', '')}&qsearch_type=default" class="tagbox booktag">${match}</a>`)
+        .replace(bookPattern, match => `<a href="/search?q=${match.replace('$', '')}&qsearch_type=book" class="tagbox booktag">${match}</a>`)
         .replace(mentionPattern, match => `<a href="/search?q=${match.replace('@', '')}&qsearch_type=default" class="tagbox mention">${match}</a>`);
 
     return wrappedText;

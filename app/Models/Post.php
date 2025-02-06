@@ -93,6 +93,11 @@ class Post extends Model
         return $this->morphMany(Attachment::class, 'attachmentable');
     }
 
+    public function mentions()
+    {
+        return $this->belongsToMany(User::class, 'mentions', 'post_id', 'mentioned_user_id');
+    }
+
     public function scopePublished(){
         return $this->where('status', PostStatusEnum::PUBLISHED);
     }
