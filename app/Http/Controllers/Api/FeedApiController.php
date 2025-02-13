@@ -20,7 +20,7 @@ class FeedApiController extends Controller
     {
         try {
             $filters = [
-                'type' => PostTypeEnum::POST->value,
+                'type' => [PostTypeEnum::POST, PostTypeEnum::BOOKCASE],
                 'q' => $request->input('q'),
             ];
 

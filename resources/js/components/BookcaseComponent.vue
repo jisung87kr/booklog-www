@@ -10,12 +10,16 @@ const type = ref('bookcase');
 
 const props = defineProps({
     bookcase: Object,
+    sortable: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 </script>
 <template>
     <div class="bg-white">
-        <div class="text-center relative" v-if="auth && auth.id == bookcase.user.id">
+        <div class="text-center relative" v-if="auth && auth.id == props.bookcase.user.id && props.sortable.true">
             <button type="button" class="handle text-gray-400 relative -top-[16px]">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16"

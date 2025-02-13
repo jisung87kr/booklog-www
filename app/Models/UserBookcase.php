@@ -16,6 +16,7 @@ class UserBookcase extends Model
 
     protected $guarded = [];
     protected $appends = ['formatted_created_at'];
+    protected $with = ['user', 'books'];
 
     protected static function boot()
     {

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PostStatusEnum;
+use App\Enums\PostTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\UserBookcase;
 use Illuminate\Http\Request;
@@ -46,6 +49,16 @@ class UserBookcaseApiController extends Controller
             });
             $bookcase->books()->attach($books);
             $bookcase->load('books');
+
+            Post::create([
+                'ref_key' => $bookcase->id,
+                'user_id' => $bookcase->user_id,
+                'title' => $bookcase->title,
+                'content' => $bookcase->description,
+                'type' => PostTypeEnum::BOOKCASE,
+                'status' => PostStatusEnum::PUBLISHED,
+            ]);
+
             return response()->success('', $bookcase);
         } catch(\Exception $e) {
             return response()->error($e->getMessage());

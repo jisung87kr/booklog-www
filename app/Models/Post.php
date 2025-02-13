@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use App\Models\UserBookcase;
 
 class Post extends Model
 {
@@ -16,7 +17,7 @@ class Post extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = ['attachments', 'user', 'images'];
+    protected $with = ['attachments', 'user', 'images', 'bookcase'];
     protected $appends = ['formatted_created_at'];
 
     protected static function boot()
@@ -110,7 +111,7 @@ class Post extends Model
     public function scopeFilter(Builder $query, $filters)
     {
         $query->when($filters['type'] ?? null, function ($query, $type) {
-            $query->where('type', $type);
+            $query->whereIn('type', $type);
         });
 
         $query->when($filters['user_id'] ?? null, function ($query, $userId) {
@@ -126,5 +127,10 @@ class Post extends Model
         $query->when($filters['q'] ?? null, function ($query, $q) {
             $query->where('content', 'like', "%{$q}%");
         });
+    }
+
+    public function bookcase()
+    {
+        return $this->hasOne(UserBookcase::class, 'id', 'ref_key');
     }
 }

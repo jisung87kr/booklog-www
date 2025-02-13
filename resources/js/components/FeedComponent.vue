@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, defineEmits } from 'vue';
 import {wrapWithSpan} from "../common.js";
 import {useUserStore} from "../stores/user.js";
+import BookcaseComponent from "./BookcaseComponent.vue";
 
 const userStore = useUserStore();
 const auth = ref(userStore.user);
@@ -11,8 +12,6 @@ const props = defineProps({
         required: true,
     },
 });
-
-
 </script>
 <template>
     <div>
@@ -71,17 +70,22 @@ const props = defineProps({
                     </ul>
                 </dropdown-component>
             </div>
-            <div class="mt-1 pl-10">
-                <div class="mb-1 text-gray-600 feed-content" v-html="wrapWithSpan(feed.content)"></div>
-                <template v-if="feed.images.length > 0">
-                    <swiper-component :images="feed.images" class="mt-3"></swiper-component>
-                </template>
-                <div class="mt-3 flex gap-3">
-                    <like-button :model="feed" :auth="auth" type="post"></like-button>
-                    <comment-button :model="feed" type="post"></comment-button>
-                    <share-button :model="feed" type="post"></share-button>
+            <template v-if="feed.type === 'bookcase'">
+                <bookcase-component :bookcase="feed.bookcase" class="mt-1 pl-10" sortable="false"></bookcase-component>
+            </template>
+            <template v-else>
+                <div class="mt-1 pl-10">
+                    <div class="mb-1 text-gray-600 feed-content" v-html="wrapWithSpan(feed.content)"></div>
+                    <template v-if="feed.images.length > 0">
+                        <swiper-component :images="feed.images" class="mt-3"></swiper-component>
+                    </template>
+                    <div class="mt-3 flex gap-3">
+                        <like-button :model="feed" :auth="auth" type="post"></like-button>
+                        <comment-button :model="feed" type="post"></comment-button>
+                        <share-button :model="feed" type="post"></share-button>
+                    </div>
                 </div>
-            </div>
+            </template>
         </div>
     </div>
 </template>
