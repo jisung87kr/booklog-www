@@ -75,6 +75,7 @@ class User extends Authenticatable
             $builder->select([
                'users.*',
                DB::raw('(SELECT COUNT(*) FROM follows WHERE follows.following_id = users.id) as followers_count'),
+               DB::raw('(SELECT COUNT(*) FROM follows WHERE follows.follow_id = users.id) as following_count'),
                DB::raw("IF((SELECT id FROM follows WHERE following_id = users.id AND follow_id = '{$userId}') IS NOT NULL, true, false) AS is_following")
             ]);
 
@@ -143,12 +144,14 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->hasMany(Follow::class, 'following_id', 'id');
+//        return $this->hasMany(Follow::class, 'following_id', 'id');
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follow_id');
     }
 
     public function followings()
     {
-        return $this->hasMany(Follow::class, 'follow_id', 'id');
+//        return $this->hasMany(Follow::class, 'follow_id', 'id');
+        return $this->belongsToMany(User::class, 'follows', 'follow_id', 'following_id');
     }
 
     public function mentions()

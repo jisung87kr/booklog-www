@@ -7,6 +7,7 @@ import BookcaseComponent from "../components/BookcaseComponent.vue";
 import Sortable from "sortablejs";
 import cloneDeep from "lodash/cloneDeep";
 import {sendRequest} from "../common.js";
+import ModalComponent from "../components/ModalComponent.vue";
 
 // 사용자 인증 스토어 사용 설정
 const userStore = useUserStore();
@@ -26,6 +27,9 @@ const user = ref(window.__profileUser);
 const showProfileModal = ref(true);
 const sortableEl = ref(null);
 const sortableInstance = ref(null);
+const followModalShow = ref(false);
+const followModalType = ref(null);
+const userList = ref([]);
 
 const list = ref({
     current_page: 1,
@@ -183,6 +187,28 @@ const logout = async () => {
     });
 };
 
+const openFollowModal = async (type) => {
+    let response;
+    switch (type) {
+        case 'follower':
+            followModalType.value = '팔로우';
+            response = await sendRequest('GET', `/api/users/${user.value.username}/followers`);
+            userList.value = response.data;
+            break;
+        case 'following':
+            followModalType.value = '팔로우 중';
+            response = await sendRequest('GET', `/api/users/${user.value.username}/followings`);
+            userList.value = response.data;
+            break;
+    }
+
+    followModalShow.value = true;
+};
+
+const closeFollowModal = () => {
+    followModalShow.value = false;
+};
+
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     await getList(1);
@@ -224,10 +250,34 @@ onBeforeUnmount(() => {
                             >
                             </div>
                             <div class="flex justify-between items-center mt-3">
-                                <div class="text-sm text-zinc-500 flex">
-                                    <div>팔로워 <span v-html="user.followers_count"></span>명</div>
-                                    <template v-if="user.user_link">
-                                        <span class="px-1">∙</span><a :href="user.user_link" target="_blank" v-html="user.user_link"></a>
+                                <div>
+                                    <div class="text-sm text-zinc-500 flex">
+                                        <button type="button" @click="openFollowModal('follower')">팔로워 <span v-html="user.followers_count"></span>명</button>
+                                        <span class="px-1">∙</span>
+                                        <button type="button" @click="openFollowModal('following')">팔로우 중 <span v-html="user.following_count"></span>명</button>
+                                        <teleport to="body">
+                                            <modal-component :is-visible="followModalShow" @close="closeFollowModal">
+                                                <div v-if="userList.data.length> 0"
+                                                     class="divide-y p-6"
+                                                >
+                                                    <div class="font-bold mb-3 text-lg">{{followModalType}}</div>
+                                                    <template v-for="user in userList.data" :key="user.id">
+                                                        <avatar-component :user="user" class="py-4"></avatar-component>
+                                                    </template>
+                                                </div>
+                                                <div v-else>
+                                                    <div class="p-6">
+                                                        <span v-html="followModalType"></span>
+                                                        <span>중인 사람이 없습니다.</span>
+                                                    </div>
+                                                </div>
+                                            </modal-component>
+                                        </teleport>
+                                    </div>
+                                    <template v-if="user.link">
+                                        <div class="text-sm text-zinc-500 flex">
+                                            <a :href="user.link" target="_blank" v-html="user.link"></a>
+                                        </div>
                                     </template>
                                 </div>
                                 <template v-if="auth && user.id != auth.id">

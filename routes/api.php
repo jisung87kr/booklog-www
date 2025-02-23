@@ -87,6 +87,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/users/{user}/books', [UserBookApiController::class, 'updateOrder'])->name('api.user.book.updateOrder');
     Route::delete('/users/{user}/books/{book}', [UserBookApiController::class, 'destroy'])->name('api.user.book.destroy');
 
+    Route::get('/users/{user}/followers', [UserApiController::class, 'followers'])->name('api.user.follower');
+    Route::get('/users/{user}/followings', [UserApiController::class, 'followings'])->name('api.user.following');
+
+
     Route::get('/users/{user}/activity/followers', [ActivityApiController::class, 'followers'])->name('activity.follower');
     Route::get('/users/{user}/activity/replies', [ActivityApiController::class, 'replies'])->name('activity.reply');
     Route::get('/users/{user}/activity/mentions', [ActivityApiController::class, 'mentions'])->name('activity.mention');
@@ -113,20 +117,26 @@ Route::middleware('auth:sanctum')->group(function(){
             $result = $aladinService->itemSearch(request()->input('q'));
             if($result['item']){
                 collect($result['item'])->map(function($item){
-                    Book::insertOrIgnore([
-                        'title' => $item['title'],
-                        'author' => $item['author'],
-                        'description' => $item['description'],
-                        'publisher' => $item['publisher'],
-                        'published_date' => $item['pubDate'],
-                        'isbn' => $item['isbn13'],
-                        'cover_image' => $item['cover'],
-                        'link' => $item['link'],
-                        'product_id' => $item['itemId'],
-                    ]);
+                    if($item['isbn13']){
+                        Book::insertOrIgnore([
+                            'title' => $item['title'],
+                            'author' => $item['author'],
+                            'description' => $item['description'],
+                            'publisher' => $item['publisher'],
+                            'published_date' => $item['pubDate'],
+                            'isbn' => $item['isbn13'],
+                            'cover_image' => $item['cover'],
+                            'link' => $item['link'],
+                            'product_id' => $item['itemId'],
+                        ]);
+                    }
                 });
 
-                $books = Book::whereIn('isbn', collect($result['item'])->pluck('isbn13'))->paginate(30);
+                $isbn13s = collect($result['item'])->filter(function($item){
+                    return isset($item['isbn13']);
+                })->pluck('isbn13');
+
+                $books = Book::whereIn('isbn', $isbn13s)->paginate(30);
                 return response()->success('', $books);
             }
         } catch (\Exception $e) {

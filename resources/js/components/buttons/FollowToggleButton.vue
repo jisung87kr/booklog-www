@@ -1,11 +1,16 @@
 <template>
-    <button type="button" :class="className" @click="toggleFollow"
-            v-if="isFollowing != true">
-        팔로잉
-    </button>
     <button type="button" :class="activeClassName" @click="toggleFollow"
-            v-else>
+            v-if="isFollowing != true">
         팔로우
+    </button>
+    <button type="button"
+            :class="[className, {'border-red-700 text-red-700': hover}]"
+            @click="toggleFollow"
+            @mouseenter="hover = true"
+            @mouseleave="hover = false"
+            v-else>
+        <span v-if="hover">언팔로우</span>
+        <span v-else>팔로우 중</span>
     </button>
 </template>
 <script>
@@ -30,6 +35,7 @@ export default {
     },
     data(){
         return {
+            hover: false,
             isFollowing: this.user.is_following,
         }
     },

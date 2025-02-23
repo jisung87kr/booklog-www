@@ -84,4 +84,24 @@ class UserApiController extends Controller
             return response()->error('', $e->getMessage());
         }
     }
+
+    public function followers(User $user)
+    {
+        try {
+            $followers = $user->followers()->orderBy('id', 'desc')->paginate(10);
+            return response()->success('', $followers);
+        } catch (\Exception $e) {
+            return response()->error('', $e->getMessage());
+        }
+    }
+
+    public function followings(User $user)
+    {
+        try {
+            $followers = $user->followings()->orderBy('id', 'desc')->paginate(10);
+            return response()->success('', $followers);
+        } catch (\Exception $e) {
+            return response()->error('', $e->getMessage());
+        }
+    }
 }
