@@ -87,10 +87,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/users/{user}/books', [UserBookApiController::class, 'updateOrder'])->name('api.user.book.updateOrder');
     Route::delete('/users/{user}/books/{book}', [UserBookApiController::class, 'destroy'])->name('api.user.book.destroy');
 
-    Route::get('/users/{user}/followers', [UserApiController::class, 'followers'])->name('api.user.follower');
-    Route::get('/users/{user}/followings', [UserApiController::class, 'followings'])->name('api.user.following');
-
-
     Route::get('/users/{user}/activity/followers', [ActivityApiController::class, 'followers'])->name('activity.follower');
     Route::get('/users/{user}/activity/replies', [ActivityApiController::class, 'replies'])->name('activity.reply');
     Route::get('/users/{user}/activity/mentions', [ActivityApiController::class, 'mentions'])->name('activity.mention');
@@ -154,6 +150,8 @@ Route::get('/@{user}', [UserApiController::class, 'show'])->name('user.show');
 Route::get('/posts', [PostApiController::class, 'index'])->name('post.index');
 Route::post('/actions', [UserActionApiController::class, 'store'])->name('action.store');
 Route::get('/users/{user}/bookcases', [UserBookcaseApiController::class, 'index'])->name('user.bookcase.index');
+Route::get('/users/{user}/followers', [UserApiController::class, 'followers'])->name('api.user.follower');
+Route::get('/users/{user}/followings', [UserApiController::class, 'followings'])->name('api.user.following');
 
 Route::get('test', function(){
    $service = new \App\Services\SearchService();
