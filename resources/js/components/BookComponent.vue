@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
     <div class="book-wrapper">
         <slot name="header">
-            <div class="border rounded-lg overflow-hidden mb-2 aspect-square">
+            <div class="border rounded-lg overflow-hidden mb-2 aspect-[3/4.5]">
                 <a :href="props.book.link" target="_blank">
                     <img :src="props.book.cover_image" :alt="props.book.title" class="w-full h-full object-cover">
                 </a>

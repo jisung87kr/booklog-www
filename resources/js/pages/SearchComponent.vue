@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
                         </template>
                         <!-- 검색 결과 리스트 -->
                         <template v-else>
-                            <div v-if="bookData.id"
+                            <div v-if="bookData && bookData.id"
                                  class="flex items-start p-6">
                                 <div class="shrink-0 mr-3">
                                     <a :href="bookData.link" target="_blank" class="border rounded-xl block w-[130px] overflow-hidden">

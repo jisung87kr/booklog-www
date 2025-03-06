@@ -31,7 +31,7 @@ class FeedApiController extends Controller
             }
 
             if($request->input('qsearch_type') === 'book'){
-                $book = Book::where('title', 'like', '%'.$request->input('q').'%')->first();
+                $book = Book::filter(['q' => $request->input('q')])->first();
                 $feeds = [
                     'feeds' => $feeds,
                     'book' => $book,

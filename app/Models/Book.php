@@ -100,7 +100,10 @@ class Book extends Model
     public function scopeFilter(Builder $query, array $filters)
     {
         $query->when($filters['q'] ?? false, function (Builder $query, $q) {
-            $query->where('title', 'like', '%'.$q.'%');
+            $sanitize = preg_replace('/[^a-zA-Z0-9가-힣\s]/', '', $q);
+            $query->where('title', 'like', '%'.$q.'%')
+                ->orWhereRaw("REGEXP_REPLACE(title, '[^a-zA-Z0-9가-힣]', '') LIKE ?", ["%{$sanitize}%"])
+                ->orWhere('isbn', $q);
         });
     }
 }
