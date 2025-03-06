@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Category;
-use App\Enums\CategoryTypeEnum;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -32,7 +31,6 @@ class CategoryApiController extends Controller
     {
         try {
             $validated = $request->validate([
-                'type' => ['required', Rule::enum(CategoryTypeEnum::class)],
                 'name' => 'required',
                 'parent_id' => 'nullable|exists:App\Models\Category,id',
             ]);
@@ -68,7 +66,6 @@ class CategoryApiController extends Controller
     {
         try {
             $validated = $request->validate([
-                'type' => ['nullable', Rule::enum(CategoryTypeEnum::class)],
                 'name' => 'nullable',
                 'parent_id' => 'nullable|exists:App\Models\Category,id',
             ]);

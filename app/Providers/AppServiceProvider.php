@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Responses\ApiResponse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
+use Orhanerday\OpenAi\OpenAi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        app()->bind(OpenAi::class, function($app) {
+            return new OpenAi(env('OEPNAI_SECRET_KEY'));
+        });
     }
 
     /**

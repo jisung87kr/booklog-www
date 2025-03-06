@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BookTypeEnum;
 use App\Http\Controllers\Api\ActivityApiController;
 use App\Http\Controllers\Api\AttachmentApiController;
 use App\Http\Controllers\Api\AuthorApiController;
@@ -124,6 +125,8 @@ Route::middleware('auth:sanctum')->group(function(){
                             'cover_image' => $item['cover'],
                             'link' => $item['link'],
                             'product_id' => $item['itemId'],
+                            'type' => BookTypeEnum::ALADIN,
+                            'book_category_code' => $item['categoryId'],
                         ]);
                     }
                 });
