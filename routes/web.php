@@ -4,6 +4,8 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserBookcaseController;
+use App\Models\Post;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserBookController;
@@ -18,11 +20,11 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('test', function(\App\Services\Crawler\AladinService $aladinService){
-    $result = $aladinService->itemSearch('슬램덩크');
-    dd($result);
-//    $result = $kyoboBook->getAllBooksByCategory('010101');
-//    dd($result);
+Route::get('test', function(){
+   $service = new \App\Services\Crawler\AladinService();
+   //$result = $service->itemListAll(1);
+    $result = $service->itemLookUp(9791190408752);
+   dd($result);
 });
 
 Route::get('/', function () {
