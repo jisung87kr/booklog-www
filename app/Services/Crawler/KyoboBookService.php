@@ -1,6 +1,12 @@
 <?php
 namespace App\Services\Crawler;
 
+use App\Services\Crawler\Contracts\BookCrawlerInterface;
+use App\Services\Crawler\DTOs\BookSearchRequestDTO;
+use App\Services\Crawler\DTOs\BookCategoryRequestDTO;
+use App\Services\Crawler\DTOs\BookDetailRequestDTO;
+use App\Services\Crawler\DTOs\AllCategoryRequestDTO;
+use App\Services\Crawler\DTOs\BookResponseDTO;
 use App\Utils\RequestUtil;
 use GuzzleHttp\Client;
 //use GuzzleHttp\Promise;
@@ -12,11 +18,29 @@ use GuzzleHttp\Promise;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class KyoboBookService{
+class KyoboBookService implements BookCrawlerInterface
+{
     private $size = 20;
+    private $maxTotalResults = 1000;
+
     public function __construct()
     {
 
+    }
+
+    public function getName(): string
+    {
+        return 'Kyobo';
+    }
+
+    public function getMaxResults(): int
+    {
+        return $this->size;
+    }
+
+    public function getMaxTotalResults(): int
+    {
+        return $this->maxTotalResults;
     }
 
     public function getMaxPage($totalCount, $size)
@@ -24,7 +48,7 @@ class KyoboBookService{
         return ceil($totalCount / $size);
     }
 
-    public function getAllBooksByCategory($category)
+    public function getAllBooksFromCategory($category)
     {
         try {
             $firstPage = $this->getBookList(1, $this->size, $category);
@@ -113,14 +137,71 @@ class KyoboBookService{
         ];
     }
 
-    public function searchBook($keyword, $len=12, )
+    public function searchBooks(BookSearchRequestDTO $request): BookResponseDTO
     {
-
+        try {
+            $result = $this->searchBook($request->query, $request->limit);
+            return BookResponseDTO::success(
+                data: $result,
+                source: $this->getName(),
+                currentPage: $request->page
+            );
+        } catch (\Exception $e) {
+            return BookResponseDTO::error($e->getMessage(), $this->getName());
+        }
     }
 
-    public function getBookDetail()
+    public function getBooksByCategory(BookCategoryRequestDTO $request): BookResponseDTO
     {
+        try {
+            $result = $this->getBookList($request->page, $request->limit, $request->categoryId);
+            return BookResponseDTO::success(
+                data: $result,
+                source: $this->getName(),
+                totalCount: $result['data']['totalCount'] ?? 0,
+                currentPage: $request->page
+            );
+        } catch (\Exception $e) {
+            return BookResponseDTO::error($e->getMessage(), $this->getName());
+        }
+    }
 
+    public function getBookDetail(BookDetailRequestDTO $request): BookResponseDTO
+    {
+        try {
+            $result = $this->getBookDetailById($request->bookId);
+            return BookResponseDTO::success(
+                data: $result,
+                source: $this->getName()
+            );
+        } catch (\Exception $e) {
+            return BookResponseDTO::error($e->getMessage(), $this->getName());
+        }
+    }
+
+    public function getAllBooksByCategory(AllCategoryRequestDTO $request): BookResponseDTO
+    {
+        try {
+            $result = $this->getAllBooksFromCategory($request->categoryId);
+            return BookResponseDTO::success(
+                data: $result,
+                source: $this->getName()
+            );
+        } catch (\Exception $e) {
+            return BookResponseDTO::error($e->getMessage(), $this->getName());
+        }
+    }
+
+    public function searchBook($keyword, $len=12)
+    {
+        // TODO: Implement search functionality
+        return [];
+    }
+
+    public function getBookDetailById($bookId)
+    {
+        // TODO: Implement book detail functionality
+        return [];
     }
 
     public function getBookReview()
