@@ -104,9 +104,11 @@ const initEditor = () => {
                     if (mentionChar === "@") {
                         values = await fetchMentions(searchTerm);
                     } else if(mentionChar === '$') {
-                        values = await fetchBooks(searchTerm);
+
                     } else{
-                        values = await fetchTags(searchTerm);
+                        let book = await fetchBooks(searchTerm);
+                        let tags = await fetchTags(searchTerm);
+                        values = [...book, ...tags];
                     }
 
                     if (searchTerm.length === 0) {

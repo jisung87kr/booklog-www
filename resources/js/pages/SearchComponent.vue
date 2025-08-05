@@ -26,13 +26,13 @@ const recommendedUsers = ref([]);
 const searchData = ref([]);
 const bookData = ref([]);
 
-const fetchFeeds = async (page = 1) => {
+const fetchFeeds = async (type, page = 1) => {
     try {
         loading.value = true;
         let params = {
             page: page,
             q: q.value,
-            qsearch_type: qsearch_type.value,
+            qsearch_type: type,
         };
 
         let response = await sendRequest('GET', '/api/feeds', params);
@@ -41,10 +41,10 @@ const fetchFeeds = async (page = 1) => {
             throw new Error(response.message);
         }
 
-        if(qsearch_type.value === 'book'){
-            bookData.value = response.data.book;
-            return response.data.feeds;
-        }
+        // if(qsearch_type.value === 'book'){
+        //     bookData.value = response.data.book;
+        //     return response.data.feeds;
+        // }
 
         return response.data;
     } catch (error) {
@@ -61,7 +61,7 @@ const handleScroll = async () => {
 
     if (scrollTop + windowHeight >= documentHeight * 0.8 && !loading.value && feeds.value.current_page < feeds.value.last_page) {
         const nextPage = feeds.value.current_page + 1;
-        const feedsResponse = await fetchFeeds(nextPage);
+        const feedsResponse = await fetchFeeds('default', nextPage);
 
         feeds.value.data = [...feeds.value.data, ...feedsResponse.data.data];
         feeds.value.current_page = feedsResponse.data.current_page;
@@ -99,8 +99,12 @@ onMounted(async () => {
     await fetchSearchData();
     window.addEventListener("scroll", handleScroll);
     if (q.value) {
-        const feedsResponse = await fetchFeeds();
+        const feedsResponse = await fetchFeeds('default');
         feeds.value = feedsResponse;
+        const bookResponse = await fetchFeeds('book');
+        if (bookResponse) {
+            bookData.value = bookResponse.book;
+        }
     }
 
     loaded.value = true;
@@ -109,6 +113,17 @@ onMounted(async () => {
 onBeforeUnmount(() => {
     window.removeEventListener("scroll", handleScroll);
 });
+
+const submitSearch = () => {
+    if (q.value.trim() === '') {
+        alert('검색어를 입력해주세요.');
+        return;
+    }
+    if (qsearch_type.value === null) {
+        qsearch_type.value = 'default';
+    }
+    window.location.href = `/search?q=${encodeURIComponent(q.value)}&qsearch_type=${qsearch_type.value}`;
+};
 
 </script>
 <template>
@@ -124,7 +139,7 @@ onBeforeUnmount(() => {
             <div class="container-fluid mx-auto w-full">
                 <div class="flex justify-center">
                     <div class="bg-white sm:border sm:rounded-2xl flex-start max-w-xl w-full">
-                        <form action="" class="p-6">
+                        <form action="" class="p-6" @submit.prevent="submitSearch">
                             <div class="relative pl-7 border rounded-2xl w-full overflow-hidden">
                                 <button type="button" class="absolute left-6 top-2.5 -translate-x-1/2 opacity-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="18" height="18" viewBox="0 0 24 24" stroke-width="1" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
