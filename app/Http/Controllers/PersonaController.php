@@ -35,6 +35,7 @@ class PersonaController extends Controller
             'occupation' => 'required|string|max:255',
             'reading_preferences' => 'required|array',
             'description' => 'nullable|string',
+            'speaking_style' => 'nullable|string|max:255',
         ]);
 
         $persona = Persona::create($validated);
@@ -63,6 +64,7 @@ class PersonaController extends Controller
             'occupation' => 'sometimes|string|max:255',
             'reading_preferences' => 'sometimes|array',
             'description' => 'nullable|string',
+            'speaking_style' => 'sometimes|string|max:255',
             'is_active' => 'sometimes|boolean',
         ]);
 

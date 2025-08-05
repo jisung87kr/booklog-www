@@ -32,7 +32,6 @@ class OpenAiService{
     public function __construct(OpenAi $openAi, FunctionHandler $functionHandler)
     {
         $this->openAi = $openAi;
-        $this->openAi->setApiKey = env('OEPNAI_SECRET_KEY');
         $this->functionHandler = $functionHandler;
     }
 
@@ -61,9 +60,13 @@ class OpenAiService{
                 return $this->handleFunctionCalls($messages, $d);
             }
 
+            if(isset($d['error'])){
+                throw new \Exception($d['error']['message']);
+            }
+
             return $d['choices'][0]['message']['content'];
         } catch (\Exception $e){
-            dd($d);
+            throw $e;
         }
     }
 

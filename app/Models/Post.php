@@ -19,6 +19,9 @@ class Post extends Model
     protected $guarded = [];
     protected $with = ['attachments', 'user', 'images', 'bookcase'];
     protected $appends = ['formatted_created_at'];
+    protected $casts = [
+        'meta' => 'array'
+    ];
 
     protected static function boot()
     {

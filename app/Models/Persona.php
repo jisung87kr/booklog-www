@@ -16,6 +16,7 @@ class Persona extends Model
         'occupation',
         'reading_preferences',
         'description',
+        'speaking_style',
         'is_active'
     ];
 

@@ -20,15 +20,9 @@ use App\Http\Controllers\UserController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('test', function(){
-   $service = new \App\Services\Crawler\BookCrawlerService();
-//    $service = new \App\Services\Crawler\AladinService();
-//   $result = $service->searchBooks(new \App\Services\Crawler\DTOs\BookSearchRequestDTO('자바스크립트', 2));
-//    $result = $service->getBooksByCategory(new \App\Services\Crawler\DTOs\BookCategoryRequestDTO('1', 1, 10));
-//    $result = $service->getBookDetail(new \App\Services\Crawler\DTOs\BookDetailRequestDTO('8960218154'));
-    $result = $service->getAllBooksByCategory(new \App\Services\Crawler\DTOs\AllCategoryRequestDTO('1', 1, 10));
-//    $result = $service->itemList(1);
-//    $result = $service->itemLookUp('9791173553349');
+Route::get('test', function(\App\Services\PersonaFeedService $service){
+//   dd(env('APP_NAME'));
+   $result = $service->generateFeedForPersona(\App\Models\user::find(10));
    dd($result);
 });
 

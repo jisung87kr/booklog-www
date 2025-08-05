@@ -36,6 +36,7 @@ class User extends Authenticatable
         'introduction',
         'link',
         'is_secret',
+        'persona_id',
     ];
 
     /**
@@ -157,6 +158,11 @@ class User extends Authenticatable
     public function mentions()
     {
         return $this->hasMany(Mention::class,  'mentioned_user_id', 'id');
+    }
+
+    public function persona()
+    {
+        return $this->belongsTo(Persona::class);
     }
 
     public function getRouteKeyName()

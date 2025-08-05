@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\UserBadgeApiController;
 use App\Http\Controllers\Api\UserBookcaseApiController;
 use App\Http\Controllers\Api\UserPostApiController;
+use App\Http\Controllers\PersonaController;
 use App\Models\Book;
 use App\Models\BookUserBookcase;
 use App\Models\UserBookcase;
@@ -104,6 +105,11 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::PUT('/bookcases/{bookcase}/order', [BookUserBookcaseApiController::class, 'updateOrder'])->name('bookcase.updateOrder');
     Route::resource('/bookcases/{bookcase}/books', BookUserBookcaseApiController::class)->names('bookcase.book');
+
+    // 페르소나 관련 라우트
+    Route::resource('/personas', PersonaController::class)->names('persona');
+    Route::post('/personas/{persona}/generate-feed', [PersonaController::class, 'generateFeed'])->name('persona.generate-feed');
+    Route::post('/personas/generate-all-feeds', [PersonaController::class, 'generateAllFeeds'])->name('persona.generate-all-feeds');
 
     // 알라딘 도서 검색
     Route::get('/service/books', function(\App\Services\Crawler\AladinService $aladinService){

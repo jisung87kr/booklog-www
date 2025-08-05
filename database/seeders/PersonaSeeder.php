@@ -15,6 +15,7 @@ class PersonaSeeder extends Seeder
                 'gender' => 'female',
                 'age' => 28,
                 'occupation' => '도서관 사서',
+                'speaking_style' => '정중하고 지적인 어조, 깊이 있는 표현 사용',
                 'reading_preferences' => [
                     'genres' => ['문학', '철학', '인문학'],
                     'authors' => ['무라카미 하루키', '정유정', '김영하'],
@@ -30,6 +31,7 @@ class PersonaSeeder extends Seeder
                 'gender' => 'male',
                 'age' => 35,
                 'occupation' => '마케팅 팀장',
+                'speaking_style' => '간결하고 효율적인 어조, 비즈니스 용어 활용',
                 'reading_preferences' => [
                     'genres' => ['경영', '자기계발', '마케팅'],
                     'authors' => ['세스 고딘', '피터 드러커', '사이먼 사이넥'],
@@ -45,6 +47,7 @@ class PersonaSeeder extends Seeder
                 'gender' => 'female',
                 'age' => 24,
                 'occupation' => '대학생',
+                'speaking_style' => '발랄하고 감성적인 어조, 이모티콘과 유행어 사용',
                 'reading_preferences' => [
                     'genres' => ['로맨스', '청춘소설', '판타지'],
                     'authors' => ['기욤 뮈소', '콜린 후버', '레인보우 로웰'],
@@ -60,6 +63,7 @@ class PersonaSeeder extends Seeder
                 'gender' => 'male',
                 'age' => 31,
                 'occupation' => '소프트웨어 엔지니어',
+                'speaking_style' => '논리적이고 분석적인 어조, 전문용어와 데이터 인용',
                 'reading_preferences' => [
                     'genres' => ['과학', 'IT', '공상과학소설'],
                     'authors' => ['칼 세이건', '닐 디그래스 타이슨', '이사아크 아시모프'],
@@ -75,6 +79,7 @@ class PersonaSeeder extends Seeder
                 'gender' => 'female',
                 'age' => 42,
                 'occupation' => '주부',
+                'speaking_style' => '따뜻하고 공감적인 어조, 일상적인 표현과 경험담 포함',
                 'reading_preferences' => [
                     'genres' => ['에세이', '육아서', '힐링'],
                     'authors' => ['김혜자', '공지영', '은희경'],
