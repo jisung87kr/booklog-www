@@ -128,14 +128,16 @@ class PersonaFeedService
         $user = $persona->users()->inRandomOrder()->first();
         return Post::create([
             'type' => PostTypeEnum::POST,
-            'user_id' => $user->id, // 페르소나가 생성한 포스트이므로 실제 사용자 ID는 null
-            'title' => "📚 {$content['title']}",
-            'content' => $content['content']." ".$content['hashtags'],
+            'user_id' => $user->id,
+            'title' => isset($content['title']) ? "📚 {$content['title']}" : "📚 {$persona->name}의 독서 피드",
+            'content' => $content['content']." ".($content['hashtags'] ?? ''),
             'status' => PostStatusEnum::PUBLISHED,
+            'published_at' => now(),
             'meta' => [
                 'persona_id' => $persona->id,
                 'generated_by' => 'ai',
-                'generated_at' => now()
+                'generated_at' => now()->toISOString(),
+                'book_title' => $content['book_title'] ?? null
             ]
         ]);
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostStatusEnum;
+use App\Enums\PostTypeEnum;
 use App\Enums\UserActionEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,10 @@ class Post extends Model
     protected $with = ['attachments', 'user', 'images', 'bookcase'];
     protected $appends = ['formatted_created_at'];
     protected $casts = [
-        'meta' => 'array'
+        'meta' => 'array',
+        'status' => PostStatusEnum::class,
+        'type' => PostTypeEnum::class,
+        'published_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -89,7 +93,7 @@ class Post extends Model
 
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable')->orderBy('sort_order');
     }
 
     public function attachments()

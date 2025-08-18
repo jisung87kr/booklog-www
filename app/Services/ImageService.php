@@ -11,6 +11,10 @@ class ImageService{
         $storagePath = $storagePath ?? $this->storagePath;
         $path = $image->store($storagePath);
         list($width, $height) = getimagesize(Storage::path($path));
+        
+        // Get next sort order
+        $nextSortOrder = $model->images()->max('sort_order') + 1;
+        
         return $model->images()->create([
             'file_name' => $image->hashName(),
             'file_path' => $path,
@@ -20,6 +24,7 @@ class ImageService{
             'alt_text' => $params['alt_text'] ?? null,
             'title' => $params['title'] ?? null,
             'description' => $params['description'] ?? null,
+            'sort_order' => $params['sort_order'] ?? $nextSortOrder,
         ]);
     }
 
@@ -39,5 +44,23 @@ class ImageService{
             return $uploadedImages;
         }
         return [];
+    }
+
+    public function updateImageOrder($imageIds)
+    {
+        foreach ($imageIds as $index => $imageId) {
+            \App\Models\Image::where('id', $imageId)->update(['sort_order' => $index + 1]);
+        }
+    }
+
+    public function deleteImage($imageId)
+    {
+        $image = \App\Models\Image::find($imageId);
+        if ($image) {
+            Storage::delete($image->file_path);
+            $image->delete();
+            return true;
+        }
+        return false;
     }
 }

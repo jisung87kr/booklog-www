@@ -19,10 +19,11 @@ const props = defineProps({
             <div class="flex justify-between">
                 <div class="flex">
                     <div class="profile shrink-0 mr-3">
-                        <img class="w-8 h-8 rounded-full" :src="feed.user.profile_photo_url">
+                        <img class="w-8 h-8 rounded-full" :src="(feed.user && feed.user.profile_photo_url) ?? 'https://www.gravatar.com/avatar/'">
                     </div>
                     <div class="mr-3 font-bold">
-                        <a :href="'/@'+feed.user.username">{{ feed.user.username }}</a>
+                        <a :href="'/@'+feed.user.username" v-if="feed.user">{{ feed.user.username }}</a>
+                        <span v-else>북로그</span>
                     </div>
                     <div class="opacity-75" v-html="feed.created_at_human"></div>
                 </div>

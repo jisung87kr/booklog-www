@@ -12,6 +12,10 @@ class Image extends Model
 
     protected $guarded = [];
     protected $appends = ['image_url'];
+    
+    protected $casts = [
+        'sort_order' => 'integer',
+    ];
 
     public function imageable()
     {
