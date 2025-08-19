@@ -242,9 +242,29 @@ class AdminController extends Controller
             'persona_id' => 'nullable|exists:personas,id',
         ]);
 
-        $user->update($request->only(['name', 'email', 'username', 'persona_id']));
+        // 비밀번호 필드가 있는 경우에만 유효성 검사 추가
+        if ($request->filled('password')) {
+            $validationRules['password'] = 'required|string|min:8|confirmed';
+        }
 
-        return redirect()->route('admin.users')->with('success', '사용자 정보가 업데이트되었습니다.');
+        $request->validate($validationRules);
+
+        // 기본 정보 업데이트
+        $updateData = $request->only(['name', 'email', 'username', 'persona_id']);
+
+        // 비밀번호가 제공된 경우에만 업데이트
+        if ($request->filled('password')) {
+            $updateData['password'] = bcrypt($request->password);
+        }
+
+        $user->update($updateData);
+
+        $message = '사용자 정보가 업데이트되었습니다.';
+        if ($request->filled('password')) {
+            $message = '사용자 정보 및 비밀번호가 업데이트되었습니다.';
+        }
+
+        return redirect()->route('admin.users')->with('success', $message);
     }
 
     public function destroyUser(User $user)

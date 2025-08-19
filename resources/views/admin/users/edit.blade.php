@@ -63,6 +63,49 @@
             </div>
         </div>
         
+        <!-- 보안 정보 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-lock text-primary-500 mr-2"></i>
+                보안 정보
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">새 비밀번호</label>
+                    <input type="password" id="password" name="password" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('password') border-red-500 @enderror"
+                           placeholder="새 비밀번호 (변경하지 않으려면 비워두세요)">
+                    @error('password')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-xs text-gray-500">최소 8자 이상, 영문/숫자/특수문자 조합</p>
+                </div>
+                
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">비밀번호 확인</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                           placeholder="새 비밀번호 확인">
+                    <p class="mt-1 text-xs text-gray-500">위와 동일한 비밀번호를 입력하세요</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div class="flex">
+                    <i class="fas fa-exclamation-triangle text-amber-600 mt-0.5 mr-3"></i>
+                    <div class="text-sm text-amber-800">
+                        <p class="font-medium mb-1">비밀번호 변경 시 주의사항</p>
+                        <ul class="text-xs space-y-1 text-amber-700">
+                            <li>• 비밀번호를 변경하면 사용자가 다시 로그인해야 합니다</li>
+                            <li>• 비밀번호를 변경하지 않으려면 두 필드 모두 비워두세요</li>
+                            <li>• 강력한 비밀번호를 사용하는 것이 권장됩니다</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- 계정 정보 -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">
