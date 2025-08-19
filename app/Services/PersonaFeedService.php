@@ -12,6 +12,7 @@ use App\Services\Crawler\BookCrawlerService;
 use App\Services\Crawler\DTOs\BookSearchRequestDTO;
 use App\Services\Crawler\DTOs\BookDetailDTO;
 use Illuminate\Support\Collection;
+use App\Models\Book;
 
 class PersonaFeedService
 {
@@ -37,6 +38,24 @@ class PersonaFeedService
     {
         // 알라딘 API에서 도서 검색
         $book = $this->selectRandomBookForPersona($persona);
+
+        Book::updateOrCreate(
+            ['isbn' => $book->isbn],
+            [
+                'title' => $book->title,
+                'author' => $book->author,
+                'description' => $book->description,
+                'product_id' => $book->productId,
+                'type' => $book->type,
+                'sale_price' => $book->salePrice,
+                'price' => $book->price,
+                'total_pages' => $book->totalPages,
+                'publisher' => $book->publisher,
+                'published_date' => $book->publishDate,
+                'cover_image' => $book->coverImage,
+                'link' => $book->link
+            ]
+        );
 
         if (!$book) {
             throw new \Exception('추천할 도서를 알라딘 API에서 찾을 수 없습니다.');
@@ -72,11 +91,13 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
 - ISBN: {$book->isbn}
 
 **작성 조건**:
-1. 길이: 150-200자 내외(줄내림 적당히 사용)
-2. 톤: 반드시 '{$speakingStyle}' 말투를 사용하여 페르소나의 개성을 살려주세요
-3. 내용: 위에 제공된 **정확한 책 제목과 저자명**만 사용
-4. 스타일: SNS 게시글처럼 친근하고 생동감 있게
-5. 해시태그: 관련 해시태그 2-3개 포함
+1. 길이: 150-200자 내외
+2. 줄내림: 자연스러운 호흡과 문장 단위로 줄내림 사용 (\\n으로 표현)
+   - 예: 인사말 → 줄내림 → 책 소개 → 줄내림 → 감상/추천 이유 → 줄내림 → 해시태그
+3. 톤: 반드시 '{$speakingStyle}' 말투를 사용하여 페르소나의 개성을 살려주세요
+4. 내용: 위에 제공된 **정확한 책 제목과 저자명**만 사용
+5. 스타일: SNS 게시글처럼 친근하고 생동감 있게
+6. 해시태그: 관련 해시태그 2-3개 포함
 
 **절대 금지**:
 - 책 제목이나 저자명을 임의로 변경하거나 다른 책으로 바꾸지 마세요
@@ -92,8 +113,8 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
     \"title\": \"피드 제목\",
     \"book_title\": \"{$book->title}\",
     \"author\": \"{$book->author}\",
-    \"content\": \"추천 글 내용\",
-    \"hashtags\": \"#해시태그1 #해시태그2 #해시태그3\"
+    \"content\": \"안녕하세요! 오늘은 정말 좋은 책을 발견했어요 📖\\n\\n'{$book->title}' by {$book->author}\\n\\n이 책은 정말 감동적이었어요. 특히 주인공의 성장 과정이 인상깊더라고요!\\n\\n여러분도 꼭 읽어보시길 추천드려요 ✨\",
+    \"hashtags\": \"#독서 #책추천 #감동\"
 }
 ";
 
@@ -129,7 +150,7 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
                     'title' => "📚 {$persona->name}의 도서 추천",
                     'book_title' => $book->title,
                     'author' => $book->author,
-                    'content' => "오늘은 '{$book->title}' by {$book->author}를 추천해드려요! [AI 응답 파싱 실패로 인한 더미 컨텐츠]",
+                    'content' => "오늘은 정말 좋은 책을 발견했어요! 📖\n\n'{$book->title}' by {$book->author}\n\n이 책 정말 추천드려요!\n\n[AI 응답 파싱 실패로 인한 더미 컨텐츠]",
                     'hashtags' => '#독서 #책추천 #' . str_replace(' ', '', $persona->name)
                 ];
 

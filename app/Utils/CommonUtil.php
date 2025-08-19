@@ -14,7 +14,7 @@ class CommonUtil{
             id: null,
             title: $item['title'],
             author:  $item['author'],
-            isbn: $item['isbn'],
+            isbn: $item['isbn13'] ?? $item['isbn'],
             link: $item['link'],
             type: $item['type'],
             description: $item['description'] ?? null,

@@ -71,6 +71,7 @@ export function wrapWithSpan(text){
 
     // 탐색하고 감싸기
     const wrappedText = text
+        .replace(/\n/g, '<br>')
         .replace(hashTagPattern, match => `<a href="/search?q=${match.replace('#', '')}&qsearch_type=default" class="tagbox hashtag">${match}</a>`)
         .replace(bookPattern, match => `<a href="/search?q=${match.replace('$', '')}&qsearch_type=book" class="tagbox booktag">${match}</a>`)
         .replace(mentionPattern, match => `<a href="/search?q=${match.replace('@', '')}&qsearch_type=default" class="tagbox mention">${match}</a>`);
