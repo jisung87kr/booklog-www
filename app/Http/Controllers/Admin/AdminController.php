@@ -285,6 +285,80 @@ class AdminController extends Controller
         return redirect()->back()->with('success', "{$user->name}의 페르소나 할당이 해제되었습니다.");
     }
 
+    public function updatePersonaSchedule(Request $request)
+    {
+        // 디버깅을 위한 로깅
+        logger()->info('페르소나 스케줄 업데이트 요청', [
+            'request_data' => $request->all(),
+            'persona_id' => $request->persona_id
+        ]);
+
+        $request->validate([
+            'persona_id' => 'required|exists:personas,id',
+            'auto_publish_enabled' => 'boolean',
+            'publish_frequency' => 'nullable|in:hourly,daily,weekly',
+            'daily_hour' => 'nullable|integer|min:0|max:23',
+            'daily_minute' => 'nullable|integer|min:0|max:59',
+            'weekly_day' => 'nullable|integer|min:0|max:6',
+            'weekly_hour' => 'nullable|integer|min:0|max:23',
+            'weekly_minute' => 'nullable|integer|min:0|max:59',
+        ]);
+
+        $persona = Persona::findOrFail($request->persona_id);
+        
+        $autoPublishEnabled = $request->boolean('auto_publish_enabled');
+        $publishFrequency = $autoPublishEnabled ? $request->publish_frequency : null;
+        $publishSchedule = [];
+
+        if ($autoPublishEnabled && $publishFrequency) {
+            switch ($publishFrequency) {
+                case 'daily':
+                    $publishSchedule = [
+                        'hour' => (int) $request->daily_hour,
+                        'minute' => (int) $request->daily_minute,
+                    ];
+                    break;
+                    
+                case 'weekly':
+                    $publishSchedule = [
+                        'day_of_week' => (int) $request->weekly_day,
+                        'hour' => (int) $request->weekly_hour,
+                        'minute' => (int) $request->weekly_minute,
+                    ];
+                    break;
+                    
+                case 'hourly':
+                    $publishSchedule = [];
+                    break;
+            }
+        }
+
+        $persona->update([
+            'auto_publish_enabled' => $autoPublishEnabled,
+            'publish_frequency' => $publishFrequency,
+            'publish_schedule' => $publishSchedule,
+        ]);
+
+        // 다음 발행 시간 계산 및 업데이트
+        $persona->updateNextPublishTime();
+
+        // 저장 후 확인 로깅
+        $persona->refresh();
+        logger()->info('페르소나 스케줄 업데이트 완료', [
+            'persona_id' => $persona->id,
+            'auto_publish_enabled' => $persona->auto_publish_enabled,
+            'publish_frequency' => $persona->publish_frequency,
+            'publish_schedule' => $persona->publish_schedule,
+            'next_publish_at' => $persona->next_publish_at
+        ]);
+
+        $message = $autoPublishEnabled 
+            ? "{$persona->name}의 자동 발행이 설정되었습니다. ({$persona->schedule_description})"
+            : "{$persona->name}의 자동 발행이 비활성화되었습니다.";
+
+        return redirect()->back()->with('success', $message);
+    }
+
     public function bulkAssignPersona(Request $request)
     {
         $request->validate([

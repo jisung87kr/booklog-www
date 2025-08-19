@@ -164,6 +164,79 @@ npm run build    # 프로덕션 빌드
 php artisan test
 ```
 
+## AI 페르소나 자동 발행 스케줄
+
+### 스케줄 설정
+
+1. **관리자 페이지 접속**
+   ```
+   http://your-domain/admin/personas
+   ```
+
+2. **스케줄 설정**
+   - 페르소나 목록에서 캘린더 아이콘(📅) 클릭
+   - 자동 발행 활성화 체크
+   - 발행 주기 선택:
+     - **매시간**: 1시간마다 자동 발행
+     - **매일**: 지정한 시간에 매일 발행
+     - **매주**: 지정한 요일과 시간에 매주 발행
+
+### 자동화 실행 설정
+
+서버의 크론탭에 Laravel 스케줄러 등록:
+
+```bash
+# 크론탭 편집
+crontab -e
+
+# 다음 라인 추가 (매분마다 스케줄러 실행)
+* * * * * cd /path/to/booklog/www && php artisan schedule:run >> /dev/null 2>&1
+
+# Docker 환경의 경우
+* * * * * docker exec booklog_web php artisan schedule:run >> /dev/null 2>&1
+```
+
+### 수동 명령어
+
+```bash
+# 스케줄된 피드 생성 (실제 실행)
+docker exec booklog_web php artisan feeds:generate-scheduled
+
+# 드라이런 모드 (어떤 페르소나가 실행될지 미리보기)
+docker exec booklog_web php artisan feeds:generate-scheduled --dry-run
+
+# 로그 확인
+docker exec booklog_web tail -f storage/logs/scheduled-feeds.log
+```
+
+### 스케줄 관리
+
+- **스케줄 확인**: 페르소나 관리 페이지에서 '자동 발행' 컬럼 확인
+- **다음 발행 시간**: 각 페르소나의 다음 예정 발행 시간 표시
+- **발행 내역**: `last_published_at` 필드로 마지막 발행 시간 추적
+
+### 문제 해결
+
+1. **스케줄이 실행되지 않는 경우**
+   ```bash
+   # 크론 서비스 상태 확인
+   systemctl status cron
+   
+   # 스케줄러 수동 실행으로 테스트
+   docker exec booklog_web php artisan schedule:run -v
+   ```
+
+2. **피드 생성 실패**
+   ```bash
+   # 로그 확인
+   docker exec booklog_web tail -f storage/logs/laravel.log
+   docker exec booklog_web tail -f storage/logs/scheduled-feeds.log
+   ```
+
+3. **페르소나에 사용자 할당 확인**
+   - 자동 발행을 위해서는 페르소나에 최소 1명의 사용자가 할당되어야 함
+   - 관리자 페이지에서 사용자 수 확인
+
 ## 프로젝트 구조
 
 ```

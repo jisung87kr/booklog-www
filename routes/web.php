@@ -96,6 +96,7 @@ Route::middleware([
         Route::put('/personas/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'updatePersona'])->name('personas.update');
         Route::delete('/personas/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'destroyPersona'])->name('personas.destroy');
         Route::post('/personas/{persona}/toggle', [App\Http\Controllers\Admin\AdminController::class, 'togglePersona'])->name('personas.toggle');
+        Route::post('/personas/schedule', [App\Http\Controllers\Admin\AdminController::class, 'updatePersonaSchedule'])->name('personas.schedule');
         
         // 사용자 관리
         Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');

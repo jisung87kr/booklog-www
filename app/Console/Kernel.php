@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // 스케줄된 AI 피드 생성 (매 5분마다 확인)
+        $schedule->command('feeds:generate-scheduled')
+                 ->everyFiveMinutes()
+                 ->withoutOverlapping()
+                 ->runInBackground()
+                 ->appendOutputTo(storage_path('logs/scheduled-feeds.log'));
     }
 
     /**
