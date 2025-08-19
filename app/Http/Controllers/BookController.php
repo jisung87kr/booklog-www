@@ -34,9 +34,19 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show(Book $book, Request $request)
     {
-        //
+        $book->load(['authors']);
+        
+        // JSON API 요청인 경우 JSON 응답
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return response()->json([
+                'data' => $book
+            ]);
+        }
+        
+        // 일반 웹 요청인 경우 서버사이드 렌더링된 HTML 응답
+        return view('book.show', compact('book'));
     }
 
     /**

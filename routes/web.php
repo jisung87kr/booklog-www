@@ -46,6 +46,10 @@ Route::get('/users/{user}/books', [UserBookController::class, 'index'])->name('u
 // search
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
+// Feed routes
+Route::get('/feeds', [App\Http\Controllers\FeedController::class, 'index'])->name('feeds.index');
+Route::get('/feeds/{post}', [App\Http\Controllers\FeedController::class, 'show'])->name('feeds.show');
+
 // profile
 Route::get('/@{user}', [UserController::class, 'profile'])->name('profile');
 
@@ -69,6 +73,13 @@ Route::get('/cookie-policy', function () {
 Route::get('/report-issue', function () {
     abort(404, '준비중입니다');
 })->name('report-issue');
+
+// SEO Routes
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-main.xml', [App\Http\Controllers\SitemapController::class, 'main'])->name('sitemap.main');
+Route::get('/sitemap-users.xml', [App\Http\Controllers\SitemapController::class, 'users'])->name('sitemap.users');
+Route::get('/sitemap-books.xml', [App\Http\Controllers\SitemapController::class, 'books'])->name('sitemap.books');
+Route::get('/sitemap-posts.xml', [App\Http\Controllers\SitemapController::class, 'posts'])->name('sitemap.posts');
 
 Route::middleware([
     'auth:sanctum',
