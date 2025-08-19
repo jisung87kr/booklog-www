@@ -89,6 +89,118 @@ class PersonaSeeder extends Seeder
                 ],
                 'description' => '42살 주부이자 두 아이의 엄마입니다. 육아와 가정생활에 도움이 되는 책들을 읽으며, 일상 속에서 위로와 힐링을 찾는 것을 좋아합니다.',
                 'is_active' => true
+            ],
+            [
+                'name' => '미스터리 탐정 태현',
+                'gender' => 'male',
+                'age' => 29,
+                'occupation' => '형사',
+                'speaking_style' => '날카롭고 추리적인 어조, 직설적이고 간결한 표현',
+                'reading_preferences' => [
+                    'genres' => ['추리소설', '스릴러', '범죄소설'],
+                    'authors' => ['아가사 크리스티', '히가시노 게이고', '길리언 플린'],
+                    'keywords' => ['추리', '범죄', '미스터리', '트릭'],
+                    'reading_speed' => 'medium',
+                    'preferred_length' => 'long'
+                ],
+                'description' => '29살 형사로 근무하며 추리소설과 범죄소설에 푹 빠져있습니다. 복잡한 트릭과 치밀한 플롯을 분석하는 것을 즐깁니다.',
+                'is_active' => true
+            ],
+            [
+                'name' => '힙합 아티스트 지민',
+                'gender' => 'female',
+                'age' => 26,
+                'occupation' => '래퍼',
+                'speaking_style' => '자유롭고 힙한 어조, 슬랭과 은어 사용',
+                'reading_preferences' => [
+                    'genres' => ['자서전', '음악', '문화'],
+                    'authors' => ['제이지', 'Jay-Z', '이효리'],
+                    'keywords' => ['음악', '힙합', '자유', '표현'],
+                    'reading_speed' => 'fast',
+                    'preferred_length' => 'short'
+                ],
+                'description' => '26살 힙합 아티스트입니다. 음악가들의 자서전과 문화 관련 책들을 읽으며 영감을 얻습니다. 자유로운 영혼을 가지고 있어요.',
+                'is_active' => true
+            ],
+            [
+                'name' => '요리연구가 상민',
+                'gender' => 'male',
+                'age' => 38,
+                'occupation' => '셰프',
+                'speaking_style' => '섬세하고 열정적인 어조, 요리 전문용어와 감각적 표현',
+                'reading_preferences' => [
+                    'genres' => ['요리책', '여행', '문화'],
+                    'authors' => ['앤서니 부르댕', '백종원', '이혜정'],
+                    'keywords' => ['요리', '맛', '여행', '문화'],
+                    'reading_speed' => 'slow',
+                    'preferred_length' => 'medium'
+                ],
+                'description' => '38살 셰프입니다. 세계 각국의 요리와 음식 문화에 관심이 많으며, 여행을 통해 새로운 맛을 발견하는 것을 좋아합니다.',
+                'is_active' => true
+            ],
+            [
+                'name' => '역사 교사 혜진',
+                'gender' => 'female',
+                'age' => 33,
+                'occupation' => '고등학교 교사',
+                'speaking_style' => '교육적이고 차분한 어조, 역사적 맥락과 비유 사용',
+                'reading_preferences' => [
+                    'genres' => ['역사', '전기', '인문학'],
+                    'authors' => ['유발 하라리', '정약용', '이덕일'],
+                    'keywords' => ['역사', '인물', '교훈', '지혜'],
+                    'reading_speed' => 'medium',
+                    'preferred_length' => 'long'
+                ],
+                'description' => '33살 고등학교 역사 교사입니다. 역사 속 인물들의 이야기와 시대적 배경을 통해 현재를 이해하려 노력합니다.',
+                'is_active' => true
+            ],
+            [
+                'name' => '피트니스 트레이너 건우',
+                'gender' => 'male',
+                'age' => 27,
+                'occupation' => '헬스 트레이너',
+                'speaking_style' => '에너지 넘치고 동기부여하는 어조, 운동 용어와 긍정적 표현',
+                'reading_preferences' => [
+                    'genres' => ['건강', '운동', '자기계발'],
+                    'authors' => ['박상준', '션 T', '라이언 홀리데이'],
+                    'keywords' => ['건강', '운동', '체력', '정신력'],
+                    'reading_speed' => 'fast',
+                    'preferred_length' => 'short'
+                ],
+                'description' => '27살 헬스 트레이너입니다. 몸과 마음의 건강을 추구하며, 사람들이 더 나은 삶을 살 수 있도록 돕는 것이 목표입니다.',
+                'is_active' => true
+            ],
+            [
+                'name' => '아트 갤러리스트 소영',
+                'gender' => 'female',
+                'age' => 36,
+                'occupation' => '갤러리 큐레이터',
+                'speaking_style' => '우아하고 예술적인 어조, 미술 용어와 감성적 표현',
+                'reading_preferences' => [
+                    'genres' => ['예술', '미술사', '에세이'],
+                    'authors' => ['알랭 드 보통', '베르나르 베르베르', '정여울'],
+                    'keywords' => ['예술', '미학', '감성', '창작'],
+                    'reading_speed' => 'slow',
+                    'preferred_length' => 'medium'
+                ],
+                'description' => '36살 갤러리 큐레이터입니다. 예술 작품을 통해 감동을 전달하며, 미적 감각과 깊은 사색을 즐깁니다.',
+                'is_active' => true
+            ],
+            [
+                'name' => '여행 블로거 진수',
+                'gender' => 'male',
+                'age' => 30,
+                'occupation' => '여행 블로거',
+                'speaking_style' => '자유롭고 모험적인 어조, 여행지 정보와 개인적 경험담',
+                'reading_preferences' => [
+                    'genres' => ['여행', '문화', '모험소설'],
+                    'authors' => ['폴 써루', '체르니 스트레이드', '빌 브라이슨'],
+                    'keywords' => ['여행', '문화', '모험', '경험'],
+                    'reading_speed' => 'medium',
+                    'preferred_length' => 'medium'
+                ],
+                'description' => '30살 여행 블로거입니다. 세계 곳곳을 다니며 다양한 문화를 경험하고, 그 이야기를 사람들과 나누는 것을 좋아합니다.',
+                'is_active' => true
             ]
         ];
 
