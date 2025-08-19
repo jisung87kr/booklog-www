@@ -3,20 +3,27 @@
 namespace App\Services;
 
 use App\Models\Persona;
-use App\Models\Book;
 use App\Models\Post;
 use App\Models\User;
 use App\Enums\PostTypeEnum;
 use App\Enums\PostStatusEnum;
 use App\Services\OpenAi\OpenAiService;
+use App\Services\Crawler\BookCrawlerService;
+use App\Services\Crawler\DTOs\BookSearchRequestDTO;
+use App\Services\Crawler\DTOs\BookDetailDTO;
 use Illuminate\Support\Collection;
 
 class PersonaFeedService
 {
-    protected $openAiService;
-    public function __construct(OpenAiService $openAiService)
-    {
+    protected OpenAiService $openAiService;
+    protected BookCrawlerService $bookCrawlerService;
+
+    public function __construct(
+        OpenAiService $openAiService,
+        BookCrawlerService $bookCrawlerService
+    ) {
         $this->openAiService = $openAiService;
+        $this->bookCrawlerService = $bookCrawlerService;
     }
 
     public function generateFeedForPersona(User $user): Post
@@ -26,12 +33,18 @@ class PersonaFeedService
         return $this->createFeedPost($persona, $content);
     }
 
-    protected function generateContentWithGPT(Persona $persona)
+    public function generateContentWithGPT(Persona $persona)
     {
+        // 알라딘 API에서 도서 검색
+        $book = $this->selectRandomBookForPersona($persona);
+
+        if (!$book) {
+            throw new \Exception('추천할 도서를 알라딘 API에서 찾을 수 없습니다.');
+        }
+
         // 페르소나 정보 포맷팅
         $preferences = $persona->reading_preferences;
         $genresText = implode(', ', $preferences['genres'] ?? []);
-        $authorsText = implode(', ', $preferences['authors'] ?? []);
         $keywordsText = implode(', ', $preferences['keywords'] ?? []);
         $speakingStyle = $persona->speaking_style ?? '자연스럽고 친근한';
 
@@ -46,21 +59,28 @@ class PersonaFeedService
 
 독서 취향:
 - 선호 장르: {$genresText}
-- 좋아하는 작가: {$authorsText}
 - 관심 키워드: {$keywordsText}
 
-이 페르소나의 관점에서 반드시 '{$speakingStyle}' 말투를 사용하여 자연스럽고 개성 있는 도서 추천 글이나 감상을 작성해주세요.";
+이 페르소나의 관점에서 반드시 '{$speakingStyle}' 말투를 사용하여 주어진 실제 도서에 대한 추천 글이나 감상을 작성해주세요.";
 
-        $userPrompt = "다음 조건에 맞는 도서 추천 글이나 감상을 작성해주세요:
+$userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 감상을 작성해주세요:
 
+**도서 정보 (절대 변경 금지)**:
+- 제목: {$book->title}
+- 저자: {$book->author}
+- 설명: {$book->description}
+- ISBN: {$book->isbn}
+
+**작성 조건**:
 1. 길이: 150-200자 내외(줄내림 적당히 사용)
 2. 톤: 반드시 '{$speakingStyle}' 말투를 사용하여 페르소나의 개성을 살려주세요
-3. 내용: 구체적인 책 제목을 포함하여 추천하거나, 최근 읽은 책에 대한 감상
+3. 내용: 위에 제공된 **정확한 책 제목과 저자명**만 사용
 4. 스타일: SNS 게시글처럼 친근하고 생동감 있게
 5. 해시태그: 관련 해시태그 2-3개 포함
 
-**중요**:
-책제목과 저자를 틀려서는 안됩니다. 반드시 정확한 책 제목과 저자를 사용하세요.
+**절대 금지**:
+- 책 제목이나 저자명을 임의로 변경하거나 다른 책으로 바꾸지 마세요
+- 존재하지 않는 책을 언급하지 마세요
 
 **응답 형식 (중요)**:
 - 반드시 유효한 JSON 형식으로만 응답하세요
@@ -70,7 +90,8 @@ class PersonaFeedService
 
 {
     \"title\": \"피드 제목\",
-    \"book_title\": \"책 제목\",
+    \"book_title\": \"{$book->title}\",
+    \"author\": \"{$book->author}\",
     \"content\": \"추천 글 내용\",
     \"hashtags\": \"#해시태그1 #해시태그2 #해시태그3\"
 }
@@ -103,15 +124,18 @@ class PersonaFeedService
             $data = json_decode($cleanResult, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                // 여전히 실패하면 더미 데이터 반환
+                // 여전히 실패하면 실제 도서 정보를 사용한 더미 데이터 반환
                 $data = [
                     'title' => "📚 {$persona->name}의 도서 추천",
-                    'content' => "오늘은 제가 좋아하는 {$genresText} 장르의 책을 추천해드리려고 합니다. [AI 응답 파싱 실패로 인한 더미 컨텐츠]",
+                    'book_title' => $book->title,
+                    'author' => $book->author,
+                    'content' => "오늘은 '{$book->title}' by {$book->author}를 추천해드려요! [AI 응답 파싱 실패로 인한 더미 컨텐츠]",
                     'hashtags' => '#독서 #책추천 #' . str_replace(' ', '', $persona->name)
                 ];
 
                 logger()->warning('AI 응답 JSON 파싱 실패', [
                     'persona_id' => $persona->id,
+                    'book_isbn' => $book->isbn,
                     'raw_response' => $result,
                     'json_error' => json_last_error_msg()
                 ]);
@@ -119,7 +143,56 @@ class PersonaFeedService
         }
 
         return $data;
+    }
 
+    public function selectRandomBookForPersona(Persona $persona): ?BookDetailDTO
+    {
+        $preferences = $persona->reading_preferences;
+        $authors = $preferences['authors'] ?? [];
+        $keywords = $preferences['keywords'] ?? [];
+
+        // 선호 작가가 있으면 우선 검색
+        if (!empty($authors)) {
+            foreach ($authors as $author) {
+                $searchRequest = new BookSearchRequestDTO($author, 1, 10);
+                $response = $this->bookCrawlerService->searchBooks($searchRequest);
+
+                if ($response->success && !empty($response->data)) {
+                    // 랜덤하게 선택
+                    $randomIndex = array_rand($response->data);
+                    return $response->data[$randomIndex];
+                }
+            }
+        }
+
+        // 키워드 기반 검색
+        if (!empty($keywords)) {
+            foreach ($keywords as $keyword) {
+                $searchRequest = new BookSearchRequestDTO($keyword, 1, 10);
+                $response = $this->bookCrawlerService->searchBooks($searchRequest);
+
+                if ($response->success && !empty($response->data)) {
+                    // 랜덤하게 선택
+                    $randomIndex = array_rand($response->data);
+                    return $response->data[$randomIndex];
+                }
+            }
+        }
+
+        // 아무것도 찾지 못하면 베스트셀러나 신간에서 검색
+        $fallbackQueries = ['베스트셀러', '소설', '에세이', '인문'];
+        foreach ($fallbackQueries as $query) {
+            $searchRequest = new BookSearchRequestDTO($query, 1, 20);
+            $response = $this->bookCrawlerService->searchBooks($searchRequest);
+
+            if ($response->success && !empty($response->data)) {
+                // 랜덤하게 선택
+                $randomIndex = array_rand($response->data);
+                return $response->data[$randomIndex];
+            }
+        }
+
+        return null;
     }
 
     protected function createFeedPost(Persona $persona, array $content): Post
@@ -137,7 +210,8 @@ class PersonaFeedService
                 'persona_id' => $persona->id,
                 'generated_by' => 'ai',
                 'generated_at' => now()->toISOString(),
-                'book_title' => $content['book_title'] ?? null
+                'book_title' => $content['book_title'] ?? null,
+                'author' => $content['author'] ?? null
             ]
         ]);
     }

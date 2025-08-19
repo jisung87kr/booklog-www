@@ -38,7 +38,7 @@ class AladinService implements BookCrawlerInterface
     public function itemSearch($query, $start=1, $queryType='Keyword', $maxResults=50, $searchTarget='book', $cover='Big', $output='js', $version='20131101')
     {
         $params = [
-            'ttbkey' => env('ALADIN_TTB_KEY'),
+            'ttbkey' => config('aladin.ttb_key'),
             'Query' => $query,
             'QueryType' => $queryType,
             'MaxResults' => $maxResults,
@@ -64,7 +64,7 @@ class AladinService implements BookCrawlerInterface
 
     public function itemList($categoryId, $start=1, $maxResults=50, $queryType='ItemNewAll', $searchTarget='Book', $cover='Big', $output='js', $version='20131101'){
         $params = [
-            'ttbkey' => env('ALADIN_TTB_KEY'),
+            'ttbkey' => config('aladin.ttb_key'),
             'CategoryId' => $categoryId,
             'QueryType' => $queryType,
             'MaxResults' => $maxResults,
@@ -89,7 +89,7 @@ class AladinService implements BookCrawlerInterface
 
     public function itemLookUp($itemId, $itemIdType='ISBN', $optResult='ebookList,usedList,reviewList', $cover='Big', $output='js', $version='20131101'){
         $params = [
-            'ttbkey' => env('ALADIN_TTB_KEY'),
+            'ttbkey' => config('aladin.ttb_key'),
             'ItemId' => $itemId,
             'ItemIdType' => $itemIdType,
             'OptResult' => $optResult,
@@ -123,7 +123,7 @@ class AladinService implements BookCrawlerInterface
                 }
 
                 $params = [
-                    'ttbkey' => env('ALADIN_TTB_KEY'),
+                    'ttbkey' => config('aladin.ttb_key'),
                     'CategoryId' => 1,
                     'QueryType' => 'ItemNewAll',
                     'MaxResults' => $this->getMaxResults(),

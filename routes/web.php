@@ -21,9 +21,10 @@ use App\Http\Controllers\UserController;
 |
 */
 Route::get('test', function(\App\Services\PersonaFeedService $service){
-//   dd(env('APP_NAME'));
-   $result = $service->generateFeedForPersona(\App\Models\user::find(10));
-   dd($result);
+//    // 테스트용 페르소나 ID
+//    $persona = \App\Models\Persona::find(1);
+//    $result = $service->generateContentWithGPT($persona);
+//    dd($result);
 });
 
 Route::get('/', function () {
