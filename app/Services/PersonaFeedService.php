@@ -67,7 +67,7 @@ class PersonaFeedService
         $keywordsText = implode(', ', $preferences['keywords'] ?? []);
         $speakingStyle = $persona->speaking_style ?? '자연스럽고 친근한';
 
-        $systemPrompt = "당신은 '{$persona->name}' 역할을 합니다.
+        $systemPrompt = "당신은 SNS 피드를 생성하는 역할을 합니다.
 
 프로필:
 - 나이: {$persona->age}세
@@ -113,7 +113,7 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
     \"title\": \"피드 제목\",
     \"book_title\": \"{$book->title}\",
     \"author\": \"{$book->author}\",
-    \"content\": \"안녕하세요! 오늘은 정말 좋은 책을 발견했어요 📖\\n\\n'{$book->title}' by {$book->author}\\n\\n이 책은 정말 감동적이었어요. 특히 주인공의 성장 과정이 인상깊더라고요!\\n\\n여러분도 꼭 읽어보시길 추천드려요 ✨\",
+    \"content\": \"피드 내용\",
     \"hashtags\": \"#독서 #책추천 #감동\"
 }
 ";

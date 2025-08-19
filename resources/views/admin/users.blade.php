@@ -151,7 +151,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-500">페르소나 미할당</p>
-                                    <button class="text-xs text-primary-600 hover:text-primary-700">할당하기</button>
+                                    <button class="text-xs text-primary-600 hover:text-primary-700 persona-assign-btn" data-user-id="{{ $user->id }}" data-user-name="{{ $user->name }}">할당하기</button>
                                 </div>
                             </div>
                         @endif
@@ -273,4 +273,121 @@
         </div>
     </div>
 </div>
+
+<!-- 페르소나 할당 모달 -->
+<div id="persona-assign-app">
+    <template v-if="showModal" >
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" @click="closeModal">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white" @click.stop>
+                <div class="mt-3">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">페르소나 할당</h3>
+                        <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600">사용자: <span class="font-medium">@{{ selectedUser.name }}</span></p>
+                    </div>
+
+                    <form @submit.prevent="assignPersona">
+                        <div class="mb-4">
+                            <label for="persona_id" class="block text-sm font-medium text-gray-700 mb-2">페르소나 선택</label>
+                            <select v-model="selectedPersonaId" id="persona_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="">페르소나를 선택하세요</option>
+                                @foreach(\App\Models\Persona::where('is_active', true)->get() as $persona)
+                                    <option value="{{ $persona->id }}">
+                                        {{ $persona->name }} ({{ $persona->occupation }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" @click="closeModal" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                                취소
+                            </button>
+                            <button type="submit" :disabled="!selectedPersonaId || loading" class="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50">
+                                <span v-if="loading">할당 중...</span>
+                                <span v-else>할당하기</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
 @endsection
+
+@push('scripts')
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+const { createApp } = Vue;
+createApp({
+    data() {
+        return {
+            showModal: false,
+            selectedUser: {
+                id: null,
+                name: ''
+            },
+            selectedPersonaId: '',
+            loading: false
+        }
+    },
+    mounted() {
+        // 페르소나 할당 버튼 클릭 이벤트
+        document.querySelectorAll('.persona-assign-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const target = e.target.closest('button');
+                this.selectedUser.id = target.getAttribute('data-user-id');
+                this.selectedUser.name = target.getAttribute('data-user-name');
+                this.showModal = true;
+            });
+        });
+    },
+    methods: {
+        closeModal() {
+            this.showModal = false;
+            this.selectedPersonaId = '';
+            this.selectedUser = { id: null, name: '' };
+            this.loading = false;
+        },
+        async assignPersona() {
+            this.loading = true;
+            try {
+                const response = await axios.post(`/admin/users/${this.selectedUser.id}/assign-persona`, {
+                    persona_id: this.selectedPersonaId
+                }, {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.data.success) {
+                    this.closeModal();
+                    window.location.reload();
+                } else {
+                    alert(response.data.message || '페르소나 할당에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert(error.response.data.message);
+                } else {
+                    alert('페르소나 할당 중 오류가 발생했습니다.');
+                }
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+}).mount('#persona-assign-app');
+</script>
+@endpush

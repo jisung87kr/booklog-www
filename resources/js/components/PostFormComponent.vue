@@ -137,7 +137,7 @@ const fetchBooks = async () => {
 
 //TODO : 책 선택시 content에 추가
 const selectBook = (book) => {
-    content.value = `$${book.title}`;
+    content.value = `#${book.title}`;
     showSearchBookModal.value = false;
     postFormStore.updateContent(content.value);
 }

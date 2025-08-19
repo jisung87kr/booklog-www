@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Responses\ApiResponse;
 use App\Models\User;
 use App\Models\Persona;
 use App\Models\Post;
@@ -37,12 +38,12 @@ class AdminController extends Controller
     public function personas()
     {
         $personas = Persona::all();
-        
+
         // 각 페르소나별 사용자 수를 별도로 계산
         foreach ($personas as $persona) {
             $persona->users_count = User::withoutGlobalScopes()->where('persona_id', $persona->id)->count();
         }
-        
+
         return view('admin.personas', compact('personas'));
     }
 
@@ -124,7 +125,7 @@ class AdminController extends Controller
             'reading_preferences' => 'nullable|json',
         ]);
 
-        $readingPreferences = $request->reading_preferences ? 
+        $readingPreferences = $request->reading_preferences ?
             json_decode($request->reading_preferences, true) : [];
 
         Persona::create([
@@ -158,7 +159,7 @@ class AdminController extends Controller
             'reading_preferences' => 'nullable|json',
         ]);
 
-        $readingPreferences = $request->reading_preferences ? 
+        $readingPreferences = $request->reading_preferences ?
             json_decode($request->reading_preferences, true) : [];
 
         $persona->update([
@@ -178,7 +179,7 @@ class AdminController extends Controller
     {
         // 페르소나를 사용 중인 사용자가 있는지 확인
         $usersCount = $persona->users()->count();
-        
+
         if ($usersCount > 0) {
             return redirect()->back()->with('error', "이 페르소나를 사용 중인 {$usersCount}명의 사용자가 있어 삭제할 수 없습니다.");
         }
@@ -190,7 +191,7 @@ class AdminController extends Controller
     public function togglePersona(Persona $persona)
     {
         $persona->update(['is_active' => !$persona->is_active]);
-        
+
         $status = $persona->is_active ? '활성화' : '비활성화';
         return redirect()->back()->with('success', "페르소나가 {$status}되었습니다.");
     }
@@ -256,31 +257,42 @@ class AdminController extends Controller
         // 사용자와 관련된 데이터 확인
         $postsCount = $user->posts()->count();
         $commentsCount = $user->comments()->count();
-        
+
         if ($postsCount > 0 || $commentsCount > 0) {
             return redirect()->back()->with('error', "이 사용자는 {$postsCount}개의 포스트와 {$commentsCount}개의 댓글을 작성했습니다. 데이터를 먼저 정리한 후 삭제해주세요.");
         }
 
         $userName = $user->name;
         $user->delete();
-        
+
         return redirect()->route('admin.users')->with('success', "{$userName} 사용자가 삭제되었습니다.");
     }
 
-    public function assignPersona(Request $request, User $user)
+    public function assignPersona(Request $request, $userId)
     {
         $request->validate([
             'persona_id' => 'required|exists:personas,id',
         ]);
 
+        $user = User::withoutGlobalScopes()->findOrFail($userId);
         $persona = Persona::find($request->persona_id);
         $user->update(['persona_id' => $request->persona_id]);
+
+        // Ajax 요청인 경우 JSON 응답
+        if ($request->expectsJson()) {
+            return ApiResponse::success('페르소나가 할당되었습니다.', [
+                'user_id' => $user->id,
+                'persona_id' => $persona->id,
+                'persona_name' => $persona->name,
+            ]);
+        }
 
         return redirect()->back()->with('success', "{$user->name}에게 {$persona->name} 페르소나가 할당되었습니다.");
     }
 
-    public function removePersona(User $user)
+    public function removePersona($userId)
     {
+        $user = User::withoutGlobalScopes()->findOrFail($userId);
         $user->update(['persona_id' => null]);
         return redirect()->back()->with('success', "{$user->name}의 페르소나 할당이 해제되었습니다.");
     }
@@ -305,7 +317,7 @@ class AdminController extends Controller
         ]);
 
         $persona = Persona::findOrFail($request->persona_id);
-        
+
         $autoPublishEnabled = $request->boolean('auto_publish_enabled');
         $publishFrequency = $autoPublishEnabled ? $request->publish_frequency : null;
         $publishSchedule = [];
@@ -318,7 +330,7 @@ class AdminController extends Controller
                         'minute' => (int) $request->daily_minute,
                     ];
                     break;
-                    
+
                 case 'weekly':
                     $publishSchedule = [
                         'day_of_week' => (int) $request->weekly_day,
@@ -326,7 +338,7 @@ class AdminController extends Controller
                         'minute' => (int) $request->weekly_minute,
                     ];
                     break;
-                    
+
                 case 'hourly':
                     $publishSchedule = [];
                     break;
@@ -352,7 +364,7 @@ class AdminController extends Controller
             'next_publish_at' => $persona->next_publish_at
         ]);
 
-        $message = $autoPublishEnabled 
+        $message = $autoPublishEnabled
             ? "{$persona->name}의 자동 발행이 설정되었습니다. ({$persona->schedule_description})"
             : "{$persona->name}의 자동 발행이 비활성화되었습니다.";
 
@@ -531,7 +543,7 @@ class AdminController extends Controller
                 $storagePath = 'public/image';
                 $path = $file->store($storagePath);
                 list($width, $height) = getimagesize(\Illuminate\Support\Facades\Storage::path($path));
-                
+
                 $image = Image::create([
                     'imageable_type' => 'temp',
                     'imageable_id' => 0,
