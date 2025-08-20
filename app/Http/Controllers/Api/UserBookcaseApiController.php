@@ -111,6 +111,9 @@ class UserBookcaseApiController extends Controller
     public function destroy(User $user, UserBookcase $bookcase)
     {
         try {
+            Post::where('ref_key', $bookcase->id)
+                ->where('type', PostTypeEnum::BOOKCASE)
+                ->delete();
             $result = $bookcase->delete();
             return response()->success('', $result);
         } catch(\Exception $e) {

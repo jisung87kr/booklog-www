@@ -47,7 +47,6 @@ Route::get('/users/{user}/books', [UserBookController::class, 'index'])->name('u
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 // Feed routes
-Route::get('/feeds', [App\Http\Controllers\FeedController::class, 'index'])->name('feeds.index');
 Route::get('/feeds/{post}', [App\Http\Controllers\FeedController::class, 'show'])->name('feeds.show');
 
 // profile

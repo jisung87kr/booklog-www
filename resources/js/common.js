@@ -70,13 +70,18 @@ export function wrapWithSpan(text){
     const mentionPattern = /@[a-zA-Z0-9ㄱ-ㅎ가-힣\s\-._\/()\[\]\~\:]+/g;
 
     // 탐색하고 감싸기
-    const wrappedText = text
-        .replace(/\n/g, '<br>')
-        .replace(hashTagPattern, match => `<a href="/search?q=${match.replace('#', '')}&qsearch_type=default" class="tagbox hashtag">${match}</a>`)
-        .replace(bookPattern, match => `<a href="/search?q=${match.replace('$', '')}&qsearch_type=book" class="tagbox booktag">${match}</a>`)
-        .replace(mentionPattern, match => `<a href="/search?q=${match.replace('@', '')}&qsearch_type=default" class="tagbox mention">${match}</a>`);
+    try {
+        const wrappedText = text
+            .replace(/\n/g, '<br>')
+            .replace(hashTagPattern, match => `<a href="/search?q=${match.replace('#', '')}&qsearch_type=default" class="tagbox hashtag">${match}</a>`)
+            .replace(bookPattern, match => `<a href="/search?q=${match.replace('$', '')}&qsearch_type=book" class="tagbox booktag">${match}</a>`)
+            .replace(mentionPattern, match => `<a href="/search?q=${match.replace('@', '')}&qsearch_type=default" class="tagbox mention">${match}</a>`);
+        return wrappedText;
+    } catch (error) {
+        console.error('Error wrapping text with span:', error);
+        return text; // 에러 발생 시 원본 텍스트 반환
+    }
 
-    return wrappedText;
 }
 
 export function jsonToFormData(data, formData = new FormData(), parentKey = '') {

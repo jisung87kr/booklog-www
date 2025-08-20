@@ -56,47 +56,16 @@
     ]
 }
 </script>
-
-<!-- Breadcrumb Structured Data -->
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-        {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "홈",
-            "item": "{{ route('home') }}"
-        },
-        {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "피드",
-            "item": "{{ route('feeds.index') }}"
-        },
-        {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "{{ $post->title }}",
-            "item": "{{ route('feeds.show', $post) }}"
-        }
-    ]
-}
-</script>
 @endpush
 
+
 <x-app-layout>
+    <script>
+        console.log(@json($post));
+    </script>
     <!-- 서버 렌더링된 피드 상세 콘텐츠 -->
     <div class="max-w-3xl mx-auto px-4 py-6">
-        <!-- 브레드크럼 -->
-        <nav class="flex mb-6 text-sm" aria-label="Breadcrumb">
-            <a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-800">홈</a>
-            <span class="mx-2 text-gray-500">/</span>
-            <a href="{{ route('feeds.index') }}" class="text-blue-600 hover:text-blue-800">피드</a>
-            <span class="mx-2 text-gray-500">/</span>
-            <span class="text-gray-700">{{ Str::limit($post->title, 30) }}</span>
-        </nav>
+
 
         <!-- 메인 포스트 -->
         <article class="bg-white rounded-lg shadow-sm border overflow-hidden">
@@ -105,8 +74,8 @@
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0 mr-4">
                         @if($post->user->profile_photo_url)
-                            <img src="{{ $post->user->profile_photo_url }}" 
-                                 alt="{{ $post->user->name }}" 
+                            <img src="{{ $post->user->profile_photo_url }}"
+                                 alt="{{ $post->user->name }}"
                                  class="w-12 h-12 rounded-full object-cover">
                         @else
                             <div class="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -116,7 +85,7 @@
                     </div>
                     <div class="flex-1">
                         <h2 class="font-semibold text-gray-900">
-                            <a href="{{ route('profile', $post->user->username ?? $post->user->id) }}" 
+                            <a href="{{ route('profile', $post->user->username ?? $post->user->id) }}"
                                class="hover:text-blue-600">
                                 {{ $post->user->name }}
                             </a>
@@ -142,8 +111,8 @@
                         <div class="flex items-center">
                             <div class="w-12 h-16 bg-blue-200 rounded mr-3 flex-shrink-0">
                                 @if(isset($post->meta['book_cover']))
-                                    <img src="{{ $post->meta['book_cover'] }}" 
-                                         alt="{{ $post->meta['book_title'] }} 표지" 
+                                    <img src="{{ $post->meta['book_cover'] }}"
+                                         alt="{{ $post->meta['book_title'] }} 표지"
                                          class="w-12 h-16 rounded object-cover">
                                 @else
                                     <div class="w-12 h-16 bg-blue-300 rounded flex items-center justify-center">
@@ -186,14 +155,14 @@
                 @if($post->images->count() > 0)
                     <div class="mb-6">
                         @if($post->images->count() == 1)
-                            <img src="{{ Storage::url($post->images->first()->file_path) }}" 
-                                 alt="포스트 이미지" 
+                            <img src="{{ Storage::url($post->images->first()->file_path) }}"
+                                 alt="포스트 이미지"
                                  class="rounded-lg max-w-full h-auto">
                         @else
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach($post->images as $image)
-                                    <img src="{{ Storage::url($image->file_path) }}" 
-                                         alt="포스트 이미지 {{ $loop->iteration }}" 
+                                    <img src="{{ Storage::url($image->file_path) }}"
+                                         alt="포스트 이미지 {{ $loop->iteration }}"
                                          class="rounded-lg w-full h-auto object-cover">
                                 @endforeach
                             </div>
@@ -211,24 +180,9 @@
             <footer class="px-6 py-4 bg-gray-50 border-t">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-6">
-                        <button class="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
-                            <span class="text-sm">좋아요</span>
-                        </button>
-                        <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                            </svg>
-                            <span class="text-sm">댓글 {{ $post->comments->count() }}개</span>
-                        </button>
-                        <button class="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                            </svg>
-                            <span class="text-sm">공유</span>
-                        </button>
+                        <like-button :model="{{ $post }}" :auth="{{ auth()->user() }}" type="post"></like-button>
+                        <comment-button :model="{{ $post }}" type="post"></comment-button>
+                        <share-button :model="{{ $post }}" type="post"></share-button>
                     </div>
                     <div class="text-sm text-gray-500">
                         {{ $post->created_at->diffForHumans() }}
@@ -237,78 +191,9 @@
             </footer>
         </article>
 
-        <!-- 댓글 섹션 -->
-        <section class="mt-8 bg-white rounded-lg shadow-sm border">
-            <header class="p-6 border-b">
-                <h2 class="text-lg font-semibold text-gray-900">
-                    댓글 {{ $post->comments->count() }}개
-                </h2>
-            </header>
-
-            <div class="p-6">
-                @forelse($post->comments as $comment)
-                    <article class="flex space-x-4 mb-6 last:mb-0">
-                        <div class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0">
-                            @if($comment->user->profile_photo_url)
-                                <img src="{{ $comment->user->profile_photo_url }}" 
-                                     alt="{{ $comment->user->name }}" 
-                                     class="w-10 h-10 rounded-full object-cover">
-                            @else
-                                <div class="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                                    {{ substr($comment->user->name, 0, 1) }}
-                                </div>
-                            @endif
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-medium text-gray-900">
-                                    <a href="{{ route('profile', $comment->user->username ?? $comment->user->id) }}" 
-                                       class="hover:text-blue-600">
-                                        {{ $comment->user->name }}
-                                    </a>
-                                </h3>
-                                <time class="text-sm text-gray-500" datetime="{{ $comment->created_at->toISOString() }}">
-                                    {{ $comment->created_at->diffForHumans() }}
-                                </time>
-                            </div>
-                            <div class="text-gray-700">
-                                {!! nl2br(e($comment->content)) !!}
-                            </div>
-                        </div>
-                    </article>
-                @empty
-                    <div class="text-center py-8">
-                        <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">아직 댓글이 없습니다</h3>
-                        <p class="text-gray-500">첫 번째 댓글을 남겨보세요!</p>
-                    </div>
-                @endforelse
-            </div>
-
-            <!-- 댓글 작성 폼 영역 -->
-            <div class="px-6 py-4 bg-gray-50 border-t">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-gray-300 rounded-full flex-shrink-0">
-                        <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">
-                            ?
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <div class="bg-white rounded-lg border px-4 py-2 text-gray-500">
-                            댓글을 작성하려면 로그인이 필요합니다
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- 뒤로가기 버튼 -->
         <div class="mt-8 text-center">
-            <a href="{{ route('feeds.index') }}" 
+            <a href="{{ route('home') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -322,7 +207,7 @@
     <script>
         window.addEventListener('DOMContentLoaded', function() {
             console.log('Feed post page loaded with server-side rendered content');
-            
+
             // 포스트 데이터를 전역으로 설정하여 Vue 앱에서 사용 가능하게 함
             window.postData = @json($post->toArray());
             window.commentsData = @json($post->comments->toArray());
