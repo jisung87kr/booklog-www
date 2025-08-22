@@ -14,6 +14,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    dropdown: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 </script>
@@ -38,7 +42,7 @@ const props = defineProps({
                 <div>{{ props.bookcase.title }}</div>
                 <div class="text-sm text-gray-600">{{ props.bookcase.description }}</div>
             </div>
-            <div class="shrink-0 w-30 flex gap-1">
+            <div class="shrink-0 w-30 flex gap-1" v-if="dropdown">
                 <dropdown-component v-if="auth">
                     <template v-slot:mybutton>
                         <button type="button" class="px-2 py-2 text-sm font-bold text-gray-900">

@@ -42,7 +42,7 @@
         <div class="ps-10" v-html="comment.body"></div>
         <slot name="feed" v-if="feed">
             <div class="ps-10">
-                <div class="border rounded-lg p-4 mt-3">
+                <div class="mt-3">
                     <feed-component :feed="feed"
                                     :auth="auth"
                                     @open-comment-modal="showContentModal"

@@ -119,15 +119,54 @@ onBeforeUnmount(() => {
             <header-component>
                 <div class="font-bold">회원님을 위한 추천</div>
             </header-component>
-            <div class="container-fluid mx-auto w-full">
-                <div class="flex justify-center">
-                    <div class="bg-white divide-y sm:border sm:rounded-2xl flex-start max-w-xl w-full md:ms-6">
-                        <feed-component :feed="feed"
-                                        v-for="feed in feeds.data"
-                                        :key="feed.id"
-                                        :auth="auth"
-                                        class="p-4"
-                        ></feed-component>
+            <div class="container-fluid mx-auto w-full px-0 sm:px-4 pb-16 sm:pb-8">
+                <div class="flex justify-center gap-0 sm:gap-8">
+                    <div class="w-full max-w-2xl">
+                        <!-- Stories section for mobile -->
+<!--                        <div class="bg-white border-b sm:border-none sm:rounded-2xl p-3 sm:p-6 mb-0 sm:mb-6 sm:shadow-sm">-->
+<!--                            <div class="flex items-center space-x-3 overflow-x-auto scrollbar-hide pb-1">-->
+<!--                                &lt;!&ndash; Add story &ndash;&gt;-->
+<!--                                <div class="flex flex-col items-center space-y-1 min-w-0 shrink-0">-->
+<!--                                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-500 p-0.5">-->
+<!--                                        <div class="w-full h-full rounded-2xl bg-white flex items-center justify-center">-->
+<!--                                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>-->
+<!--                                            </svg>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <a href="" class="text-xs text-gray-600 font-medium text-center">내 책장</a>-->
+<!--                                </div>-->
+
+<!--                                &lt;!&ndash; Recommended users stories &ndash;&gt;-->
+<!--                                <template v-for="user in recommendedUsers?.slice(0, 8)" :key="user.id">-->
+<!--                                    <div class="flex flex-col items-center space-y-1 min-w-0 shrink-0">-->
+<!--                                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-red-500 p-0.5">-->
+<!--                                            <img :src="user.profile_photo_url" :alt="user.username"-->
+<!--                                                 class="w-full h-full rounded-2xl object-cover">-->
+<!--                                        </div>-->
+<!--                                        <span class="text-xs text-gray-600 font-medium text-center truncate w-14 sm:w-16">-->
+<!--                                            {{ user.username }}-->
+<!--                                        </span>-->
+<!--                                    </div>-->
+<!--                                </template>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                        <!-- Feed Posts -->
+                        <div class="space-y-0 sm:space-y-6">
+                            <feed-component
+                                v-for="feed in feeds.data"
+                                :key="feed.id"
+                                :feed="feed"
+                                :auth="auth"
+                                class="md:rounded-2xl md:border bg-white md:shadow-sm"
+                            ></feed-component>
+                        </div>
+
+                        <!-- Loading indicator -->
+                        <div v-if="loading" class="flex justify-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        </div>
                     </div>
                     <div class="max-w-lg w-full mx-6 hidden lg:block">
                         <div class="flex flex-col gap-6">
