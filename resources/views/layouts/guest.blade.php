@@ -16,9 +16,16 @@
 
         <!-- Styles -->
         @livewireStyles
+        
+        <style>
+            /* Simple clean background */
+            .clean-bg {
+                background: #f8fafc;
+            }
+        </style>
     </head>
-    <body>
-        <div class="font-sans text-gray-900 antialiased">
+    <body class="clean-bg">
+        <div class="font-sans text-gray-900 antialiased min-h-screen">
             {{ $slot }}
         </div>
 
