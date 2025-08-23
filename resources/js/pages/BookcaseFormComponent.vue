@@ -131,7 +131,7 @@ onMounted(async () => {
                 </div>
             </header-component>
 
-            <div class="container-fluid max-w-2xl mx-auto w-full px-4 sm:px-6 pb-20 sm:pb-8">
+            <div class="container-fluid max-w-2xl mx-auto w-full px-2 md:px-0 pb-20 sm:pb-8">
                 <!-- Privacy settings card -->
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
                     <div class="flex items-start justify-between">
