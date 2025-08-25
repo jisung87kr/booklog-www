@@ -43,7 +43,7 @@
                 </svg>
             </a>
         </div>
-        <div class="h-10 md:mb-6">
+        <div class="h-10 md:mb-6 mr-2 md:mr-0">
             @if(Auth::user())
             <dropdown-component>
                 <template v-slot:mybutton>
@@ -53,12 +53,23 @@
                 </template>
                 <div class="absolute right-0 md:left-[10px] top-[-90px] w-[120px] bg-white rounded-xl shadow">
                     <a href="{{ route('profile', ['user' => Auth::user()->username]) }}" class="block px-3 py-2 hover:bg-gray-100">프로필</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block px-3 py-2 hover:bg-gray-100 w-full text-left">로그아웃</button>
-                    </form>
+                    <button type="button" onclick="logout()" class="block px-3 py-2 hover:bg-gray-100 w-full text-left">로그아웃</button>
                 </div>
             </dropdown-component>
+            <script>
+                function logout(){
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('logout') }}';
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            </script>
             @endif
         </div>
     </div>

@@ -139,7 +139,7 @@ console.log(props);
                     <div class="pt-4 sm:pt-5 border-t border-gray-50">
                         <div class="flex items-center justify-between w-full">
                             <!-- Enhanced engagement buttons -->
-                            <div class="flex items-center space-x-4 sm:space-x-6">
+                            <div class="flex items-center">
                                 <like-button :model="feed" :auth="auth" type="post"
                                              class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation"></like-button>
                                 <comment-button :model="feed" type="post"
@@ -150,11 +150,17 @@ console.log(props);
 
                             <!-- Bookmark button -->
                             <div class="flex items-center">
-                                <button type="button" class="p-2.5 rounded-full hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation">
-                                    <svg class="w-5 h-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!--                                <button type="button" class="p-2.5 rounded-full hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation">-->
+<!--                                    <svg class="w-5 h-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>-->
+<!--                                    </svg>-->
+<!--                                </button>-->
+                                <user-action-button actionable-type="post" action-name="bookmark" :model="feed" :auth="auth"
+                                                    class="w-full px-4 py-4 sm:py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 flex items-center space-x-3 transition-colors touch-manipulation">
+                                    <svg class="w-5 h-5 sm:w-4 sm:h-4 shrink-0" :fill="feed && feed.bookmark_id ? '#10b981' : 'none'" stroke="#10b981" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                     </svg>
-                                </button>
+                                </user-action-button>
                             </div>
                         </div>
                     </div>

@@ -99,10 +99,10 @@ const props = defineProps({
                 </template>
             </div>
         </div>
-        <div class="mt-4 flex gap-3">
-            <like-button :model="bookcase" :auth="auth" :type="type"></like-button>
-            <comment-button :model="bookcase" :type="type"></comment-button>
-            <share-button :model="bookcase" :type="type"></share-button>
+        <div class="mt-4 flex">
+            <like-button :model="bookcase" :auth="auth" :type="type" class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation"></like-button>
+            <comment-button :model="bookcase" :type="type" class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-blue-50 active:bg-blue-100 transition-colors touch-manipulation"></comment-button>
+            <share-button :model="bookcase" :type="type" class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-green-50 active:bg-green-100 transition-colors touch-manipulation"></share-button>
         </div>
     </div>
 </template>
