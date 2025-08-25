@@ -18,8 +18,8 @@ class Post extends Model
     use SoftDeletes;
 
     protected $guarded = [];
-    protected $with = ['attachments', 'user', 'images', 'bookcase'];
-    protected $appends = ['formatted_created_at'];
+    protected $with = ['attachments', 'user', 'images', 'bookcase', 'parentPost'];
+    protected $appends = ['formatted_created_at', 'quote_count'];
     protected $casts = [
         'meta' => 'array',
         'status' => PostStatusEnum::class,
@@ -139,5 +139,25 @@ class Post extends Model
     public function bookcase()
     {
         return $this->hasOne(UserBookcase::class, 'id', 'ref_key');
+    }
+
+    public function parentPost()
+    {
+        return $this->belongsTo(Post::class, 'parent_id');
+    }
+
+    public function originalPost()
+    {
+        return $this->belongsTo(Post::class, 'original_parent_id');
+    }
+
+    public function quotePosts()
+    {
+        return $this->hasMany(Post::class, 'parent_id');
+    }
+
+    public function getQuoteCountAttribute()
+    {
+        return $this->quotePosts()->count();
     }
 }

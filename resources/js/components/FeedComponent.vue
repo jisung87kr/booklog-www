@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, defineEmits } from 'vue';
 import {wrapWithSpan} from "../common.js";
 import {useUserStore} from "../stores/user.js";
+import {usePostFormStore} from "../stores/postForm.js";
 import BookcaseComponent from "./BookcaseComponent.vue";
 
 const userStore = useUserStore();
@@ -13,7 +14,6 @@ const props = defineProps({
     },
 });
 
-console.log(props);
 </script>
 <template>
     <!-- Modern feed card with enhanced design -->
@@ -129,6 +129,60 @@ console.log(props);
                     <!-- Content with better mobile typography -->
                     <div class="text-gray-800 text-sm sm:text-base leading-relaxed feed-content mb-4" v-html="wrapWithSpan(feed.content)"></div>
 
+                    <!-- Quoted Post Display -->
+                    <template v-if="feed.parent_post">
+                        <div class="mb-4 relative bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-2xl border border-blue-200/50 overflow-hidden transition-all duration-200 hover:shadow-sm">
+                            <div class="p-4 pl-6">
+                                <!-- User info header -->
+                                <div class="flex items-center mb-3">
+                                    <div class="relative">
+                                        <img class="w-8 h-8 rounded-xl object-cover ring-2 ring-white shadow-sm"
+                                             :src="feed.parent_post.user?.profile_photo_url ?? 'https://www.gravatar.com/avatar/'"
+                                             :alt="feed.parent_post.user?.username">
+                                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center">
+                                            <svg class="w-1.5 h-1.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M19 7H9l4 4-4 4h10a2 2 0 002-2V9a2 2 0 00-2-2z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <div class="flex items-center">
+                                            <a :href="'/@' + feed.parent_post.user?.username"
+                                               class="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                                                {{ feed.parent_post.user?.username }}
+                                            </a>
+                                            <span class="ml-2 text-xs text-gray-500" v-html="feed.parent_post.created_at_human"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quote content -->
+                                <div class="text-gray-800 text-sm leading-relaxed mb-3">
+                                    <a :href="'/feeds/'+feed.parent_post.id" v-html="wrapWithSpan(feed.parent_post.content)"></a>
+                                </div>
+
+                                <!-- Nested Quote (if parent post is also a quote) -->
+                                <template v-if="feed.parent_post.parent_post">
+                                    <div class="relative bg-white/60 backdrop-blur-sm rounded-xl border border-gray-200/50 p-3 ml-2">
+                                        <div class="pl-3">
+                                            <div class="flex items-center mb-2">
+                                                <img class="w-5 h-5 rounded-lg object-cover"
+                                                     :src="feed.parent_post.parent_post.user?.profile_photo_url ?? 'https://www.gravatar.com/avatar/'"
+                                                     :alt="feed.parent_post.parent_post.user?.username">
+                                                <span class="ml-2 text-xs font-medium text-gray-600">
+                                                    {{ feed.parent_post.parent_post.user?.username }}
+                                                </span>
+                                            </div>
+                                            <div class="text-gray-700 text-xs leading-relaxed line-clamp-3">
+                                                <a :href="'/feeds/'+feed.parent_post.parent_post.id" v-html="wrapWithSpan(feed.parent_post.parent_post.content)"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
                     <!-- Images with mobile optimization -->
                     <template v-if="feed.images.length > 0">
                         <div class="mb-4 -mx-3 sm:mx-0 sm:rounded-xl overflow-hidden">
@@ -144,6 +198,14 @@ console.log(props);
                                              class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation"></like-button>
                                 <comment-button :model="feed" type="post"
                                                 class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-blue-50 active:bg-blue-100 transition-colors touch-manipulation"></comment-button>
+                                <post-form-component :model="feed">
+                                    <div class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-red-50 active:bg-red-100 transition-colors touch-manipulation">
+                                        <button type="button" @click="quotePost">
+                                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-repeat"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" /><path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" /></svg>
+                                        </button>
+                                        <span class="text-xs ms-1">{{ feed.quote_count || 0 }}</span>
+                                    </div>
+                                </post-form-component>
                                 <share-button :model="feed" type="post"
                                               class="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-green-50 active:bg-green-100 transition-colors touch-manipulation"></share-button>
                             </div>
@@ -212,6 +274,10 @@ console.log(props);
     background-color: rgb(240 253 244);
 }
 
+.hover\:bg-purple-50:hover {
+    background-color: rgb(250 245 255);
+}
+
 /* Mobile optimizations */
 @media (max-width: 640px) {
     .touch-manipulation {
@@ -269,5 +335,13 @@ console.log(props);
 /* Enhanced card hover effect */
 .hover\:shadow-lg:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 </style>

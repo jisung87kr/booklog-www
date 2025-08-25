@@ -38,7 +38,7 @@ export default {
     methods: {
         async toggleLike(model){
             if(!this.auth){
-                //alert('로그인 후 이용해주세요');
+                alert('로그인 후 이용해주세요');
                 return false;
             }
 
@@ -47,7 +47,6 @@ export default {
                 model.like_id = null;
                 model.like_count--;
             } else {
-                console.log(model);
                 let modelId = model.id;
                 if(this.type === 'book'){
                    modelId = model.pivot.book_id;

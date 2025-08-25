@@ -168,21 +168,21 @@ onBeforeUnmount(() => {
                             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                         </div>
                     </div>
-                    <div class="max-w-lg w-full mx-6 hidden lg:block">
-                        <div class="flex flex-col gap-6">
-                            <div class="bg-white border rounded-2xl p-6">
-                                <div>나를 위한 트랜드</div>
-                            </div>
-                            <div class="bg-white border rounded-2xl p-6 pb-0" v-if="recommendedUsers.length > 0">
-                                <div>팔로우 추천</div>
-                                <div class="divide-y">
-                                    <template v-for="user in recommendedUsers" :key="user.id">
-                                        <avatar-component :user="user" class="py-4"></avatar-component>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="max-w-lg w-full mx-6 hidden lg:block">-->
+<!--                        <div class="flex flex-col gap-6">-->
+<!--                            <div class="bg-white border rounded-2xl p-6">-->
+<!--                                <div>나를 위한 트랜드</div>-->
+<!--                            </div>-->
+<!--                            <div class="bg-white border rounded-2xl p-6 pb-0" v-if="recommendedUsers.length > 0">-->
+<!--                                <div>팔로우 추천</div>-->
+<!--                                <div class="divide-y">-->
+<!--                                    <template v-for="user in recommendedUsers" :key="user.id">-->
+<!--                                        <avatar-component :user="user" class="py-4"></avatar-component>-->
+<!--                                    </template>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>

@@ -32,6 +32,8 @@ const followModalShow = ref(false);
 const followModalType = ref(null);
 const userList = ref([]);
 
+console.log(user.value.is_secret);
+
 const list = ref({
     current_page: 1,
     data: [],
@@ -112,7 +114,7 @@ const handleScroll = async () => {
     }
 };
 
-const clickTab = async (activityType) => {
+const clickTab = async (activityTGype) => {
     selectedActivityType.value = activityType.key;
     await getList(1);
     await nextTick(i => {
@@ -433,74 +435,119 @@ onBeforeUnmount(() => {
                             </div>
 
                             <!-- Activity content -->
-                            <div class="min-h-[200px]">
-                                <template v-if="list?.data?.length > 0">
-                                    <div class="divide-y divide-gray-100" ref="sortableEl">
-                                        <!-- Bookcase content -->
-                                        <template v-if="selectedActivityType === 'bookcase'">
-                                            <bookcase-component
-                                                v-for="bookcase in list.data"
-                                                :key="bookcase.id"
-                                                :bookcase="bookcase"
-                                                :auth="auth"
-                                                class="p-4 sm:p-6">
-                                            </bookcase-component>
-                                        </template>
-
-                                        <!-- Post content -->
-                                        <template v-else-if="selectedActivityType === 'post'">
-                                            <feed-component
-                                                v-for="post in list.data"
-                                                :key="post.id"
-                                                :feed="post"
-                                                :auth="auth">
-                                            </feed-component>
-                                        </template>
-
-                                        <!-- Reply content -->
-                                        <template v-else-if="selectedActivityType === 'reply'">
-                                            <comment-component
-                                                v-for="comment in list.data"
-                                                :key="comment.id"
-                                                :comment="comment"
-                                                :auth="auth"
-                                                class="p-4 sm:p-6">
-                                            </comment-component>
-                                        </template>
-
-                                        <!-- Quotation content -->
-                                        <template v-else-if="selectedActivityType === 'quotation'">
-                                            <feed-component
-                                                v-for="quotation in list.data"
-                                                :key="quotation.id"
-                                                :feed="quotation"
-                                                :auth="auth">
-                                            </feed-component>
-                                        </template>
-                                    </div>
-                                </template>
-
-                                <!-- Empty state -->
-                                <template v-else>
-                                    <div class="p-8 sm:p-12 text-center">
-                                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            <template v-if="user.is_secret && auth.id !== user.id">
+                                <div class="flex flex-col items-center justify-center py-16 px-6 text-center">
+                                    <!-- Lock Icon -->
+                                    <div class="relative mb-6">
+                                        <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center shadow-lg">
+                                            <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m2-8V7a3 3 0 00-6 0v2m6 0V7a3 3 0 016 0v2m-6 0h.01M12 12h.01M18 10h2a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2v-8a2 2 0 012-2h2m6-6v6m0 0"/>
                                             </svg>
                                         </div>
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">아직 콘텐츠가 없습니다</h3>
-                                        <p class="text-gray-500">첫 번째 {{ activityTypes.find(t => t.key === selectedActivityType)?.value }}을 만들어보세요!</p>
+                                        <!-- Decorative elements -->
+                                        <div class="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
+                                        <div class="absolute -bottom-1 -left-1 w-3 h-3 bg-indigo-400 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
                                     </div>
-                                </template>
 
-                                <!-- Loading indicator -->
-                                <template v-if="loading">
-                                    <div class="p-8 text-center">
-                                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                                        <p class="text-sm text-gray-500 mt-2">로딩 중...</p>
+                                    <!-- Message -->
+                                    <div class="mb-4">
+                                        <h3 class="text-xl font-bold text-gray-800 mb-2">비공개 계정</h3>
+                                        <p class="text-gray-600 text-sm leading-relaxed max-w-sm">
+                                            이 계정의 게시물은 팔로워만 볼 수 있습니다.<br>
+                                            팔로우를 요청하여 콘텐츠를 확인해보세요.
+                                        </p>
                                     </div>
-                                </template>
-                            </div>
+
+                                    <!-- Follow button (if not already following) -->
+                                    <template v-if="auth && auth.id !== user.id && !user.is_following">
+                                        <follow-toggle-button
+                                            :user="user"
+                                            :auth="auth"
+                                            class="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105">
+                                        </follow-toggle-button>
+                                    </template>
+
+                                    <!-- Already following message -->
+                                    <template v-else-if="auth && auth.id !== user.id && user.is_following">
+                                        <div class="flex items-center text-green-600 text-sm">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                            팔로잉 중
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="min-h-[200px]">
+                                    <template v-if="list?.data?.length > 0">
+                                        <div class="divide-y divide-gray-100" ref="sortableEl">
+                                            <!-- Bookcase content -->
+                                            <template v-if="selectedActivityType === 'bookcase'">
+                                                <bookcase-component
+                                                    v-for="bookcase in list.data"
+                                                    :key="bookcase.id"
+                                                    :bookcase="bookcase"
+                                                    :auth="auth"
+                                                    class="p-4 sm:p-6">
+                                                </bookcase-component>
+                                            </template>
+
+                                            <!-- Post content -->
+                                            <template v-else-if="selectedActivityType === 'post'">
+                                                <feed-component
+                                                    v-for="post in list.data"
+                                                    :key="post.id"
+                                                    :feed="post"
+                                                    :auth="auth">
+                                                </feed-component>
+                                            </template>
+
+                                            <!-- Reply content -->
+                                            <template v-else-if="selectedActivityType === 'reply'">
+                                                <comment-component
+                                                    v-for="comment in list.data"
+                                                    :key="comment.id"
+                                                    :comment="comment"
+                                                    :auth="auth"
+                                                    class="p-4 sm:p-6">
+                                                </comment-component>
+                                            </template>
+
+                                            <!-- Quotation content -->
+                                            <template v-else-if="selectedActivityType === 'quotation'">
+                                                <feed-component
+                                                    v-for="quotation in list.data"
+                                                    :key="quotation.id"
+                                                    :feed="quotation"
+                                                    :auth="auth">
+                                                </feed-component>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <!-- Empty state -->
+                                    <template v-else>
+                                        <div class="p-8 sm:p-12 text-center">
+                                            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                                </svg>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-900 mb-2">아직 콘텐츠가 없습니다</h3>
+                                            <p class="text-gray-500">첫 번째 {{ activityTypes.find(t => t.key === selectedActivityType)?.value }}을 만들어보세요!</p>
+                                        </div>
+                                    </template>
+
+                                    <!-- Loading indicator -->
+                                    <template v-if="loading">
+                                        <div class="p-8 text-center">
+                                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                                            <p class="text-sm text-gray-500 mt-2">로딩 중...</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>

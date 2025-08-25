@@ -191,20 +191,11 @@ const submitSearch = () => {
 
                                         <div class="space-y-4" v-if="recommendedUsers?.data?.length > 0">
                                             <template v-for="user in recommendedUsers.data" :key="user.id">
-                                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                                                    <div class="flex items-center space-x-3">
-                                                        <img :src="user.profile_photo_url" :alt="user.username"
-                                                             class="w-12 h-12 rounded-full ring-2 ring-gray-100">
-                                                        <div>
-                                                            <div class="font-semibold text-gray-900">{{ user.name }}</div>
-                                                            <div class="text-sm text-gray-500">@{{ user.username }}</div>
-                                                            <div class="text-xs text-gray-400">팔로워 {{ user.followers_count || 0 }}명</div>
-                                                        </div>
-                                                    </div>
-                                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors touch-manipulation">
-                                                        팔로우
-                                                    </button>
-                                                </div>
+                                                <avatar-component :user="user" class="py-4">
+                                                    <template v-slot:follower-count>
+                                                        <div class="mt-3 text-sm">팔로워 <span v-html="user.followers_count"></span>명</div>
+                                                    </template>
+                                                </avatar-component>
                                             </template>
                                         </div>
                                     </div>

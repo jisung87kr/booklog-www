@@ -18,6 +18,10 @@ const props = defineProps({
     open: {
         type: Boolean,
         default: false
+    },
+    model: {
+        type: Object,
+        default: null
     }
 });
 
@@ -33,7 +37,7 @@ const books = ref([]);
 
 const openModal = () => {
     if(!auth.value){
-        //alert('로그인후 이용해주세요');
+        alert('로그인후 이용해주세요');
         window.location.href='/login';
         return false;
     }
@@ -54,6 +58,8 @@ const storePost = async () => {
         tags: getHashTags(content.value),
         bookTags: getBooksTags(content.value),
         mentions: getMentions(content.value),
+        parent_id: props.model ? props.model.id : null,
+        original_parent_id: props.model ? (props.model.original_parent_id ? props.model.original_parent_id : props.model.id) : null,
     };
 
     await postFormStore.createPost(params);
@@ -149,6 +155,7 @@ onMounted(() => {
 watch(() => props.open, (newVal) => {
     showModal.value = newVal;
 });
+
 </script>
 <template>
     <div @click="openModal">
@@ -171,6 +178,14 @@ watch(() => props.open, (newVal) => {
             <div id="previewContainer">
                 <attached-image-component :images="images" @delete-image="deleteImage(idx)"></attached-image-component>
             </div>
+
+            <!-- 인용일떄 노출 -->
+            <template v-if="props.model">
+                <div class="p-3 border rounded-lg mt-3 bg-gray-50">
+                    <div v-html="props.model.content" class="text-xs"></div>
+                </div>
+            </template>
+
             <div class="flex gap-3 mt-3">
                 <button type="button" @click="triggerFileInput" class="flex items-center align-items-center">
                     <input type="file" multiple @change="handleImages" ref="fileInput" class="hidden">
@@ -182,20 +197,6 @@ watch(() => props.open, (newVal) => {
                     </svg>
                     <span class="text-sm ms-1" v-if="images.length > 0">추가</span>
                 </button>
-<!--                <button type="button">-->
-<!--                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">-->
-<!--                        <path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>-->
-<!--                        <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>-->
-<!--                    </svg>-->
-<!--                </button>-->
-<!--                <button type="button">-->
-<!--                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">-->
-<!--                        <path d="M5 9l14 0"></path>-->
-<!--                        <path d="M5 15l14 0"></path>-->
-<!--                        <path d="M11 4l-4 16"></path>-->
-<!--                        <path d="M17 4l-4 16"></path>-->
-<!--                    </svg>-->
-<!--                </button>-->
                 <button type="button" @click="openSearchBookModal">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" stroke-width="2">
                         <path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z"></path>

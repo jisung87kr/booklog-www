@@ -151,6 +151,10 @@
 
             <!-- 포스트 본문 -->
             <div class="p-6">
+                <!-- 포스트 내용 -->
+                <div class="prose prose-gray max-w-none">
+                    {!! nl2br($post->content) !!}
+                </div>
                 <!-- 포스트 이미지들 -->
                 @if($post->images->count() > 0)
                     <div class="mb-6">
@@ -170,10 +174,6 @@
                     </div>
                 @endif
 
-                <!-- 포스트 내용 -->
-                <div class="prose prose-gray max-w-none">
-                    {!! nl2br(e($post->content)) !!}
-                </div>
             </div>
 
             <!-- 포스트 액션 -->
