@@ -119,6 +119,15 @@ Route::middleware([
         Route::delete('/users/{user}/persona', [App\Http\Controllers\Admin\AdminController::class, 'removePersona'])->name('users.remove-persona');
         Route::post('/users/bulk-assign-persona', [App\Http\Controllers\Admin\AdminController::class, 'bulkAssignPersona'])->name('users.bulk-assign-persona');
 
+        // 카테고리 관리
+        Route::get('/categories', [App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');
+        Route::get('/categories/create', [App\Http\Controllers\Admin\AdminController::class, 'createCategory'])->name('categories.create');
+        Route::post('/categories', [App\Http\Controllers\Admin\AdminController::class, 'storeCategory'])->name('categories.store');
+        Route::get('/categories/{category}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editCategory'])->name('categories.edit');
+        Route::put('/categories/{category}', [App\Http\Controllers\Admin\AdminController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{category}', [App\Http\Controllers\Admin\AdminController::class, 'destroyCategory'])->name('categories.destroy');
+        Route::post('/categories/{category}/toggle', [App\Http\Controllers\Admin\AdminController::class, 'toggleCategory'])->name('categories.toggle');
+
         // 포스트 관리
         Route::get('/posts', [App\Http\Controllers\Admin\AdminController::class, 'posts'])->name('posts');
         Route::get('/posts/create', [App\Http\Controllers\Admin\AdminController::class, 'createPost'])->name('posts.create');

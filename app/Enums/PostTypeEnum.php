@@ -2,6 +2,7 @@
 namespace App\Enums;
 enum PostTypeEnum: string
 {
+    case FEED = 'feed';
     case POST = 'post';
     case BOOKCASE = 'bookcase';
     case PAGE = 'page';
@@ -10,6 +11,7 @@ enum PostTypeEnum: string
     public function label()
     {
         return match ($this) {
+            PostTypeEnum::FEED => '피드',
             PostTypeEnum::POST => '포스트',
             PostTypeEnum::BOOKCASE => '책장',
             PostTypeEnum::PAGE => '페이지',

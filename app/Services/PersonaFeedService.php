@@ -221,7 +221,7 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
         // 페르소나의 랜덤한 유저 ID를 사용하여 포스트 생성
         $user = $persona->users()->inRandomOrder()->first();
         return Post::create([
-            'type' => PostTypeEnum::POST,
+            'type' => PostTypeEnum::FEED,
             'user_id' => $user->id,
             'title' => isset($content['title']) ? "📚 {$content['title']}" : "📚 {$persona->name}의 독서 피드",
             'content' => $content['content']." ".($content['hashtags'] ?? ''),

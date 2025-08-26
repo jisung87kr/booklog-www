@@ -20,15 +20,15 @@ class FeedApiController extends Controller
     {
         try {
             $filters = [
-                'type' => [PostTypeEnum::POST, PostTypeEnum::BOOKCASE],
                 'q' => $request->input('q'),
             ];
 
             if($request->user()){
-                $feeds = Post::published()->filter($filters)->orderBy('id', 'desc')->paginate(40);
+                $feeds = Post::publishedFeed()->filter($filters)->orderBy('id', 'desc')->paginate(40);
             } else {
-                $feeds = Post::published()->filter($filters)->orderBy('id', 'desc')->paginate(40);
+                $feeds = Post::publishedFeed()->filter($filters)->orderBy('id', 'desc')->paginate(40);
             }
+
 
             if($request->input('qsearch_type') === 'book'){
                 $book = Book::filter(['q' => $request->input('q')])->first();

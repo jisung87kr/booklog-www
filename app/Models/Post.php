@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PostStatusEnum;
 use App\Enums\PostTypeEnum;
 use App\Enums\UserActionEnum;
+use App\Traits\Categorizable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Post extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Categorizable;
 
     protected $guarded = [];
     protected $with = ['attachments', 'user', 'images', 'bookcase', 'parentPost'];
@@ -106,8 +108,14 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'mentions', 'post_id', 'mentioned_user_id');
     }
 
-    public function scopePublished(){
-        return $this->where('status', PostStatusEnum::PUBLISHED);
+    public function scopePublishedFeed(Builder $query)
+    {
+        $query->published();
+        return $query->whereIn('type', [PostTypeEnum::FEED, PostTypeEnum::BOOKCASE]);
+    }
+
+    public function scopePublished(Builder $query){
+        return $query->where('status', PostStatusEnum::PUBLISHED);
     }
 
     public function getFormattedCreatedAtAttribute()

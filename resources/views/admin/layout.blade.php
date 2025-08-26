@@ -23,6 +23,8 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Vue.js와 Axios는 각 페이지에서 필요시 로드 -->
 </head>
 <body class="bg-gray-50">
     <!-- 모바일 오버레이 -->
@@ -69,7 +71,12 @@
                             <span>사용자 관리</span>
                         </a>
                         
-                        <a href="{{ route('admin.posts') }}" class="admin-nav-link {{ request()->routeIs('admin.posts') ? 'active' : '' }}">
+                        <a href="{{ route('admin.categories') }}" class="admin-nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                            <i class="fas fa-tags w-5 h-5"></i>
+                            <span>카테고리 관리</span>
+                        </a>
+                        
+                        <a href="{{ route('admin.posts') }}" class="admin-nav-link {{ request()->routeIs('admin.posts*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-5 h-5"></i>
                             <span>포스트 관리</span>
                         </a>

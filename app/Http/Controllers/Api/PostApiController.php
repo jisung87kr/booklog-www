@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\PostStatusEnum;
+use App\Enums\PostTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -36,6 +38,7 @@ class PostApiController extends Controller
                 'content' => 'required',
                 'parent_id' => 'nullable',
                 'original_parent_id' => 'nullable',
+                'type' => ['nullable', Rule::enum(PostTypeEnum::class)],
             ]);
 
             $validated['status'] = PostStatusEnum::PUBLISHED;
@@ -47,7 +50,7 @@ class PostApiController extends Controller
                     return substr($mention, 1);
                 }, $request->input('mentions'));
 
-                $users = \App\Models\User::whereIn('username', $userIds)->get();
+                $users = User::whereIn('username', $userIds)->get();
 
                 $post->mentions()->sync($users->pluck('id'));
             }
@@ -81,7 +84,8 @@ class PostApiController extends Controller
                 'content' => 'nullable',
                 'parent_id' => 'nullable',
                 'original_parent_id' => 'nullable',
-                'status' => ['nullable', Rule::enum(PostStatusEnum::class)]
+                'status' => ['nullable', Rule::enum(PostStatusEnum::class)],
+                'type' => ['nullable', Rule::enum(PostTypeEnum::class)],
             ]);
             $post->update($validated);
             return response()->success("", $post);

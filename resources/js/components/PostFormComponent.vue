@@ -60,6 +60,7 @@ const storePost = async () => {
         mentions: getMentions(content.value),
         parent_id: props.model ? props.model.id : null,
         original_parent_id: props.model ? (props.model.original_parent_id ? props.model.original_parent_id : props.model.id) : null,
+        type: 'feed',
     };
 
     await postFormStore.createPost(params);
