@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <div class="flex items-center">
             <div class="p-2 bg-green-100 rounded-lg">
@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <div class="flex items-center">
             <div class="p-2 bg-purple-100 rounded-lg">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <div class="flex items-center">
             <div class="p-2 bg-yellow-100 rounded-lg">
@@ -70,7 +70,7 @@
                 <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 <input type="text" placeholder="포스트 검색..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
             </div>
-            
+
             <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 <option>모든 포스트</option>
                 <option value="ai">AI 생성</option>
@@ -78,7 +78,7 @@
                 <option value="published">게시됨</option>
                 <option value="draft">임시저장</option>
             </select>
-            
+
             <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 <option>최신순</option>
                 <option>오래된순</option>
@@ -86,7 +86,7 @@
                 <option>작성자순</option>
             </select>
         </div>
-        
+
         <div class="flex items-center space-x-3">
             <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 <i class="fas fa-filter mr-2"></i>
@@ -119,7 +119,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="divide-y divide-gray-200">
         @foreach($posts as $post)
         <div class="p-6 hover:bg-gray-50 transition-colors">
@@ -136,9 +136,9 @@
                                     {{ $post->user->name ?? 'AI Generated' }}
                                 </p>
                                 @if($post->user)
-                                    <span class="text-xs text-gray-500">@{{ $post->user->username }}</span>
+                                    <span class="text-xs text-gray-500">{{ $post->user->username }}</span>
                                 @endif
-                                
+
                                 <!-- AI 생성 여부 -->
                                 @if(isset($post->meta['generated_by']) && $post->meta['generated_by'] === 'ai')
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -151,7 +151,7 @@
                                         사용자 작성
                                     </span>
                                 @endif
-                                
+
                                 <!-- 상태 -->
                                 @php
                                     $statusValue = is_object($post->status) ? $post->status->value : $post->status;
@@ -171,13 +171,13 @@
                             </p>
                         </div>
                     </div>
-                    
+
                     <!-- 포스트 내용 -->
                     <div class="mb-3">
                         <h4 class="text-base font-semibold text-gray-900 mb-2">{{ $post->title }}</h4>
                         <p class="text-sm text-gray-700 line-clamp-3">{{ Str::limit(strip_tags($post->content), 200) }}</p>
                     </div>
-                    
+
                     <!-- 메타 정보 -->
                     @if(isset($post->meta['persona_id']))
                         @php
@@ -196,13 +196,13 @@
                             </div>
                         @endif
                     @endif
-                    
+
                     <!-- 해시태그 또는 키워드 -->
                     @php
                         preg_match_all('/#[\w가-힣]+/', $post->content, $hashtags);
                         $hashtags = array_unique($hashtags[0]);
                     @endphp
-                    
+
                     @if(!empty($hashtags))
                         <div class="flex flex-wrap gap-1 mb-2">
                             @foreach(array_slice($hashtags, 0, 5) as $hashtag)
@@ -218,7 +218,7 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <!-- 작업 버튼 -->
                 <div class="flex items-center space-x-2 ml-4">
                     <a href="{{ route('admin.posts.show', $post) }}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="상세보기">
@@ -239,7 +239,7 @@
         </div>
         @endforeach
     </div>
-    
+
     <!-- 페이지네이션 -->
     <div class="px-6 py-4 border-t border-gray-200">
         {{ $posts->links() }}
@@ -254,7 +254,7 @@
             <i class="fas fa-chart-pie text-primary-500 mr-2"></i>
             페르소나별 AI 생성 포스트
         </h3>
-        
+
         @php
             $personaStats = \App\Models\Post::whereNotNull('meta->persona_id')
                 ->get()
@@ -268,7 +268,7 @@
                 ->sortByDesc('count')
                 ->take(5);
         @endphp
-        
+
         @if($personaStats->count() > 0)
             <div class="space-y-3">
                 @foreach($personaStats as $stat)
@@ -298,14 +298,14 @@
             </div>
         @endif
     </div>
-    
+
     <!-- 최근 활동 -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">
             <i class="fas fa-clock text-primary-500 mr-2"></i>
             최근 활동
         </h3>
-        
+
         @php
             $recentPosts = \App\Models\Post::with(['user' => function($query) {
                 $query->withoutGlobalScopes();
@@ -314,7 +314,7 @@
                 ->limit(5)
                 ->get();
         @endphp
-        
+
         <div class="space-y-3">
             @foreach($recentPosts as $post)
                 <div class="flex items-start space-x-3">

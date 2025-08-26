@@ -99,55 +99,55 @@ Route::middleware([
         Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
 
         // 페르소나 관리
-        Route::get('/personas', [App\Http\Controllers\Admin\AdminController::class, 'personas'])->name('personas');
-        Route::get('/personas/create', [App\Http\Controllers\Admin\AdminController::class, 'createPersona'])->name('personas.create');
-        Route::post('/personas', [App\Http\Controllers\Admin\AdminController::class, 'storePersona'])->name('personas.store');
-        Route::get('/personas/{persona}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editPersona'])->name('personas.edit');
-        Route::put('/personas/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'updatePersona'])->name('personas.update');
-        Route::delete('/personas/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'destroyPersona'])->name('personas.destroy');
-        Route::post('/personas/{persona}/toggle', [App\Http\Controllers\Admin\AdminController::class, 'togglePersona'])->name('personas.toggle');
-        Route::post('/personas/schedule', [App\Http\Controllers\Admin\AdminController::class, 'updatePersonaSchedule'])->name('personas.schedule');
+        Route::get('/personas', [App\Http\Controllers\Admin\PersonaController::class, 'index'])->name('personas');
+        Route::get('/personas/create', [App\Http\Controllers\Admin\PersonaController::class, 'create'])->name('personas.create');
+        Route::post('/personas', [App\Http\Controllers\Admin\PersonaController::class, 'store'])->name('personas.store');
+        Route::get('/personas/{persona}/edit', [App\Http\Controllers\Admin\PersonaController::class, 'edit'])->name('personas.edit');
+        Route::put('/personas/{persona}', [App\Http\Controllers\Admin\PersonaController::class, 'update'])->name('personas.update');
+        Route::delete('/personas/{persona}', [App\Http\Controllers\Admin\PersonaController::class, 'destroy'])->name('personas.destroy');
+        Route::post('/personas/{persona}/toggle', [App\Http\Controllers\Admin\PersonaController::class, 'toggle'])->name('personas.toggle');
+        Route::post('/personas/schedule', [App\Http\Controllers\Admin\PersonaController::class, 'updateSchedule'])->name('personas.schedule');
 
         // 사용자 관리
-        Route::get('/users', [App\Http\Controllers\Admin\AdminController::class, 'users'])->name('users');
-        Route::get('/users/create', [App\Http\Controllers\Admin\AdminController::class, 'createUser'])->name('users.create');
-        Route::post('/users', [App\Http\Controllers\Admin\AdminController::class, 'storeUser'])->name('users.store');
-        Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editUser'])->name('users.edit');
-        Route::put('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'updateUser'])->name('users.update');
-        Route::delete('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
-        Route::post('/users/{user}/assign-persona', [App\Http\Controllers\Admin\AdminController::class, 'assignPersona'])->name('users.assign-persona');
-        Route::delete('/users/{user}/persona', [App\Http\Controllers\Admin\AdminController::class, 'removePersona'])->name('users.remove-persona');
-        Route::post('/users/bulk-assign-persona', [App\Http\Controllers\Admin\AdminController::class, 'bulkAssignPersona'])->name('users.bulk-assign-persona');
+        Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
+        Route::get('/users/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/{user}/assign-persona', [App\Http\Controllers\Admin\UserController::class, 'assignPersona'])->name('users.assign-persona');
+        Route::delete('/users/{user}/persona', [App\Http\Controllers\Admin\UserController::class, 'removePersona'])->name('users.remove-persona');
+        Route::post('/users/bulk-assign-persona', [App\Http\Controllers\Admin\UserController::class, 'bulkAssignPersona'])->name('users.bulk-assign-persona');
 
         // 카테고리 관리
-        Route::get('/categories', [App\Http\Controllers\Admin\AdminController::class, 'categories'])->name('categories');
-        Route::get('/categories/create', [App\Http\Controllers\Admin\AdminController::class, 'createCategory'])->name('categories.create');
-        Route::post('/categories', [App\Http\Controllers\Admin\AdminController::class, 'storeCategory'])->name('categories.store');
-        Route::get('/categories/{category}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editCategory'])->name('categories.edit');
-        Route::put('/categories/{category}', [App\Http\Controllers\Admin\AdminController::class, 'updateCategory'])->name('categories.update');
-        Route::delete('/categories/{category}', [App\Http\Controllers\Admin\AdminController::class, 'destroyCategory'])->name('categories.destroy');
-        Route::post('/categories/{category}/toggle', [App\Http\Controllers\Admin\AdminController::class, 'toggleCategory'])->name('categories.toggle');
+        Route::get('/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
+        Route::get('/categories/create', [App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{category}/edit', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::post('/categories/{category}/toggle', [App\Http\Controllers\Admin\CategoryController::class, 'toggle'])->name('categories.toggle');
 
         // 포스트 관리
-        Route::get('/posts', [App\Http\Controllers\Admin\AdminController::class, 'posts'])->name('posts');
-        Route::get('/posts/create', [App\Http\Controllers\Admin\AdminController::class, 'createPost'])->name('posts.create');
-        Route::post('/posts', [App\Http\Controllers\Admin\AdminController::class, 'storePost'])->name('posts.store');
-        Route::get('/posts/{post}', [App\Http\Controllers\Admin\AdminController::class, 'showPost'])->name('posts.show');
-        Route::get('/posts/{post}/edit', [App\Http\Controllers\Admin\AdminController::class, 'editPost'])->name('posts.edit');
-        Route::put('/posts/{post}', [App\Http\Controllers\Admin\AdminController::class, 'updatePost'])->name('posts.update');
-        Route::delete('/posts/{post}', [App\Http\Controllers\Admin\AdminController::class, 'destroyPost'])->name('posts.destroy');
-        Route::post('/posts/bulk-delete', [App\Http\Controllers\Admin\AdminController::class, 'bulkDeletePosts'])->name('posts.bulk-delete');
+        Route::get('/posts', [App\Http\Controllers\Admin\PostController::class, 'index'])->name('posts');
+        Route::get('/posts/create', [App\Http\Controllers\Admin\PostController::class, 'create'])->name('posts.create');
+        Route::post('/posts', [App\Http\Controllers\Admin\PostController::class, 'store'])->name('posts.store');
+        Route::get('/posts/{post}', [App\Http\Controllers\Admin\PostController::class, 'show'])->name('posts.show');
+        Route::get('/posts/{post}/edit', [App\Http\Controllers\Admin\PostController::class, 'edit'])->name('posts.edit');
+        Route::put('/posts/{post}', [App\Http\Controllers\Admin\PostController::class, 'update'])->name('posts.update');
+        Route::delete('/posts/{post}', [App\Http\Controllers\Admin\PostController::class, 'destroy'])->name('posts.destroy');
+        Route::post('/posts/bulk-delete', [App\Http\Controllers\Admin\PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 
         // AI 피드 생성
-        Route::post('/generate-feeds', [App\Http\Controllers\Admin\AdminController::class, 'generateFeeds'])->name('generate-feeds');
+        Route::post('/generate-feeds', [App\Http\Controllers\Admin\PersonaController::class, 'generateFeeds'])->name('generate-feeds');
         Route::post('/generate-feeds/persona/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'generatePersonaFeed'])->name('generate-feeds.persona');
-        Route::post('/users/{user}/generate-feed', [App\Http\Controllers\Admin\AdminController::class, 'generateUserFeed'])->name('users.generate-feed');
+        Route::post('/users/{user}/generate-feed', [App\Http\Controllers\Admin\UserController::class, 'generateFeed'])->name('users.generate-feed');
         Route::get('/feeds/preview/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'previewPersonaFeed'])->name('feeds.preview');
 
         // 이미지 업로드 및 관리
-        Route::post('/posts/images/upload', [App\Http\Controllers\Admin\AdminController::class, 'uploadImage'])->name('posts.images.upload');
-        Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\AdminController::class, 'reorderImages'])->name('posts.images.reorder');
-        Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\AdminController::class, 'deleteImage'])->name('posts.images.delete');
+        Route::post('/posts/images/upload', [App\Http\Controllers\Admin\PostController::class, 'uploadImage'])->name('posts.images.upload');
+        Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\PostController::class, 'reorderImages'])->name('posts.images.reorder');
+        Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\PostController::class, 'deleteImage'])->name('posts.images.delete');
     });
 });
 
