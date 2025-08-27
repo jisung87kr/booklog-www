@@ -92,7 +92,14 @@
                 <i class="fas fa-filter mr-2"></i>
                 고급 필터
             </button>
-            <a href="{{ route('admin.posts.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <form action="{{ route('admin.generate-feeds') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    <i class="fas fa-magic mr-2"></i>
+                    AI 피드 생성
+                </button>
+            </form>
+            <a href="{{ route('admin.feeds.create') }}" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
                 <i class="fas fa-plus mr-2"></i>
                 새 포스트
             </a>
@@ -214,13 +221,13 @@
 
                 <!-- 작업 버튼 -->
                 <div class="flex items-center space-x-2 ml-4">
-                    <a href="{{ route('admin.posts.show', $post) }}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="상세보기">
+                    <a href="{{ route('admin.feeds.show', $post) }}" class="p-2 text-gray-400 hover:text-blue-600 transition-colors" title="상세보기">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('admin.posts.edit', $post) }}" class="p-2 text-gray-400 hover:text-green-600 transition-colors" title="편집">
+                    <a href="{{ route('admin.feeds.edit', $post) }}" class="p-2 text-gray-400 hover:text-green-600 transition-colors" title="편집">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" class="inline" onsubmit="return confirm('정말로 이 포스트를 삭제하시겠습니까?')">
+                    <form action="{{ route('admin.feeds.destroy', $post) }}" method="POST" class="inline" onsubmit="return confirm('정말로 이 포스트를 삭제하시겠습니까?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition-colors" title="삭제">

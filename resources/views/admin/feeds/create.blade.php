@@ -6,18 +6,7 @@
 
 @section('content')
 <div id="app" class="max-w-4xl mx-auto">
-    @if ($errors->any())
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
-            입력한 내용을 다시 확인해주세요.
-            <ul class="mt-2 list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    <form action="{{ route('admin.posts.store') }}" method="POST" class="space-y-6" ref="postForm">
+    <form action="{{ route('admin.feeds.store') }}" method="POST" class="space-y-6" ref="postForm">
         @csrf
 
         <!-- 기본 정보 -->
@@ -51,11 +40,11 @@
             </div>
         </div>
 
-        <!-- 파일 첨부 -->
+        <!-- 이미지 첨부 -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">
                 <i class="fas fa-images text-primary-500 mr-2"></i>
-                파일 첨부
+                이미지 첨부
             </h3>
 
             <!-- 드래그 드롭 업로드 영역 -->
@@ -65,11 +54,11 @@
                  @dragleave="handleDragLeave"
                  @drop="handleDrop"
                  class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-500 transition-colors cursor-pointer">
-                <input type="file" ref="fileInput" multiple class="hidden" @change="handleFileSelect" accept=".pdf,.doc,.docx,.txt,.rtf,.jpg,.jpeg,.png,.gif,.bmp,.webp,.zip,.rar,.7z,.xls,.xlsx,.csv,.ppt,.pptx,.json,.xml">
+                <input type="file" ref="imageInput" multiple accept="image/*" class="hidden" @change="handleFileSelect">
                 <div v-if="!isUploading" class="dropzone-content">
                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-lg text-gray-600 mb-2">파일을 드래그하여 업로드하거나 클릭하세요</p>
-                    <p class="text-sm text-gray-500">문서, 이미지, 압축파일 등 지원 (최대 10MB)</p>
+                    <p class="text-lg text-gray-600 mb-2">이미지를 드래그하여 업로드하거나 클릭하세요</p>
+                    <p class="text-sm text-gray-500">JPG, PNG, GIF 파일만 지원 (최대 10MB)</p>
                 </div>
                 <div v-if="isUploading" class="upload-progress">
                     <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
@@ -79,37 +68,34 @@
                 </div>
             </div>
 
-            <!-- 업로드된 파일 목록 -->
-            <div v-if="showFileGallery" ref="showFileGallery" class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div v-for="(file, index) in uploadedFiles"
-                     :key="file.id"
-                     :data-file-id="file.id"
-                     class="relative group file-item border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="w-full h-32 bg-gray-50 flex items-center justify-center">
-                        <i class="fas fa-file text-3xl text-gray-400" v-if="!isImageFile(file.mime_type)"></i>
-                        <img v-if="isImageFile(file.mime_type)" :src="file.url" :alt="file.file_name" class="w-full h-32 object-cover">
-                    </div>
+            <!-- 업로드된 이미지 목록 -->
+            <div v-if="showImageGallery" ref="imageGallery" class="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div v-for="(image, index) in uploadedImages"
+                     :key="image.id"
+                     :data-image-id="image.id"
+                     class="relative group image-item border border-gray-200 rounded-lg overflow-hidden">
+                    <img :src="image.url" :alt="image.file_name" class="w-full h-32 object-cover">
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
                         <button type="button"
-                                @click="deleteFile(file.id)"
+                                @click="deleteImage(image.id)"
                                 class="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-all duration-200">
                             <i class="fas fa-trash text-sm"></i>
                         </button>
                     </div>
                     <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                        <span v-text="file.sort_order"></span>
+                        <span v-text="image.sort_order"></span>
                     </div>
                     <div class="p-2 bg-white">
-                        <p class="text-xs text-gray-600 truncate" v-text="file.file_name"></p>
-                        <p class="text-xs text-gray-400" v-text="formatFileSize(file.file_size)"></p>
+                        <p class="text-xs text-gray-600 truncate" v-text="image.file_name"></p>
+                        <p class="text-xs text-gray-400" v-text="formatFileSize(image.file_size)"></p>
                     </div>
                 </div>
             </div>
 
-            <!-- 파일 순서 안내 -->
-            <div v-if="showFileGallery" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+            <!-- 이미지 순서 안내 -->
+            <div v-if="showImageGallery" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
                 <i class="fas fa-info-circle mr-2"></i>
-                파일을 드래그하여 순서를 변경할 수 있습니다.
+                이미지를 드래그하여 순서를 변경할 수 있습니다.
             </div>
         </div>
 
@@ -136,6 +122,21 @@
                 </div>
 
                 <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">타입 *</label>
+                    <select id="type" name="type" v-model="form.type"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('type') border-red-500 @enderror"
+                            required>
+                        <option value="post">포스트</option>
+                        <option value="bookcase">책장</option>
+                        <option value="page">페이지</option>
+                        <option value="ad">광고</option>
+                    </select>
+                    @error('type')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
                     <label for="user_id" class="block text-sm font-medium text-gray-700 mb-2">작성자</label>
                     <select id="user_id" name="user_id" v-model="form.user_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -148,7 +149,6 @@
                     </select>
                     <p class="mt-1 text-sm text-gray-500">작성자를 선택하지 않으면 시스템 포스트로 생성됩니다.</p>
                 </div>
-                <input type="hidden" name="type" value="post">
 
                 <div>
                     <div class="flex items-center space-x-3">
@@ -186,9 +186,20 @@
             </div>
         </div>
 
+        <!-- 미리보기 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-eye text-primary-500 mr-2"></i>
+                미리보기
+            </h3>
+
+            <div class="prose max-w-none border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-32" v-html="previewHtml">
+            </div>
+        </div>
+
         <!-- 버튼 -->
         <div class="flex items-center justify-between">
-            <a href="{{ route('admin.posts') }}"
+            <a href="{{ route('admin.feeds') }}"
                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>
                 목록으로 돌아가기
@@ -228,15 +239,15 @@ createApp({
                 type: @json(old('type', 'post')),
                 is_ai_generated: @json(old('is_ai_generated', false))
             },
-            uploadedFiles: [],
+            uploadedImages: [],
             isUploading: false,
             uploadProgress: 0,
             sortable: null,
             csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             urls: {
-                upload: @json(route('admin.posts.attachments.upload')),
-                deleteBase: @json(url('/admin/posts/attachments')),
-                reorder: @json(route('admin.posts.attachments.reorder'))
+                upload: @json(route('admin.posts.images.upload')),
+                reorder: @json(route('admin.posts.images.reorder')),
+                deleteBase: @json(url('/admin/posts/images'))
             }
         }
     },
@@ -244,20 +255,47 @@ createApp({
         showAiSettings() {
             return this.form.is_ai_generated;
         },
-        showFileGallery() {
-            return this.uploadedFiles.length > 0;
+        showImageGallery() {
+            return this.uploadedImages.length > 0;
         },
+        previewHtml() {
+            let html = '';
+
+            if (this.form.title.trim()) {
+                html += `<h1 class="text-2xl font-bold text-gray-900 mb-4">${this.escapeHtml(this.form.title.trim())}</h1>`;
+            }
+
+            if (this.uploadedImages.length > 0) {
+                html += '<div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-2">';
+                this.uploadedImages.forEach(image => {
+                    html += `<img src="${image.url}" alt="${image.file_name}" class="rounded-lg max-w-full h-auto">`;
+                });
+                html += '</div>';
+            }
+
+            if (this.form.content.trim()) {
+                let processedContent = this.escapeHtml(this.form.content.trim());
+                processedContent = processedContent.replace(/\n\n/g, '</p><p class="mb-4">');
+                processedContent = processedContent.replace(/\n/g, '<br>');
+                processedContent = processedContent.replace(/#(\w+)/g, '<span class="text-blue-600 font-medium">#$1</span>');
+                processedContent = processedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                processedContent = processedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                html += `<div class="text-gray-700 leading-relaxed"><p class="mb-4">${processedContent}</p></div>`;
+            }
+
+            return html || '<p class="text-gray-500 italic">제목과 내용을 입력하면 미리보기가 표시됩니다.</p>';
+        }
     },
     methods: {
         handleDropzoneClick(e) {
             if (e.target.closest('.dropzone-content')) {
-                this.$refs.fileInput.click();
+                this.$refs.imageInput.click();
             }
         },
         handleFileSelect(e) {
             const files = Array.from(e.target.files);
             if (files.length > 0) {
-                this.uploadFiles(files);
+                this.uploadImages(files);
             }
         },
         handleDragOver(e) {
@@ -272,12 +310,12 @@ createApp({
             e.preventDefault();
             e.target.closest('#dropzone').classList.remove('border-primary-500', 'bg-primary-50');
 
-            const files = Array.from(e.dataTransfer.files);
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
             if (files.length > 0) {
-                this.uploadFiles(files);
+                this.uploadImages(files);
             }
         },
-        async uploadFiles(files) {
+        async uploadImages(files) {
             this.isUploading = true;
             this.uploadProgress = 0;
 
@@ -286,12 +324,12 @@ createApp({
 
             for (let file of files) {
                 try {
-                    await this.uploadSingleFile(file);
+                    await this.uploadSingleImage(file);
                     completedUploads++;
                     this.uploadProgress = (completedUploads / totalFiles) * 100;
                 } catch (error) {
                     console.error('Upload error:', error);
-                    this.showError('파일 업로드 중 오류가 발생했습니다.');
+                    this.showError('이미지 업로드 중 오류가 발생했습니다.');
                 }
             }
 
@@ -300,9 +338,9 @@ createApp({
                 this.initSortable();
             });
         },
-        async uploadSingleFile(file) {
+        async uploadSingleImage(file) {
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('image', file);
 
             const response = await fetch(this.urls.upload, {
                 method: 'POST',
@@ -316,16 +354,16 @@ createApp({
             const data = await response.json();
 
             if (data.success) {
-                this.uploadedFiles.push(data.file);
+                this.uploadedImages.push(data.image);
             } else {
                 throw new Error(data.message);
             }
         },
-        async deleteFile(fileId) {
-            if (!confirm('파일을 삭제하시겠습니까?')) return;
+        async deleteImage(imageId) {
+            if (!confirm('이미지를 삭제하시겠습니까?')) return;
 
             try {
-                const response = await fetch(`${this.urls.deleteBase}/${fileId}`, {
+                const response = await fetch(`${this.urls.deleteBase}/${imageId}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': this.csrfToken,
@@ -336,18 +374,18 @@ createApp({
                 const data = await response.json();
 
                 if (data.success) {
-                    this.uploadedFiles = this.uploadedFiles.filter(file => file.id != fileId);
-                    this.showSuccess('파일이 삭제되었습니다.');
+                    this.uploadedImages = this.uploadedImages.filter(img => img.id != imageId);
+                    this.showSuccess('이미지가 삭제되었습니다.');
                 } else {
-                    this.showError('파일 삭제 실패: ' + data.message);
+                    this.showError('이미지 삭제 실패: ' + data.message);
                 }
             } catch (error) {
                 console.error('Delete error:', error);
-                this.showError('파일 삭제 중 오류가 발생했습니다.');
+                this.showError('이미지 삭제 중 오류가 발생했습니다.');
             }
         },
-        async reorderFiles() {
-            const fileIds = this.uploadedFiles.map(file => file.id);
+        async reorderImages() {
+            const imageIds = this.uploadedImages.map(img => img.id);
 
             try {
                 const response = await fetch(this.urls.reorder, {
@@ -358,15 +396,15 @@ createApp({
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        attachment_ids: fileIds
+                        image_ids: imageIds
                     })
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    this.uploadedFiles.forEach((file, index) => {
-                        file.sort_order = index + 1;
+                    this.uploadedImages.forEach((img, index) => {
+                        img.sort_order = index + 1;
                     });
                 } else {
                     this.showError('순서 변경 실패: ' + data.message);
@@ -381,8 +419,8 @@ createApp({
                 this.sortable.destroy();
             }
 
-            const gallery = this.$refs.showFileGallery;
-            if (gallery && this.uploadedFiles.length > 0) {
+            const gallery = this.$refs.imageGallery;
+            if (gallery && this.uploadedImages.length > 0) {
                 this.sortable = Sortable.create(gallery, {
                     animation: 150,
                     onEnd: (evt) => {
@@ -390,17 +428,14 @@ createApp({
                         const newIndex = evt.newIndex;
 
                         // Vue 배열 재정렬
-                        const movedItem = this.uploadedFiles.splice(oldIndex, 1)[0];
-                        this.uploadedFiles.splice(newIndex, 0, movedItem);
+                        const movedItem = this.uploadedImages.splice(oldIndex, 1)[0];
+                        this.uploadedImages.splice(newIndex, 0, movedItem);
 
                         // 서버에 순서 업데이트
-                        this.reorderFiles();
+                        this.reorderImages();
                     }
                 });
             }
-        },
-        isImageFile(mimeType) {
-            return mimeType && mimeType.startsWith('image/');
         },
         formatFileSize(bytes) {
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -426,12 +461,12 @@ createApp({
                 this.form.status = 'published';
             }
 
-            // 임시 첨부파일 ID들을 hidden input에 추가
-            if (this.uploadedFiles.length > 0) {
-                const tempAttachmentIds = this.uploadedFiles.map(file => file.id);
+            // 임시 이미지 ID들을 hidden input에 추가
+            if (this.uploadedImages.length > 0) {
+                const tempImageIds = this.uploadedImages.map(img => img.id);
 
                 // 기존 hidden input 제거
-                const existingInput = this.$refs.postForm.querySelector('input[name="temp_attachment_ids"]');
+                const existingInput = this.$refs.postForm.querySelector('input[name="temp_image_ids"]');
                 if (existingInput) {
                     existingInput.remove();
                 }
@@ -439,8 +474,8 @@ createApp({
                 // 새로운 hidden input 추가
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
-                hiddenInput.name = 'temp_attachment_ids';
-                hiddenInput.value = JSON.stringify(tempAttachmentIds);
+                hiddenInput.name = 'temp_image_ids';
+                hiddenInput.value = JSON.stringify(tempImageIds);
                 this.$refs.postForm.appendChild(hiddenInput);
             }
 

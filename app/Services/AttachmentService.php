@@ -11,11 +11,29 @@ class AttachmentService{
     {
         $storagePath = $storagePath ?? $this->storagePath;
         $path = $file->store($storagePath);
+        
+        $sortOrder = $params['sort_order'] ?? $this->getNextSortOrder($model);
+        
         return $model->attachments()->create([
             'file_name' => $file->hashName(),
             'file_path' => $path,
             'file_size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
+            'sort_order' => $sortOrder,
         ]);
+    }
+    
+    public function getNextSortOrder($model)
+    {
+        return $model->attachments()->max('sort_order') + 1;
+    }
+    
+    public function updateSortOrder($model, $attachmentIds)
+    {
+        foreach ($attachmentIds as $index => $attachmentId) {
+            $model->attachments()
+                ->where('id', $attachmentId)
+                ->update(['sort_order' => $index + 1]);
+        }
     }
 }

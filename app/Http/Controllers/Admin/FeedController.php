@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attachment;
 use App\Models\Image;
 use App\Models\Persona;
 use App\Models\Post;
@@ -11,7 +10,7 @@ use App\Models\User;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class FeedController extends Controller
 {
     protected ImageService $imageService;
 
@@ -25,20 +24,20 @@ class PostController extends Controller
         $posts = Post::with('user')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
-        return view('admin.posts', compact('posts'));
+        return view('admin.feeds', compact('posts'));
     }
 
     public function show(Post $post)
     {
         $post->load('user');
-        return view('admin.posts.show', compact('post'));
+        return view('admin.feeds.show', compact('post'));
     }
 
     public function create()
     {
         $users = User::withoutGlobalScopes()->get();
         $personas = Persona::all();
-        return view('admin.posts.create', compact('users', 'personas'));
+        return view('admin.feeds.create', compact('users', 'personas'));
     }
 
     public function store(Request $request)
@@ -73,19 +72,19 @@ class PostController extends Controller
         ]);
 
         // 임시 이미지들을 포스트에 연결
-        if ($request->has('temp_attachment_ids')) {
-            $tempAttachmentIds = json_decode($request->temp_attachment_ids, true);
-            if (is_array($tempAttachmentIds)) {
-                Attachment::whereIn('id', $tempAttachmentIds)
-                    ->where('attachmentable_type', 'temp')
+        if ($request->has('temp_image_ids')) {
+            $tempImageIds = json_decode($request->temp_image_ids, true);
+            if (is_array($tempImageIds)) {
+                Image::whereIn('id', $tempImageIds)
+                    ->where('imageable_type', 'temp')
                     ->update([
-                        'attachmentable_type' => Post::class,
-                        'attachmentable_id' => $post->id,
+                        'imageable_type' => Feed::class,
+                        'imageable_id' => $post->id,
                     ]);
             }
         }
 
-        return redirect()->route('admin.posts')->with('success', '포스트가 생성되었습니다.');
+        return redirect()->route('admin.feeds')->with('success', '포스트가 생성되었습니다.');
     }
 
     public function edit(Post $post)
@@ -93,7 +92,7 @@ class PostController extends Controller
         $users = User::withoutGlobalScopes()->get();
         $personas = Persona::all();
         $post->load('images');
-        return view('admin.posts.edit', compact('post', 'users', 'personas'));
+        return view('admin.feeds.edit', compact('post', 'users', 'personas'));
     }
 
     public function update(Request $request, Post $post)
@@ -131,13 +130,13 @@ class PostController extends Controller
             'published_at' => $request->status === 'published' && !$post->published_at ? now() : $post->published_at,
         ]);
 
-        return redirect()->route('admin.posts')->with('success', '포스트가 수정되었습니다.');
+        return redirect()->route('admin.feeds')->with('success', '포스트가 수정되었습니다.');
     }
 
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect()->route('admin.posts')->with('success', '포스트가 삭제되었습니다.');
+        return redirect()->route('admin.feeds')->with('success', '포스트가 삭제되었습니다.');
     }
 
     public function bulkDelete(Request $request)

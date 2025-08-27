@@ -138,6 +138,17 @@ Route::middleware([
         Route::delete('/posts/{post}', [App\Http\Controllers\Admin\PostController::class, 'destroy'])->name('posts.destroy');
         Route::post('/posts/bulk-delete', [App\Http\Controllers\Admin\PostController::class, 'bulkDelete'])->name('posts.bulk-delete');
 
+        // 피드 관리
+        Route::get('/feeds', [App\Http\Controllers\Admin\FeedController::class, 'index'])->name('feeds');
+        Route::get('/feeds/create', [App\Http\Controllers\Admin\FeedController::class, 'create'])->name('feeds.create');
+        Route::post('/feeds', [App\Http\Controllers\Admin\FeedController::class, 'store'])->name('feeds.store');
+        Route::get('/feeds/{post}', [App\Http\Controllers\Admin\FeedController::class, 'show'])->name('feeds.show');
+        Route::get('/feeds/{post}/edit', [App\Http\Controllers\Admin\FeedController::class, 'edit'])->name('feeds.edit');
+        Route::put('/feeds/{post}', [App\Http\Controllers\Admin\FeedController::class, 'update'])->name('feeds.update');
+        Route::delete('/feeds/{post}', [App\Http\Controllers\Admin\FeedController::class, 'destroy'])->name('feeds.destroy');
+        Route::post('/feeds/bulk-delete', [App\Http\Controllers\Admin\FeedController::class, 'bulkDelete'])->name('feeds.bulk-delete');
+
+
         // AI 피드 생성
         Route::post('/generate-feeds', [App\Http\Controllers\Admin\PersonaController::class, 'generateFeeds'])->name('generate-feeds');
         Route::post('/generate-feeds/persona/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'generatePersonaFeed'])->name('generate-feeds.persona');
@@ -148,6 +159,12 @@ Route::middleware([
         Route::post('/posts/images/upload', [App\Http\Controllers\Admin\PostController::class, 'uploadImage'])->name('posts.images.upload');
         Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\PostController::class, 'reorderImages'])->name('posts.images.reorder');
         Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\PostController::class, 'deleteImage'])->name('posts.images.delete');
+
+        // 첨부파일 업로드 및 관리
+        Route::post('/posts/attachments/upload', [App\Http\Controllers\Admin\AttachmentController::class, 'upload'])->name('posts.attachments.upload');
+        Route::post('/posts/attachments/reorder', [App\Http\Controllers\Admin\AttachmentController::class, 'reorderAttachments'])->name('posts.attachments.reorder');
+        Route::delete('/posts/attachments/{attachment}', [App\Http\Controllers\Admin\AttachmentController::class, 'delete'])->name('posts.attachments.delete');
+        Route::get('/posts/{post}/attachments', [App\Http\Controllers\Admin\AttachmentController::class, 'getPostAttachments'])->name('posts.attachments.get');
     });
 });
 

@@ -23,13 +23,13 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Vue.js와 Axios는 각 페이지에서 필요시 로드 -->
 </head>
 <body class="bg-gray-50">
     <!-- 모바일 오버레이 -->
     <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
-    
+
     <div class="min-h-screen flex">
         <!-- 사이드바 -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -48,55 +48,66 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- 스크롤 가능한 네비게이션 영역 -->
                 <nav class="flex-1 overflow-y-auto py-6">
-                    <div class="px-6 py-3">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">메뉴</p>
-                    </div>
-                    
+                    <x-admin.menu-section title="메뉴" />
+
                     <div class="space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="admin-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-chart-line w-5 h-5"></i>
-                            <span>대시보드</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.personas') }}" class="admin-nav-link {{ request()->routeIs('admin.personas') ? 'active' : '' }}">
-                            <i class="fas fa-user-friends w-5 h-5"></i>
-                            <span>페르소나 관리</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.users') }}" class="admin-nav-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
-                            <i class="fas fa-users w-5 h-5"></i>
-                            <span>사용자 관리</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.categories') }}" class="admin-nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-                            <i class="fas fa-tags w-5 h-5"></i>
-                            <span>카테고리 관리</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.posts') }}" class="admin-nav-link {{ request()->routeIs('admin.posts*') ? 'active' : '' }}">
-                            <i class="fas fa-file-alt w-5 h-5"></i>
-                            <span>포스트 관리</span>
-                        </a>
+                        <x-admin.menu-item
+                            route="admin.dashboard"
+                            route-pattern="admin.dashboard"
+                            icon="fas fa-chart-line"
+                            label="대시보드" />
+
+                        <x-admin.menu-item
+                            route="admin.personas"
+                            route-pattern="admin.personas"
+                            icon="fas fa-user-friends"
+                            label="페르소나 관리" />
+
+                        <x-admin.menu-item
+                            route="admin.users"
+                            route-pattern="admin.users"
+                            icon="fas fa-users"
+                            label="사용자 관리" />
+
+                        <x-admin.menu-item
+                            route="admin.categories"
+                            route-pattern="admin.categories*"
+                            icon="fas fa-tags"
+                            label="카테고리 관리" />
+
+                        <x-admin.menu-dropdown
+                            icon="fas fa-file-alt"
+                            label="콘텐츠 관리"
+                            route-pattern="admin.feeds*">
+                            <x-admin.menu-item
+                                route="admin.feeds"
+                                route-pattern="admin.feeds*"
+                                icon="fas fa-rss"
+                                label="피드 관리" />
+                            <x-admin.menu-item
+                                route="admin.posts"
+                                route-pattern="admin.posts*"
+                                icon="fas fa-file-alt"
+                                label="포스트 관리" />
+                        </x-admin.menu-dropdown>
                     </div>
-                    
-                    <div class="px-6 py-3 mt-8">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">작업</p>
-                    </div>
-                    
+
+                    <x-admin.menu-section title="작업" class="mt-8" />
+
                     <div class="space-y-1">
                         <form action="{{ route('admin.generate-feeds') }}" method="POST" class="w-full">
                             @csrf
-                            <button type="submit" class="admin-nav-button">
-                                <i class="fas fa-magic"></i>
-                                <span>AI 피드 생성</span>
-                            </button>
+                            <x-admin.menu-item
+                                type="button"
+                                icon="fas fa-magic"
+                                label="AI 피드 생성" />
                         </form>
                     </div>
                 </nav>
-                
+
                 <!-- 하단 사용자 정보 고정 -->
                 <div class="flex-shrink-0 p-6 border-t bg-white">
                     <div class="flex items-center">
@@ -128,12 +139,12 @@
                                 <p class="text-xs lg:text-sm text-gray-600 mt-1 hidden sm:block">@yield('description', '시스템 현황을 확인하세요')</p>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center space-x-2 lg:space-x-4">
                             <div class="relative hidden sm:block">
                                 <i class="fas fa-bell text-gray-400 hover:text-gray-600 cursor-pointer"></i>
                             </div>
-                            
+
                             <a href="{{ route('home') }}" class="inline-flex items-center px-3 lg:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs lg:text-sm font-medium rounded-lg transition-colors">
                                 <i class="fas fa-home mr-1 lg:mr-2"></i>
                                 <span class="hidden sm:inline">사이트로 돌아가기</span>
@@ -210,6 +221,38 @@
                 document.body.style.overflow = '';
             }
         });
+
+        // 드롭다운 토글 함수
+        function toggleDropdown(button) {
+            const dropdown = button.parentElement;
+            const content = dropdown.querySelector('.dropdown-content');
+            const chevron = dropdown.querySelector('.dropdown-chevron');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                chevron.classList.remove('rotate-180');
+            }
+        }
+
+        // 페이지 로드 시 활성 메뉴의 드롭다운 열기
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeDropdowns = document.querySelectorAll('.admin-dropdown');
+            activeDropdowns.forEach(dropdown => {
+                const routePattern = dropdown.dataset.routePattern;
+                const content = dropdown.querySelector('.dropdown-content');
+                const chevron = dropdown.querySelector('.dropdown-chevron');
+                const button = dropdown.querySelector('button');
+
+                // 현재 페이지가 해당 라우트 패턴과 일치하거나 하위 메뉴 중 활성 항목이 있는 경우
+                if (button.classList.contains('active') || content.querySelector('.admin-nav-link.active')) {
+                    content.classList.remove('hidden');
+                    chevron.classList.add('rotate-180');
+                }
+            });
+        });
     </script>
 
     <style>
@@ -222,19 +265,19 @@
             border-radius: 0;
             text-decoration: none;
         }
-        
+
         .admin-nav-link:hover {
             background-color: #f9fafb;
             color: #111827;
         }
-        
+
         .admin-nav-link.active {
             background-color: #eff6ff;
             color: #1d4ed8;
             border-right: 3px solid #2563eb;
             font-weight: 600;
         }
-        
+
         .admin-nav-link i {
             margin-right: 0.75rem;
             width: 1.25rem;
@@ -256,12 +299,12 @@
             text-align: left;
             cursor: pointer;
         }
-        
+
         .admin-nav-button:hover {
             background-color: #ecfdf5;
             color: #047857;
         }
-        
+
         .admin-nav-button i {
             margin-right: 0.75rem;
             width: 1.25rem;
@@ -271,7 +314,7 @@
             justify-content: center;
         }
     </style>
-    
+
     @stack('scripts')
 </body>
 </html>
