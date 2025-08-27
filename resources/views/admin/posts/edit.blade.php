@@ -41,13 +41,14 @@
 
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700 mb-2">내용 *</label>
-                    <textarea id="content" name="content" rows="10" v-model="form.content"
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('content') border-red-500 @enderror"
-                              required placeholder="포스트 내용을 입력하세요..."></textarea>
+                    <div class="border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 @error('content') border-red-500 @enderror">
+                        <div id="editor" style="min-height: 300px;"></div>
+                    </div>
+                    <textarea id="content" name="content" v-model="form.content" class="hidden" required></textarea>
                     @error('content')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    <p class="mt-1 text-sm text-gray-500">마크다운 형식을 지원합니다.</p>
+                    <p class="mt-1 text-sm text-gray-500">WYSIWYG 에디터를 사용할 수 있습니다.</p>
                 </div>
             </div>
         </div>
@@ -70,7 +71,7 @@
                 <div v-if="!isUploading" class="dropzone-content">
                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
                     <p class="text-lg text-gray-600 mb-2">파일을 드래그하여 업로드하거나 클릭하세요</p>
-                    <p class="text-sm text-gray-500">문서, 이미지, 압축파일 등 지원 (최대 10MB)</p>
+                    <p class="text-sm text-gray-500">문서, 이미지, 압축파일 등 지원 (최대 2MB)</p>
                 </div>
                 <div v-if="isUploading" class="upload-progress">
                     <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
@@ -255,16 +256,11 @@
                     상세보기
                 </a>
 
-                <form action="{{ route('admin.posts.destroy', $post) }}" method="POST" class="inline"
-                      onsubmit="return confirm('정말로 이 포스트를 삭제하시겠습니까?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
-                        <i class="fas fa-trash mr-2"></i>
-                        삭제
-                    </button>
-                </form>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    <i class="fas fa-trash mr-2"></i>
+                    삭제
+                </button>
 
                 <button type="button" @click="handleSubmit('draft')"
                         class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors">
@@ -281,6 +277,10 @@
         </div>
     </form>
 </div>
+
+<!-- Quill WYSIWYG Editor -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -303,13 +303,16 @@ createApp({
             isUploading: false,
             uploadProgress: 0,
             sortable: null,
+            quillEditor: null,
             csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             urls: {
                 upload: @json(route('admin.posts.attachments.upload')),
                 deleteBase: @json(url('/admin/posts/attachments')),
-                reorder: @json(route('admin.posts.attachments.reorder'))
+                reorder: @json(route('admin.posts.attachments.reorder')),
+                imageUpload: @json(route('admin.posts.images.upload'))
             },
-            postId: @json($post->id)
+            postId: @json($post->id),
+            editorImageIds: []
         }
     },
     computed: {
@@ -506,6 +509,86 @@ createApp({
                 console.error('Failed to load existing files:', error);
             }
         },
+        initQuillEditor() {
+            this.quillEditor = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: '포스트 내용을 입력하세요...',
+                modules: {
+                    toolbar: {
+                        container: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'align': [] }],
+                            ['blockquote', 'code-block'],
+                            ['link', 'image'],
+                            ['clean']
+                        ],
+                        handlers: {
+                            image: this.imageHandler
+                        }
+                    }
+                }
+            });
+
+            // Quill 내용이 변경될 때마다 Vue 데이터 업데이트
+            this.quillEditor.on('text-change', () => {
+                this.form.content = this.quillEditor.root.innerHTML;
+                console.log('Quill content updated:', this.form.content);
+            });
+
+            // 초기 콘텐츠 설정
+            if (this.form.content) {
+                this.quillEditor.root.innerHTML = this.form.content;
+            }
+        },
+        imageHandler() {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = async () => {
+                const file = input.files[0];
+                if (file) {
+                    // 파일 크기 검증 (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        this.showError('이미지 크기는 2MB를 초과할 수 없습니다.');
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    try {
+                        const response = await fetch(this.urls.imageUpload, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': this.csrfToken,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            // 에디터에 이미지 삽입
+                            const range = this.quillEditor.getSelection();
+                            this.quillEditor.insertEmbed(range.index, 'image', data.url);
+
+                            // 이미지 ID 저장 (나중에 첫번째 첨부파일로 연결하기 위해)
+                            this.editorImageIds.push(data.attachment_id);
+                        } else {
+                            this.showError('이미지 업로드 실패: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Image upload error:', error);
+                        this.showError('이미지 업로드 중 오류가 발생했습니다.');
+                    }
+                }
+            };
+        },
         handleSubmit(action) {
             if (action === 'draft') {
                 this.form.status = 'draft';
@@ -513,13 +596,31 @@ createApp({
                 this.form.status = 'published';
             }
 
+            // Quill 에디터에서 HTML 콘텐츠 가져오기 및 동기화
+            if (this.quillEditor) {
+                const editorHTML = this.quillEditor.root.innerHTML;
+                this.form.content = editorHTML;
+
+                // hidden textarea에도 직접 설정
+                const contentTextarea = document.getElementById('content');
+                if (contentTextarea) {
+                    contentTextarea.value = editorHTML;
+                }
+
+                console.log('Final content being submitted:', editorHTML);
+            }
+
             // 폼 제출
             this.$refs.postForm.submit();
         }
     },
     mounted() {
-        // 기존 첨부파일 로드
-        this.loadExistingFiles();
+        // Quill 에디터 초기화
+        this.$nextTick(() => {
+            this.initQuillEditor();
+            // 기존 첨부파일 로드
+            this.loadExistingFiles();
+        });
     }
 }).mount('#app');
 </script>

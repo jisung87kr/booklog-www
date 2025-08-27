@@ -72,7 +72,7 @@ class PostController extends Controller
             'published_at' => $request->status === 'published' ? now() : null,
         ]);
 
-        // 임시 이미지들을 포스트에 연결
+        // 임시 첨부파일들을 포스트에 연결
         if ($request->has('temp_attachment_ids')) {
             $tempAttachmentIds = json_decode($request->temp_attachment_ids, true);
             if (is_array($tempAttachmentIds)) {

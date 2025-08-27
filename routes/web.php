@@ -155,16 +155,14 @@ Route::middleware([
         Route::post('/users/{user}/generate-feed', [App\Http\Controllers\Admin\UserController::class, 'generateFeed'])->name('users.generate-feed');
         Route::get('/feeds/preview/{persona}', [App\Http\Controllers\Admin\AdminController::class, 'previewPersonaFeed'])->name('feeds.preview');
 
-        // 이미지 업로드 및 관리
-        Route::post('/posts/images/upload', [App\Http\Controllers\Admin\PostController::class, 'uploadImage'])->name('posts.images.upload');
-        Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\PostController::class, 'reorderImages'])->name('posts.images.reorder');
-        Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\PostController::class, 'deleteImage'])->name('posts.images.delete');
-
         // 첨부파일 업로드 및 관리
         Route::post('/posts/attachments/upload', [App\Http\Controllers\Admin\AttachmentController::class, 'upload'])->name('posts.attachments.upload');
         Route::post('/posts/attachments/reorder', [App\Http\Controllers\Admin\AttachmentController::class, 'reorderAttachments'])->name('posts.attachments.reorder');
         Route::delete('/posts/attachments/{attachment}', [App\Http\Controllers\Admin\AttachmentController::class, 'delete'])->name('posts.attachments.delete');
         Route::get('/posts/{post}/attachments', [App\Http\Controllers\Admin\AttachmentController::class, 'getPostAttachments'])->name('posts.attachments.get');
+        
+        // 에디터 이미지 업로드
+        Route::post('/posts/images/upload', [App\Http\Controllers\Admin\AttachmentController::class, 'uploadImage'])->name('posts.images.upload');
     });
 });
 

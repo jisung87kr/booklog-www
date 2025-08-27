@@ -128,7 +128,7 @@ class AttachmentController extends Controller
                 Attachment::where('id', $attachmentId)
                     ->update(['sort_order' => $index + 1]);
             }
-            
+
             return response()->json([
                 'success' => true,
                 'message' => '파일 순서가 업데이트되었습니다.'
@@ -168,6 +168,54 @@ class AttachmentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => '첨부파일 조회 중 오류가 발생했습니다: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadImage(Request $request)
+    {
+        // 이미지 파일만 허용
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|max:2048|mimes:jpg,jpeg,png,gif,webp'
+        ], [
+            'image.required' => 'image 항목은 필수 항목입니다.',
+            'image.image' => '유효한 이미지 파일을 업로드해주세요.',
+            'image.max' => '이미지 크기는 2MB를 초과할 수 없습니다.',
+            'image.mimes' => '지원하지 않는 이미지 형식입니다. (JPG, PNG, GIF, WEBP만 허용)'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 422);
+        }
+
+        try {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $size = $file->getSize();
+            $mimeType = $file->getMimeType();
+
+            // 파일 이름 생성 (중복 방지를 위해 UUID 사용)
+            $filename = Str::uuid() . '.' . $extension;
+
+            // 이미지 저장 경로
+            $year = date('Y');
+            $month = date('m');
+            $storagePath = "editor/{$year}/{$month}";
+            $path = $file->storeAs($storagePath, $filename, 'public', '');
+
+            return response()->json([
+                'success' => true,
+                'url' => Storage::url($path),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '이미지 업로드 중 오류가 발생했습니다: ' . $e->getMessage()
             ], 500);
         }
     }
