@@ -108,10 +108,16 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'mentions', 'post_id', 'mentioned_user_id');
     }
 
-    public function scopePublishedFeed(Builder $query)
+    public function scopePublishedFeeds(Builder $query)
     {
         $query->published();
         return $query->whereIn('type', [PostTypeEnum::FEED, PostTypeEnum::BOOKCASE]);
+    }
+
+    public function scopePublishedPosts(Builder $query)
+    {
+        $query->published();
+        return $query->whereIn('type', [PostTypeEnum::POST]);
     }
 
     public function scopePublished(Builder $query){

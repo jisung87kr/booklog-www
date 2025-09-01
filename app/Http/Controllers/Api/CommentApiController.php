@@ -39,6 +39,7 @@ class CommentApiController extends Controller
             $model = $this->morphService->getMorphModel($type, $id);
             $validated = $request->validate([
                 'body' => 'required',
+                'parent_id' => 'nullable|exists:comments,id'
             ]);
 
             if($request->user()){

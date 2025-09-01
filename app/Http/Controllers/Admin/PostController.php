@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\CategoryTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Attachment;
+use App\Models\Category;
 use App\Models\Image;
 use App\Models\Persona;
 use App\Models\Post;
@@ -23,6 +25,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::with('user')
+            ->publishedPosts()
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('admin.posts', compact('posts'));
@@ -38,7 +41,8 @@ class PostController extends Controller
     {
         $users = User::withoutGlobalScopes()->get();
         $personas = Persona::all();
-        return view('admin.posts.create', compact('users', 'personas'));
+        $categories = Category::where('type', CategoryTypeEnum::POST)->get();
+        return view('admin.posts.create', compact('users', 'personas', 'categories'));
     }
 
     public function store(Request $request)
@@ -51,6 +55,7 @@ class PostController extends Controller
             'status' => 'required|in:draft,published,unpublished',
             'type' => 'required|in:post,bookcase,page,ad',
             'is_ai_generated' => 'boolean',
+            'category_ids' => 'nullable|array',
         ]);
 
         $meta = [];
@@ -85,6 +90,8 @@ class PostController extends Controller
             }
         }
 
+        $post->syncCategories($request->category_ids ?? []);
+
         return redirect()->route('admin.posts')->with('success', '포스트가 생성되었습니다.');
     }
 
@@ -92,8 +99,9 @@ class PostController extends Controller
     {
         $users = User::withoutGlobalScopes()->get();
         $personas = Persona::all();
+        $categories = Category::where('type', CategoryTypeEnum::POST)->get();
         $post->load('images');
-        return view('admin.posts.edit', compact('post', 'users', 'personas'));
+        return view('admin.posts.edit', compact('post', 'users', 'personas', 'categories'));
     }
 
     public function update(Request $request, Post $post)
@@ -106,6 +114,7 @@ class PostController extends Controller
             'status' => 'required|in:draft,published,unpublished',
             'type' => 'required|in:post,bookcase,page,ad',
             'is_ai_generated' => 'boolean',
+            'category_ids' => 'nullable|array',
         ]);
 
         $meta = $post->meta ?? [];
@@ -130,6 +139,8 @@ class PostController extends Controller
             'meta' => $meta,
             'published_at' => $request->status === 'published' && !$post->published_at ? now() : $post->published_at,
         ]);
+
+        $post->syncCategories($request->category_ids ?? []);
 
         return redirect()->route('admin.posts')->with('success', '포스트가 수정되었습니다.');
     }

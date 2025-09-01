@@ -30,6 +30,21 @@
 
             <div class="space-y-4">
                 <div>
+                    <label for="category_ids" class="block text-sm font-medium text-gray-700 mb-2">카테고리</label>
+                    <select id="category_ids" name="category_ids[]" multiple
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                           size="4">
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" 
+                                    @if(in_array($category->id, $post->categories->pluck('id')->toArray())) selected @endif>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-sm text-gray-500">Ctrl/Cmd 키를 누르고 클릭하여 여러 카테고리를 선택할 수 있습니다.</p>
+                </div>
+
+                <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-2">제목 *</label>
                     <input type="text" id="title" name="title" v-model="form.title"
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('title') border-red-500 @enderror"

@@ -24,9 +24,9 @@ class FeedApiController extends Controller
             ];
 
             if($request->user()){
-                $feeds = Post::publishedFeed()->filter($filters)->orderBy('id', 'desc')->paginate(40);
+                $feeds = Post::publishedFeeds()->filter($filters)->orderBy('id', 'desc')->paginate(40);
             } else {
-                $feeds = Post::publishedFeed()->filter($filters)->orderBy('id', 'desc')->paginate(40);
+                $feeds = Post::publishedFeeds()->filter($filters)->orderBy('id', 'desc')->paginate(40);
             }
 
 

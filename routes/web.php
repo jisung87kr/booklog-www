@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserBookcaseController;
 use App\Models\Post;
@@ -55,6 +56,10 @@ Route::get('/@{user}', [UserController::class, 'profile'])->name('profile');
 Route::get('/@{user}/bookcases/create', [UserBookcaseController::class, 'create'])->name('bookcase.create');
 Route::get('/@{user}/bookcases/{bookcase}', [UserBookcaseController::class, 'show'])->name('bookcase.show');
 Route::get('/@{user}/bookcases/{bookcase}/edit', [UserBookcaseController::class, 'edit'])->name('bookcase.edit');
+
+// post
+Route::get('posts', [PostController::class, 'index'])->name('post.index');
+Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show');
 
 // page
 Route::get('/terms', function () {
@@ -160,9 +165,14 @@ Route::middleware([
         Route::post('/posts/attachments/reorder', [App\Http\Controllers\Admin\AttachmentController::class, 'reorderAttachments'])->name('posts.attachments.reorder');
         Route::delete('/posts/attachments/{attachment}', [App\Http\Controllers\Admin\AttachmentController::class, 'delete'])->name('posts.attachments.delete');
         Route::get('/posts/{post}/attachments', [App\Http\Controllers\Admin\AttachmentController::class, 'getPostAttachments'])->name('posts.attachments.get');
-        
+
         // 에디터 이미지 업로드
         Route::post('/posts/images/upload', [App\Http\Controllers\Admin\AttachmentController::class, 'uploadImage'])->name('posts.images.upload');
+
+        // 이미지 업로드 및 관리
+        Route::post('/posts/images/upload', [App\Http\Controllers\Admin\AdminController::class, 'uploadImage'])->name('posts.images.upload');
+        Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\AdminController::class, 'reorderImages'])->name('posts.images.reorder');
+        Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\AdminController::class, 'deleteImage'])->name('posts.images.delete');
     });
 });
 

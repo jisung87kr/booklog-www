@@ -246,7 +246,7 @@ createApp({
             csrfToken: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             urls: {
                 upload: @json(route('admin.posts.images.upload')),
-                reorder: @json(route('admin.posts.images.reorder')),
+                reorder: @json(route('admin.posts.images.reorder')), // posts.images.reorder
                 deleteBase: @json(url('/admin/posts/images'))
             }
         }

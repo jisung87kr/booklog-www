@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\PostTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Models\Persona;
@@ -22,6 +23,7 @@ class FeedController extends Controller
     public function index()
     {
         $posts = Post::with('user')
+            ->publishedFeeds()
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('admin.feeds', compact('posts'));
