@@ -4,7 +4,7 @@
             <a href="{{ route('home') }}">북로그</a>
         </div>
         <div class="flex max-w-2xl mx-auto font-medium md:block items-center align-items-center">
-            <a href="{{ route('home') }}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('home') ? 'bg-gray-100' : '' }}">
+            <a href="{{ route('home') }}" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl {{ request()->routeIs('home') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
@@ -12,7 +12,7 @@
                     <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
                 </svg>
             </a>
-            <a href="{{ route('search.index') }}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('search.index') ? 'bg-gray-100' : '' }}">
+            <a href="{{ route('search.index') }}" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl {{ request()->routeIs('search.index') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
@@ -20,7 +20,7 @@
                 </svg>
             </a>
             <post-form-component>
-                <button type="button" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl">
+                <button type="button" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -29,13 +29,13 @@
                     </svg>
                 </button>
             </post-form-component>
-            <a href="{{route('activity.index')}}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('activity.index') ? 'bg-gray-100' : '' }}">
+            <a href="{{route('activity.index')}}" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl {{ request()->routeIs('activity.index') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
                 </svg>
             </a>
-            <a href="{{route('post.index')}}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('post.index') ? 'bg-gray-100' : '' }}">
+            <a href="{{route('post.index')}}" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl {{ request()->routeIs('post.index') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                      stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="icon icon-tabler icons-tabler-outline icon-tabler-article">
@@ -46,7 +46,7 @@
                     <path d="M7 16h10"/>
                 </svg>
             </a>
-            <a href="{{ Auth::user() ? route('profile', ['user' => Auth::user()->username]) : route('login') }}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('profile') ? 'bg-gray-100' : '' }}">
+            <a href="{{ Auth::user() ? route('profile', ['user' => Auth::user()->username]) : route('login') }}" class="inline-flex flex-row items-center justify-center hover:bg-gray-50 group md:block p-3 md:p-5 rounded-2xl {{ request()->routeIs('profile') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />

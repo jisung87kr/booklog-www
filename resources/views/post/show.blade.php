@@ -1,13 +1,97 @@
 <x-app-layout>
-    @section('title', $post->title . config('app.name'))
-    @section('description', '{{ Str::limit(strip_tags($post->content), 160) }}')
-    @section('og_title', '{{ $post->user->name }}님의 포스트')
-    @section('og_description', '{{ Str::limit(strip_tags($post->content), 160) }}')
+    @section('title', $post->title. '-' . config('app.name'))
+    @section('description', Str::limit(strip_tags($post->content), 160))
+    @section('og_title', "{$post->user->name}님의 포스트")
+    @section('og_description', Str::limit(strip_tags($post->content), 160))
     @section('og_type', 'article')
-    @section('og_url', '{{ route(\'post.show\', $post->id) }}')
+    @section('og_url', route('post.show', $post->id))
     @if($post->images->first())
         @section('og_image', '{{ $post->images->first()->url }}')
     @endif
+
+    @push('meta')
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ $post->title }}",
+        "description": "{{ Str::limit(strip_tags($post->content), 160) }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ $post->user->name }}",
+            "url": "{{ route('profile', $post->user->username) }}"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "{{ config('app.name') }}",
+            "url": "{{ config('app.url') }}"
+        },
+        "datePublished": "{{ $post->created_at->toISOString() }}",
+        "dateModified": "{{ $post->updated_at->toISOString() }}",
+        "url": "{{ route('post.show', $post->id) }}",
+        @if($post->images->first())
+        "image": "{{ $post->images->first()->url }}",
+        @endif
+        @if($post->categories->count() > 0)
+        "keywords": [
+            @foreach($post->categories as $category)
+            "{{ $category->name }}"{{ !$loop->last ? ',' : '' }}
+            @endforeach
+        ],
+        "about": [
+            @foreach($post->categories as $category)
+            {
+                "@type": "Thing",
+                "name": "{{ $category->name }}"
+            }{{ !$loop->last ? ',' : '' }}
+            @endforeach
+        ],
+        @endif
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ route('post.show', $post->id) }}"
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "홈",
+                    "item": "{{ route('home') }}"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "포스트 목록",
+                    "item": "{{ route('post.index') }}"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "{{ $post->title }}",
+                    "item": "{{ route('post.show', $post->id) }}"
+                }
+            ]
+        }
+        @if($post->comments->count() > 0)
+        ,"comment": [
+            @foreach($post->comments->where('parent_id', null) as $comment)
+            {
+                "@type": "Comment",
+                "text": "{{ $comment->body }}",
+                "author": {
+                    "@type": "Person",
+                    "name": "{{ $comment->user->name }}"
+                },
+                "dateCreated": "{{ $comment->created_at->toISOString() }}"
+            }{{ !$loop->last ? ',' : '' }}
+            @endforeach
+        ]
+        @endif
+    }
+    </script>
+    @endpush
 
     <div id="postShow" class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -49,7 +133,7 @@
                     <article>
                         <div class="border-b border-gray-200 pb-6 mb-6">
                             <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ $post->title }}</h1>
-                            
+
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4">
                                     <div class="flex items-center space-x-2">
@@ -63,7 +147,7 @@
                                     <span class="text-gray-300">|</span>
                                     <span class="text-gray-500 text-sm">조회 {{ $post->view_count ?? 0 }}</span>
                                 </div>
-                                
+
                                 <div class="flex items-center space-x-2">
                                     @foreach($post->categories as $category)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">

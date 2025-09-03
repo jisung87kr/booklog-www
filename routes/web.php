@@ -74,6 +74,10 @@ Route::get('/privacy', function () {
     return view('privacy');
 })->name('privacy');
 
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
 Route::get('/cookie-policy', function () {
     return view('cookie-policy');
 })->name('cookie-policy');

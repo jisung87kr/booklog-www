@@ -91,7 +91,7 @@
                                 <input type="checkbox" id="privacy" name="privacy" required
                                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                 <label for="privacy" class="ml-3 text-sm text-gray-600">
-                                    개인정보 수집 및 이용에 동의합니다. <a href="#" class="text-blue-600 hover:underline">자세히 보기</a>
+                                    개인정보 수집 및 이용에 동의합니다. <a href="{{ route('privacy-policy') }}" target="_blank" class="text-blue-600 hover:underline">자세히 보기</a>
                                 </label>
                             </div>
 

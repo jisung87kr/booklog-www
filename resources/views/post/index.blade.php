@@ -2,6 +2,70 @@
     @section('title', '포스트 목록 - ' . config('app.name'))
     @section('description', '북로그 커뮤니티의 모든 독서 기록과 리뷰를 확인해보세요.')
 
+    @push('meta')
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "포스트 목록",
+        "description": "북로그 커뮤니티의 모든 독서 기록과 리뷰를 확인해보세요.",
+        "url": "{{ request()->url() }}",
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": {{ $posts->total() }},
+            "itemListElement": [
+                @foreach($posts as $index => $post)
+                {
+                    "@type": "ListItem",
+                    "position": {{ $index + 1 }},
+                    "item": {
+                        "@type": "Article",
+                        "headline": "{{ $post->title }}",
+                        "author": {
+                            "@type": "Person",
+                            "name": "{{ $post->user->name }}",
+                            "url": "{{ route('profile', $post->user->username) }}"
+                        },
+                        "datePublished": "{{ $post->created_at->toISOString() }}",
+                        "url": "{{ route('post.show', $post->id) }}",
+                        @if($post->categories->count() > 0)
+                        "keywords": [
+                            @foreach($post->categories as $category)
+                            "{{ $category->name }}"{{ !$loop->last ? ',' : '' }}
+                            @endforeach
+                        ],
+                        @endif
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "{{ config('app.name') }}",
+                            "url": "{{ config('app.url') }}"
+                        }
+                    }
+                }{{ !$loop->last ? ',' : '' }}
+                @endforeach
+            ]
+        },
+        "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "홈",
+                    "item": "{{ route('home') }}"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "포스트 목록",
+                    "item": "{{ route('post.index') }}"
+                }
+            ]
+        }
+    }
+    </script>
+    @endpush
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex space-x-4 justify-center text-lg mb-6">
