@@ -177,6 +177,12 @@ Route::middleware([
         Route::post('/posts/images/upload', [App\Http\Controllers\Admin\AdminController::class, 'uploadImage'])->name('posts.images.upload');
         Route::post('/posts/images/reorder', [App\Http\Controllers\Admin\AdminController::class, 'reorderImages'])->name('posts.images.reorder');
         Route::delete('/posts/images/{image}', [App\Http\Controllers\Admin\AdminController::class, 'deleteImage'])->name('posts.images.delete');
+
+        // 문의 관리
+        Route::get('/contacts', [App\Http\Controllers\Admin\ContactController::class, 'index'])->name('contacts.index');
+        Route::get('/contacts/{contact}', [App\Http\Controllers\Admin\ContactController::class, 'show'])->name('contacts.show');
+        Route::put('/contacts/{contact}', [App\Http\Controllers\Admin\ContactController::class, 'update'])->name('contacts.update');
+        Route::delete('/contacts/{contact}', [App\Http\Controllers\Admin\ContactController::class, 'destroy'])->name('contacts.destroy');
     });
 });
 

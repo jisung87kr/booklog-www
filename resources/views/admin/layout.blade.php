@@ -78,6 +78,12 @@
                             icon="fas fa-tags"
                             label="카테고리 관리" />
 
+                        <x-admin.menu-item
+                            route="admin.contacts.index"
+                            route-pattern="admin.contacts*"
+                            icon="fas fa-envelope"
+                            label="문의 관리" />
+
                         <x-admin.menu-dropdown
                             icon="fas fa-file-alt"
                             label="콘텐츠 관리"
