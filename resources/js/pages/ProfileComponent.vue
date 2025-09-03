@@ -32,7 +32,7 @@ const followModalShow = ref(false);
 const followModalType = ref(null);
 const userList = ref([]);
 
-console.log(user.value.is_secret);
+console.log(user.value);
 
 const list = ref({
     current_page: 1,
@@ -114,7 +114,7 @@ const handleScroll = async () => {
     }
 };
 
-const clickTab = async (activityTGype) => {
+const clickTab = async (activityType) => {
     selectedActivityType.value = activityType.key;
     await getList(1);
     await nextTick(i => {
@@ -212,6 +212,11 @@ const closeFollowModal = () => {
     followModalShow.value = false;
 };
 
+const dateFormatter = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 onMounted(async () => {
     window.addEventListener("scroll", handleScroll);
     await getList(1);
@@ -269,19 +274,19 @@ onBeforeUnmount(() => {
                                 </div>
 
                                 <!-- Bio -->
-                                <div class="mb-4" v-if="user.description">
-                                    <p class="text-gray-800 leading-relaxed" v-html="user.description"></p>
+                                <div class="mb-4" v-if="user.introduction">
+                                    <p class="text-gray-800 leading-relaxed" v-html="user.introduction"></p>
                                 </div>
 
                                 <!-- Meta info -->
                                 <div class="flex items-center flex-wrap gap-4 text-sm text-gray-600 mb-4">
-                                    <div class="flex items-center space-x-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        </svg>
-                                        <span>대한민국</span>
-                                    </div>
+<!--                                    <div class="flex items-center space-x-1">-->
+<!--                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>-->
+<!--                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>-->
+<!--                                        </svg>-->
+<!--                                        <span>대한민국</span>-->
+<!--                                    </div>-->
                                     <template v-if="user.link">
                                         <div class="flex items-center space-x-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,7 +299,7 @@ onBeforeUnmount(() => {
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                         </svg>
-                                        <span>2023년 6월 가입</span>
+                                        <span>{{ dateFormatter(user.created_at) }} 가입</span>
                                     </div>
                                 </div>
 
@@ -311,7 +316,7 @@ onBeforeUnmount(() => {
                                         <div class="text-xs sm:text-sm text-gray-500 group-hover:text-blue-600">팔로잉</div>
                                     </button>
                                     <div class="text-center px-4 py-3 sm:px-3 sm:py-2 min-w-0 flex-1 sm:flex-none">
-                                        <div class="text-lg sm:text-xl font-bold text-gray-900">{{ user.posts_count || 0 }}</div>
+                                        <div class="text-lg sm:text-xl font-bold text-gray-900">{{ user.feed_count || 0 }}</div>
                                         <div class="text-xs sm:text-sm text-gray-500">게시물</div>
                                     </div>
                                 </div>

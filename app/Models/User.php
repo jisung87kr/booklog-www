@@ -77,7 +77,8 @@ class User extends Authenticatable
                'users.*',
                DB::raw('(SELECT COUNT(*) FROM follows WHERE follows.following_id = users.id) as followers_count'),
                DB::raw('(SELECT COUNT(*) FROM follows WHERE follows.follow_id = users.id) as following_count'),
-               DB::raw("IF((SELECT id FROM follows WHERE following_id = users.id AND follow_id = '{$userId}') IS NOT NULL, true, false) AS is_following")
+               DB::raw("IF((SELECT id FROM follows WHERE following_id = users.id AND follow_id = '{$userId}') IS NOT NULL, true, false) AS is_following"),
+               DB::raw("(SELECT COUNT(*) FROM posts WHERE user_id = users.id AND type = 'feed') as feed_count"),
             ]);
 
             //TODO http://booklog.test:9499/api/feeds?page=1 에서 쿼리 오류남.
@@ -175,5 +176,11 @@ class User extends Authenticatable
         $query->when($filters['q'] ?? false, function (Builder $query, $q) {
             $query->where('username', 'like', '%'.$q.'%');
         });
+    }
+
+    public function getAttributeFeedCount()
+
+        {
+
     }
 }
