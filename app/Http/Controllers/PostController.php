@@ -15,7 +15,7 @@ class PostController extends Controller
     public function index()
     {
         $filters = request()->only(['search', 'category']);
-        $posts = Post::publishedPosts()->paginate(20);
+        $posts = Post::publishedPosts()->latest()->paginate(20);
         // $posts comment count eager load
 
         $categories = Category::where('type', CategoryTypeEnum::POST)->get();

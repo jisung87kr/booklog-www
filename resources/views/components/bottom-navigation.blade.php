@@ -35,6 +35,17 @@
                     <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
                 </svg>
             </a>
+            <a href="{{route('post.index')}}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('post.index') ? 'bg-gray-100' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="icon icon-tabler icons-tabler-outline icon-tabler-article">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"/>
+                    <path d="M7 8h10"/>
+                    <path d="M7 12h10"/>
+                    <path d="M7 16h10"/>
+                </svg>
+            </a>
             <a href="{{ Auth::user() ? route('profile', ['user' => Auth::user()->username]) : route('login') }}" class="inline-flex flex-row items-center justify-center px-5 hover:bg-gray-50 group md:block p-5 rounded-2xl {{ request()->routeIs('profile') ? 'bg-gray-100' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="30" height="30" viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

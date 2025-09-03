@@ -1,5 +1,5 @@
 <x-app-layout>
-    @section('title', '{{ Str::limit($post->content, 60) }} - ' . config('app.name'))
+    @section('title', $post->title . config('app.name'))
     @section('description', '{{ Str::limit(strip_tags($post->content), 160) }}')
     @section('og_title', '{{ $post->user->name }}님의 포스트')
     @section('og_description', '{{ Str::limit(strip_tags($post->content), 160) }}')
@@ -10,7 +10,7 @@
     @endif
 
     <div id="postShow" class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6">
                     <div class="mb-6">
@@ -46,168 +46,49 @@
                         </nav>
                     </div>
 
-                    <article class="space-y-6">
-                        <header class="flex items-start space-x-4">
-                            <div class="flex-shrink-0">
-                                <img class="h-12 w-12 rounded-full"
-                                     src="{{ $post->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                     alt="{{ $post->user->name }}">
-                            </div>
-
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <h2 class="text-lg font-semibold text-gray-900">
-                                        <a href="{{ route('user.show', $post->user->username) }}" class="hover:text-blue-600">
-                                            {{ $post->user->name }}
-                                        </a>
-                                    </h2>
-                                    <span class="text-gray-500 text-sm">{{ $post->user->username }}</span>
-
-                                    @if($post->type)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                     @if($post->type->value === 'feed') bg-blue-100 text-blue-800
-                                                     @elseif($post->type->value === 'bookcase') bg-green-100 text-green-800
-                                                     @elseif($post->type->value === 'review') bg-purple-100 text-purple-800
-                                                     @else bg-gray-100 text-gray-800 @endif">
-                                            {{ $post->type->value }}
-                                        </span>
-                                    @endif
-                                </div>
-
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <time datetime="{{ $post->created_at->toISOString() }}">
-                                        {{ $post->created_at->format('Y년 m월 d일 H:i') }}
-                                    </time>
-
-                                    @if($post->published_at && $post->published_at->ne($post->created_at))
-                                        <span>•</span>
-                                        <span>발행: {{ $post->published_at->format('Y년 m월 d일 H:i') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-
-{{--                            <div class="flex items-center space-x-2">--}}
-{{--                                <button class="text-gray-400 hover:text-gray-500">--}}
-{{--                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">--}}
-{{--                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>--}}
-{{--                                    </svg>--}}
-{{--                                </button>--}}
-{{--                            </div>--}}
-                        </header>
-
-                        @if($post->parentPost)
-                            <div class="bg-gray-50 border-l-4 border-gray-300 p-4 rounded-r-lg">
-                                <div class="flex items-start space-x-3">
-                                    <img class="h-8 w-8 rounded-full"
-                                         src="{{ $post->parentPost->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                         alt="{{ $post->parentPost->user->name }}">
-                                    <div class="flex-1">
-                                        <div class="flex items-center space-x-2 mb-1">
-                                            <span class="font-medium text-sm text-gray-900">{{ $post->parentPost->user->name }}</span>
-                                            <span class="text-gray-500 text-xs">{{ $post->parentPost->formatted_created_at }}</span>
-                                        </div>
-                                        <p class="text-sm text-gray-700">{{ strip_tags(Str::limit($post->parentPost->content, 100)) }}</p>
-                                        <a href="{{ route('post.show', $post->parentPost->id) }}" class="text-xs text-blue-600 hover:underline">
-                                            원본 보기
-                                        </a>
+                    <article>
+                        <div class="border-b border-gray-200 pb-6 mb-6">
+                            <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ $post->title }}</h1>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img class="h-8 w-8 rounded-full"
+                                             src="{{ $post->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
+                                             alt="{{ $post->user->name }}">
+                                        <span class="font-medium text-gray-900">{{ $post->user->name }}</span>
                                     </div>
+                                    <span class="text-gray-300">|</span>
+                                    <time class="text-gray-500 text-sm">{{ date('Y.m.d H:i', strtotime($post->created_at)) }}</time>
+                                    <span class="text-gray-300">|</span>
+                                    <span class="text-gray-500 text-sm">조회 {{ $post->view_count ?? 0 }}</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    @foreach($post->categories as $category)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            {{ $category->name }}
+                                        </span>
+                                    @endforeach
                                 </div>
                             </div>
-                        @endif
+                        </div>
 
-                        <div class="prose max-w-none">
-                            <div class="text-gray-900 text-lg leading-relaxed whitespace-pre-wrap">{!! $post->content !!}</div>
+                        <div class="prose max-w-none mb-8">
+                            <div class="text-gray-900 leading-relaxed whitespace-pre-wrap text-base">{!! $post->content !!}</div>
                         </div>
 
                         @if($post->images->count() > 0)
-                            <div class="space-y-4">
-                                @if($post->images->count() === 1)
-                                    <img src="{{ $post->images->first()->url }}" alt="포스트 이미지"
-                                         class="rounded-lg shadow-md max-w-full h-auto">
-                                @else
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        @foreach($post->images as $image)
-                                            <img src="{{ $image->url }}" alt="포스트 이미지"
-                                                 class="rounded-lg shadow-md object-cover h-64 w-full">
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        @endif
-
-                        @if($post->bookcase)
-                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                                <div class="flex items-start space-x-4">
-                                    @if($post->bookcase->book_cover_image)
-                                        <div class="flex-shrink-0">
-                                            <img src="{{ $post->bookcase->book_cover_image }}" alt="책 표지"
-                                                 class="h-24 w-16 object-cover rounded shadow-sm">
-                                        </div>
-                                    @endif
-                                    <div class="flex-1">
-                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $post->bookcase->book_title }}</h3>
-                                        @if($post->bookcase->book_author)
-                                            <p class="text-gray-600 mb-2">{{ $post->bookcase->book_author }}</p>
-                                        @endif
-                                        @if($post->bookcase->book_publisher)
-                                            <p class="text-sm text-gray-500">{{ $post->bookcase->book_publisher }}</p>
-                                        @endif
-
-                                        @if($post->bookcase->reading_status)
-                                            <div class="mt-3">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                    {{ $post->bookcase->reading_status }}
-                                                </span>
-                                            </div>
-                                        @endif
-
-                                        <div class="mt-3">
-                                            <a href="{{ route('bookcase.show', $post->bookcase->id) }}"
-                                               class="text-sm text-blue-600 hover:underline">
-                                                서재에서 보기 →
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="mb-6">
+                                @foreach($post->images as $image)
+                                    <img src="{{ $image->url }}" alt="첨부 이미지"
+                                         class="max-w-full h-auto mb-4 border border-gray-200">
+                                @endforeach
                             </div>
                         @endif
 
                     </article>
 
-                    @if($post->quotePosts->count() > 0)
-                        <div class="mt-8 pt-8 border-t border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">이 포스트를 인용한 글들</h3>
-                            <div class="space-y-4">
-                                @foreach($post->quotePosts->take(3) as $quotePost)
-                                    <div class="bg-gray-50 rounded-lg p-4">
-                                        <div class="flex items-start space-x-3">
-                                            <img class="h-8 w-8 rounded-full"
-                                                 src="{{ $quotePost->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                                 alt="{{ $quotePost->user->name }}">
-                                            <div class="flex-1">
-                                                <div class="flex items-center space-x-2 mb-1">
-                                                    <span class="font-medium text-sm text-gray-900">{{ $quotePost->user->name }}</span>
-                                                    <span class="text-gray-500 text-xs">{{ $quotePost->formatted_created_at }}</span>
-                                                </div>
-                                                <p class="text-sm text-gray-700">{{ Str::limit($quotePost->content, 100) }}</p>
-                                                <a href="{{ route('post.show', $quotePost->id) }}" class="text-xs text-blue-600 hover:underline">
-                                                    전체 보기
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                @if($post->quotePosts->count() > 3)
-                                    <div class="text-center">
-                                        <button class="text-sm text-blue-600 hover:underline">
-                                            인용글 {{ $post->quotePosts->count() - 3 }}개 더 보기
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
 
                     <div class="mt-8 pt-8 border-t border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">댓글 {{ $post->comment_count ?? 0 }}개</h3>

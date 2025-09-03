@@ -4,14 +4,15 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="flex space-x-4 justify-center text-lg mb-6">
+                <a href="{{ route('post.index') }}" class="px-4 py-2 font-bold">공지사항</a>
+                <a href="{{ route('contact') }}" class="px-4 py-2 text-gray-500">문의</a>
+            </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6">
                     <div class="mb-6">
-
-
                         <div class="flex items-center justify-between">
-                            <h1 class="text-2xl font-bold text-gray-900">포스트</h1>
-
+                            <h1 class="text-2xl font-bold text-gray-900">공지사항</h1>
                             <form action="{{ route('post.index') }}" method="GET">
                                 <div class="flex space-x-4">
                                     <div class="flex items-center space-x-4">
@@ -38,109 +39,69 @@
                     </div>
 
                     @if($posts->count() > 0)
-                        <div class="space-y-6">
-                            @foreach($posts as $post)
-                                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                                    <div class="flex items-start space-x-4">
-                                        <div class="flex-shrink-0">
-                                            <img class="h-10 w-10 rounded-full"
-                                                 src="{{ $post->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                                 alt="{{ $post->user->name }}">
-                                        </div>
-
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center space-x-2 mb-2">
-                                                <h3 class="font-semibold text-gray-900">
-                                                    <a href="{{ route('user.show', $post->user->username) }}" class="hover:text-blue-600">
-                                                        {{ $post->user->name }}
-                                                    </a>
-                                                </h3>
-                                                <span class="text-gray-500 text-sm">{{ $post->user->username }}</span>
-                                                <span class="text-gray-400">•</span>
-                                                <time class="text-gray-500 text-sm">{{ $post->formatted_created_at }}</time>
-
-                                                @if($post->type)
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                 @if($post->type->value === 'feed') bg-blue-100 text-blue-800
-                                                                 @elseif($post->type->value === 'bookcase') bg-green-100 text-green-800
-                                                                 @elseif($post->type->value === 'review') bg-purple-100 text-purple-800
-                                                                 @else bg-gray-100 text-gray-800 @endif">
-                                                        {{ $post->type->value }}
-                                                    </span>
-                                                @endif
-                                            </div>
-
-                                            <div class="text-gray-900 mb-3">
-                                                @foreach($post->categories as $category)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                    {{ $category->name }}
-                                                </span>
-                                                @endforeach
-                                                <a href="{{ route('post.show', $post->id) }}" class="hover:text-blue-600">
-                                                    {{ strip_tags(Str::limit($post->content, 200)) }}
-                                                </a>
-                                            </div>
-
-                                            @if($post->images->count() > 0)
-                                                <div class="grid grid-cols-2 gap-2 mb-3 max-w-md">
-                                                    @foreach($post->images->take(4) as $image)
-                                                        <img src="{{ $image->url }}" alt="포스트 이미지"
-                                                             class="rounded-md object-cover h-32 w-full">
-                                                    @endforeach
-                                                </div>
-                                            @endif
-
-                                            @if($post->bookcase)
-                                                <div class="bg-gray-50 rounded-lg p-3 mb-3">
-                                                    <div class="flex items-center space-x-3">
-                                                        @if($post->bookcase->book_cover_image)
-                                                            <img src="{{ $post->bookcase->book_cover_image }}" alt="책 표지" class="h-16 w-12 object-cover rounded">
-                                                        @endif
-                                                        <div>
-                                                            <h4 class="font-medium text-gray-900">{{ $post->bookcase->book_title }}</h4>
-                                                            @if($post->bookcase->book_author)
-                                                                <p class="text-sm text-gray-600">{{ $post->bookcase->book_author }}</p>
-                                                            @endif
+                        <div class="overflow-hidden border border-gray-200 rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <colgroup>
+                                    <col style="width: 60%;">
+                                    <col style="width: 20%;">
+                                    <col style="width: 10%;">
+                                    <col style="width: 10%;">
+                                </colgroup>
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성자</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성일</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">조회수</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($posts as $post)
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div>
+                                                        <div class="mb-1">
+                                                            @foreach($post->categories as $category)
+                                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mr-2">
+                                                                    {{ $category->name }}
+                                                                </span>
+                                                            @endforeach
+                                                        </div>
+                                                        <div class="text-sm font-medium text-gray-900">
+                                                            <a href="{{ route('post.show', $post->id) }}" class="hover:text-blue-600">
+                                                                {{ $post->title }}
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
-
-                                            <div class="flex items-center space-x-6 text-sm text-gray-500">
-                                                <button class="flex items-center space-x-1 hover:text-red-600">
-                                                    <svg class="h-4 w-4" fill="{{ $post->like_id ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                                    </svg>
-                                                    <span>{{ $post->like_count ?? 0 }}</span>
-                                                </button>
-
-                                                <button class="flex items-center space-x-1 hover:text-blue-600">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                                    </svg>
-                                                    <span>{{ $post->comment_count ?? 0 }}</span>
-                                                </button>
-
-                                                <button class="flex items-center space-x-1 hover:text-green-600">
-                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
-                                                    </svg>
-                                                    <span>{{ $post->share_count ?? 0 }}</span>
-                                                </button>
-
-                                                @if($post->quote_count > 0)
-                                                    <span class="flex items-center space-x-1 text-gray-500">
-                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                                                        </svg>
-                                                        <span>{{ $post->quote_count }}</span>
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 h-8 w-8">
+                                                        <img class="h-8 w-8 rounded-full"
+                                                             src="{{ $post->user->profile_photo_url ?? asset('images/default-avatar.png') }}"
+                                                             alt="{{ $post->user->name }}">
+                                                    </div>
+                                                    <div class="ml-3">
+                                                        <div class="text-sm font-medium text-gray-900">
+                                                            <a href="{{ route('profile', $post->user->username) }}" class="hover:text-blue-600">
+                                                                {{ $post->user->name }}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ date('Y.m.d', strtotime($post->created_at)) }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{ $post->view_count ?? 0 }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="mt-8">

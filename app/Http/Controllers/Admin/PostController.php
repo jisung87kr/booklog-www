@@ -26,7 +26,7 @@ class PostController extends Controller
     {
         $posts = Post::with('user')
             ->publishedPosts()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(20);
         return view('admin.posts', compact('posts'));
     }

@@ -62,6 +62,10 @@ Route::get('posts', [PostController::class, 'index'])->name('post.index');
 Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show');
 
 // page
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
 Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
