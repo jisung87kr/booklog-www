@@ -43,6 +43,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->increment('view_count');
+        
         $post->load(['comments' => function ($query) {
             $query->withTrashed()->with(['replies' => function ($replyQuery) {
                 $replyQuery->withTrashed();
