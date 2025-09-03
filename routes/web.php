@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserBookController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ContactController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -62,9 +63,8 @@ Route::get('posts', [PostController::class, 'index'])->name('post.index');
 Route::get('posts/{post}', [PostController::class, 'show'])->name('post.show');
 
 // page
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
+Route::get('/contact', [ContactController::class, 'create'])->name('contact.create');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/terms', function () {
     return view('terms');

@@ -6,7 +6,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex space-x-4 justify-center text-lg mb-6">
                 <a href="{{ route('post.index') }}" class="px-4 py-2 font-bold">공지사항</a>
-                <a href="{{ route('contact') }}" class="px-4 py-2 text-gray-500">문의</a>
+                <a href="{{ route('contact.create') }}" class="px-4 py-2 text-gray-500">문의</a>
             </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6">
