@@ -93,6 +93,18 @@ Route::get('/sitemap-users.xml', [App\Http\Controllers\SitemapController::class,
 Route::get('/sitemap-books.xml', [App\Http\Controllers\SitemapController::class, 'books'])->name('sitemap.books');
 Route::get('/sitemap-posts.xml', [App\Http\Controllers\SitemapController::class, 'posts'])->name('sitemap.posts');
 
+// Health check routes
+Route::get('/health', [App\Http\Controllers\HealthController::class, 'check'])->name('health.check');
+Route::get('/health/detailed', [App\Http\Controllers\HealthController::class, 'detailed'])->name('health.detailed');
+Route::get('/health/metrics', [App\Http\Controllers\HealthController::class, 'metrics'])->name('health.metrics');
+
+// Monitoring routes (admin only)
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/monitoring', [App\Http\Controllers\MonitoringController::class, 'dashboard'])->name('monitoring.dashboard');
+    Route::get('/monitoring/api', [App\Http\Controllers\MonitoringController::class, 'api'])->name('monitoring.api');
+    Route::get('/monitoring/alerts', [App\Http\Controllers\MonitoringController::class, 'checkAlerts'])->name('monitoring.alerts');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

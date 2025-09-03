@@ -84,6 +84,12 @@
                             icon="fas fa-envelope"
                             label="문의 관리" />
 
+                        <x-admin.menu-item
+                            route="monitoring.dashboard"
+                            route-pattern="monitoring*"
+                            icon="fas fa-chart-bar"
+                            label="시스템 모니터링" />
+
                         <x-admin.menu-dropdown
                             icon="fas fa-file-alt"
                             label="콘텐츠 관리"
