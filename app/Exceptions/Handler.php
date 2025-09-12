@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Http\Responses\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -52,7 +53,7 @@ class Handler extends ExceptionHandler
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
             'url' => request()->fullUrl(),
-            'user_id' => auth()->check() ? auth()->id() : null,
+            'user_id' => Auth::check() ? Auth::id() : null,
             'timestamp' => now()->toDateTimeString()
         ];
 
@@ -85,7 +86,7 @@ class Handler extends ExceptionHandler
     private function sendSlackNotification(array $errorData)
     {
         $webhookUrl = config('services.slack.webhook_url');
-        
+
         $payload = [
             'text' => '🚨 BookLog 에러 발생',
             'attachments' => [
@@ -139,7 +140,7 @@ class Handler extends ExceptionHandler
     private function sendEmailNotification(array $errorData)
     {
         $adminEmail = config('mail.admin_email');
-        
+
         Mail::raw(
             "BookLog 에러 발생\n\n" .
             "에러 메시지: {$errorData['message']}\n" .
