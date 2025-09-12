@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
             'url' => request()->fullUrl(),
-            'user_id' => auth()->id(),
+            'user_id' => auth()->check() ? auth()->id() : null,
             'timestamp' => now()->toDateTimeString()
         ];
 
