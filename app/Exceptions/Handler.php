@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             // 중요한 에러만 알림 전송
             if ($this->shouldReport($e) && app()->environment('production')) {
-                $this->notifyError($e);
+                //$this->notifyError($e);
             }
         });
 
