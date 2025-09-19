@@ -114,7 +114,7 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
     \"book_title\": \"{$book->title}\",
     \"author\": \"{$book->author}\",
     \"content\": \"피드 내용\",
-    \"hashtags\": \"#독서 #책추천 #감동\"
+    \"hashtags\": \"#책제목 #독서 #책추천 #감동\"
 }
 ";
 
@@ -172,20 +172,6 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
         $authors = $preferences['authors'] ?? [];
         $keywords = $preferences['keywords'] ?? [];
 
-        // 선호 작가가 있으면 우선 검색
-        if (!empty($authors)) {
-            foreach ($authors as $author) {
-                $searchRequest = new BookSearchRequestDTO($author, 1, 10);
-                $response = $this->bookCrawlerService->searchBooks($searchRequest);
-
-                if ($response->success && !empty($response->data)) {
-                    // 랜덤하게 선택
-                    $randomIndex = array_rand($response->data);
-                    return $response->data[$randomIndex];
-                }
-            }
-        }
-
         // 키워드 기반 검색
         if (!empty($keywords)) {
             foreach ($keywords as $keyword) {
@@ -199,6 +185,20 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
                 }
             }
         }
+
+        // 선호 작가가 있으면 우선 검색
+//        if (!empty($authors)) {
+//            foreach ($authors as $author) {
+//                $searchRequest = new BookSearchRequestDTO($author, 1, 10);
+//                $response = $this->bookCrawlerService->searchBooks($searchRequest);
+//
+//                if ($response->success && !empty($response->data)) {
+//                    // 랜덤하게 선택
+//                    $randomIndex = array_rand($response->data);
+//                    return $response->data[$randomIndex];
+//                }
+//            }
+//        }
 
         // 아무것도 찾지 못하면 베스트셀러나 신간에서 검색
         $fallbackQueries = ['베스트셀러', '소설', '에세이', '인문'];
