@@ -72,7 +72,6 @@ class PersonaFeedService
 프로필:
 - 나이: {$persona->age}세
 - 성별: {$persona->gender}
-- 직업: {$persona->occupation}
 - 성격: {$persona->description}
 - 말투/어조: {$speakingStyle}
 
@@ -89,15 +88,17 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
 - 저자: {$book->author}
 - 설명: {$book->description}
 - ISBN: {$book->isbn}
+- 링크: {$book->link}
 
 **작성 조건**:
+0. 도서링크를 접속하여 데이터를 수집(가능한 경우)
 1. 길이: 150-200자 내외
 2. 줄내림: 자연스러운 호흡과 문장 단위로 줄내림 사용 (\\n으로 표현)
    - 예: 인사말 → 줄내림 → 책 소개 → 줄내림 → 감상/추천 이유 → 줄내림 → 해시태그
 3. 톤: 반드시 '{$speakingStyle}' 말투를 사용하여 페르소나의 개성을 살려주세요
 4. 내용: 위에 제공된 **정확한 책 제목과 저자명**만 사용
 5. 스타일: SNS 게시글처럼 친근하고 생동감 있게
-6. 해시태그: 관련 해시태그 2-3개 포함
+6. 해시태그: 관련 해시태그 3~5개 포함, 책제목은 반드시 포함
 
 **절대 금지**:
 - 책 제목이나 저자명을 임의로 변경하거나 다른 책으로 바꾸지 마세요
@@ -175,13 +176,32 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
         // 키워드 기반 검색
         if (!empty($keywords)) {
             foreach ($keywords as $keyword) {
-                $searchRequest = new BookSearchRequestDTO($keyword, 1, 10);
+                $allBooks = [];
+
+                // 첫 페이지 검색
+                $searchRequest = new BookSearchRequestDTO($keyword, 1, 50);
                 $response = $this->bookCrawlerService->searchBooks($searchRequest);
 
                 if ($response->success && !empty($response->data)) {
-                    // 랜덤하게 선택
-                    $randomIndex = array_rand($response->data);
-                    return $response->data[$randomIndex];
+                    $allBooks = array_merge($allBooks, $response->data);
+
+                    // totalPages가 3 이상이면 2, 3페이지도 검색
+                    if ($response->totalPages >= 3) {
+                        for ($page = 2; $page <= 3; $page++) {
+                            $searchRequest = new BookSearchRequestDTO($keyword, $page, 50);
+                            $additionalResponse = $this->bookCrawlerService->searchBooks($searchRequest);
+
+                            if ($additionalResponse->success && !empty($additionalResponse->data)) {
+                                $allBooks = array_merge($allBooks, $additionalResponse->data);
+                            }
+                        }
+                    }
+
+                    // 모든 검색 결과에서 랜덤하게 선택
+                    if (!empty($allBooks)) {
+                        $randomIndex = array_rand($allBooks);
+                        return $allBooks[$randomIndex];
+                    }
                 }
             }
         }
@@ -203,13 +223,32 @@ $userPrompt = "다음 **실제 존재하는 도서**에 대한 추천 글이나 
         // 아무것도 찾지 못하면 베스트셀러나 신간에서 검색
         $fallbackQueries = ['베스트셀러', '소설', '에세이', '인문'];
         foreach ($fallbackQueries as $query) {
-            $searchRequest = new BookSearchRequestDTO($query, 1, 20);
+            $allBooks = [];
+
+            // 첫 페이지 검색
+            $searchRequest = new BookSearchRequestDTO($query, 1, 50);
             $response = $this->bookCrawlerService->searchBooks($searchRequest);
 
             if ($response->success && !empty($response->data)) {
-                // 랜덤하게 선택
-                $randomIndex = array_rand($response->data);
-                return $response->data[$randomIndex];
+                $allBooks = array_merge($allBooks, $response->data);
+
+                // totalPages가 3 이상이면 2, 3페이지도 검색
+                if ($response->totalPages >= 3) {
+                    for ($page = 2; $page <= 3; $page++) {
+                        $searchRequest = new BookSearchRequestDTO($keyword, $page, 50);
+                        $additionalResponse = $this->bookCrawlerService->searchBooks($searchRequest);
+
+                        if ($additionalResponse->success && !empty($additionalResponse->data)) {
+                            $allBooks = array_merge($allBooks, $additionalResponse->data);
+                        }
+                    }
+                }
+
+                // 모든 검색 결과에서 랜덤하게 선택
+                if (!empty($allBooks)) {
+                    $randomIndex = array_rand($allBooks);
+                    return $allBooks[$randomIndex];
+                }
             }
         }
 

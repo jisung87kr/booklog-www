@@ -26,6 +26,7 @@ Route::get('test', function(\App\Services\PersonaFeedService $service){
 //    // 테스트용 페르소나 ID
 //    $persona = \App\Models\Persona::find(1);
 //    $result = $service->generateContentWithGPT($persona);
+//    dd($result);
 });
 
 Route::get('/', function () {
